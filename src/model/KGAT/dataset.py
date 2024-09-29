@@ -24,6 +24,23 @@ class Rating:
 
 
 @dataclass
+class Division(Enum):
+    DIV1 = 0
+    DIV2 = 1
+    DIV1AND2 = 2
+    DIV3 = 3
+    DIV4 = 4
+
+
+@dataclass
+class Contest:
+    id: int
+    name: str
+    type: Literal["CF", "IOI", "ICPC"]
+    division_id: int | None = field(default=None)
+
+
+@dataclass
 class Problem:
     id: int
     contest_id: int
@@ -73,6 +90,7 @@ class SplitSubmissionHistoryByUser:
 class RelationType(Enum):
     TAGGED = 0
     HAS_DIFFICULTY = 1
+    IN_CONTEST_DIVISION = 2
 
 
 EntityID = int
@@ -83,7 +101,7 @@ Weight = float
 @dataclass
 class Entity:
     id: EntityID
-    target_type: Literal["user", "problem", "tag", "rating"]
+    target_type: Literal["user", "problem", "contest_division", "tag", "rating"]
     target_id: int
 
 
@@ -93,7 +111,7 @@ class Relation:
     name: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class Triplet:
     head: EntityID
     relation: RelationID
@@ -104,6 +122,7 @@ class Triplet:
 class Dataset:
     users: list[User]
     all_submission_history: list[SubmissionHistory]
+    contests: list[Contest]
     problems: list[Problem]
     relations: list[Relation]
 

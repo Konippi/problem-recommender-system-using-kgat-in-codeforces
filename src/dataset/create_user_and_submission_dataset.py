@@ -186,14 +186,7 @@ def run(args: Namespace) -> None:
             continue
 
         all_users.append(user)
-        all_submission_history.append(
-            SubmissionHistory(
-                user=user,
-                submissions=get_submission_history_by_handle(
-                    session=session, handle=user.handle, problem_map=problem_map
-                ),
-            )
-        )
+        all_submission_history.append(SubmissionHistory(user=user, submissions=submissions))
 
         # For Small Dataset
         if len(all_users) == SM_USER_NUM:

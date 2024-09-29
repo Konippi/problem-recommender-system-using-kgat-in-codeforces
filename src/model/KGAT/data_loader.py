@@ -1,7 +1,7 @@
 from argparse import Namespace
 from pathlib import Path
 
-from src.model.KGAT.dataset import Dataset, Problem, Relation, SubmissionHistory, User
+from src.model.KGAT.dataset import Contest, Dataset, Problem, Relation, SubmissionHistory, User
 from src.utils import json_loader
 
 
@@ -24,6 +24,12 @@ class DataLoader:
                 )
             )
         ]
+        contests = [
+            Contest(**contest)
+            for contest in json_loader.load_contents_of_json(
+                path_from_root=Path.joinpath(self._dataset_dir, "contests.json")
+            )
+        ]
         problems = [
             Problem(**problem)
             for problem in json_loader.load_contents_of_json(
@@ -36,4 +42,10 @@ class DataLoader:
                 path_from_root=Path.joinpath(self._dataset_dir, "relations.json")
             )
         ]
-        return Dataset(users, all_submission_history, problems, relations)
+        return Dataset(
+            users=users,
+            all_submission_history=all_submission_history,
+            contests=contests,
+            problems=problems,
+            relations=relations,
+        )

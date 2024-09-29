@@ -321,7 +321,7 @@ class Preprocess:
                 negative_problem_ids.add(negative_problem_id)
         return list(negative_problem_ids)
 
-    def generate_cf_batch(self) -> tuple[list[int], list[int], list[int]]:
+    def generate_cf_batch(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Generate CF batch.
 
@@ -331,11 +331,11 @@ class Preprocess:
             Batch size.
         Returns
         -------
-        user_ids: list[int]
+        user_ids: torch.Tensor
             List of user ids.
-        positive_problem_ids: list[int]
+        positive_problem_ids: torch.Tensor
             List of positive problem ids.
-        negative_item_ids: list[int]
+        negative_item_ids: torch.Tensor
             List of negative problem ids.
         """
         allow_duplicates = True
@@ -355,7 +355,7 @@ class Preprocess:
             )
             negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids=positive_problem_ids, num=1))
 
-        return user_ids, positive_problem_ids, negative_item_ids
+        return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
 
     def _sample_positive_triplets_for_head(self, head: EntityID, num: int) -> tuple[list[RelationID], list[EntityID]]:
         """
@@ -568,6 +568,7 @@ class Preprocess:
         self._train_dataset = Dataset(
             users=self._train_users,
             all_submission_history=[submission_history.train for submission_history in all_submission_history],
+            contests=self._dataset.contests,
             problems=self._dataset.problems,
             relations=self._dataset.relations,
         )
@@ -576,6 +577,7 @@ class Preprocess:
         self._test_dataset = Dataset(
             users=self._test_users,
             all_submission_history=[submission_history.test for submission_history in all_submission_history],
+            contests=self._dataset.contests,
             problems=self._dataset.problems,
             relations=self._dataset.relations,
         )
@@ -584,6 +586,7 @@ class Preprocess:
         self._validation_dataset = Dataset(
             users=self._valiadtion_users,
             all_submission_history=[submission_history.validation for submission_history in all_submission_history],
+            contests=self._dataset.contests,
             problems=self._dataset.problems,
             relations=self._dataset.relations,
         )

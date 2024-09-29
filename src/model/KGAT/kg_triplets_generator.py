@@ -7,12 +7,59 @@ from src.model.KGAT.data_loader import DataLoader
 from src.model.KGAT.dataset import Dataset, Entity, EntityID, Relation, RelationType, Triplet
 from src.utils import json_writer
 
-EntityDict = dict[tuple[Literal["user", "problem", "tag", "rating"], int], EntityID]
+EntityDict = dict[tuple[Literal["user", "problem", "contest_division", "tag", "rating"], int], EntityID]
 
 
 def load_dataset(args: Namespace) -> Dataset:
     data_loader = DataLoader(dataset_dir=Path("dataset"))
     return data_loader.load_dataset(args=args)
+
+
+# def get_users_entities(dataset: Dataset, entity_dict: EntityDict) -> list[Entity]:
+#     entity_id = list(entity_dict.values())[-1] + 1 if entity_dict else 0
+#     entities = []
+
+#     for user in dataset.users:
+#         if ("user", user.id) not in entity_dict:
+#             entity_dict[("user", user.id)] = entity_id
+#             entities.append(Entity(id=entity_id, target_type="user", target_id=user.id))
+
+#     return entities
+
+
+def create_triplets_problem_with_contest_division(
+    dataset: Dataset,
+    entity_dict: EntityDict,
+) -> tuple[list[Entity], list[Triplet]]:
+    entity_id = list(entity_dict.values())[-1] + 1 if entity_dict else 0
+    entities = []
+    relation = RelationType.IN_CONTEST_DIVISION
+    triplets = set()
+    contest_map = {contest.id: contest for contest in dataset.contests}
+
+    for problem in dataset.problems:
+        contest = contest_map[problem.contest_id]
+
+        if ("problem", problem.id) not in entity_dict:
+            head_entity_id = entity_id
+            entity_dict[("problem", problem.id)] = entity_id
+            entities.append(Entity(id=entity_id, target_type="problem", target_id=problem.id))
+            entity_id += 1
+        else:
+            head_entity_id = entity_dict[("problem", problem.id)]
+
+        if contest.division_id is not None:
+            if ("contest_division", contest.division_id) not in entity_dict:
+                tail_entity_id = entity_id
+                entity_dict[("contest_division", contest.division_id)] = entity_id
+                entities.append(Entity(id=entity_id, target_type="contest_division", target_id=contest.division_id))
+                entity_id += 1
+            else:
+                tail_entity_id = entity_dict[("contest_division", contest.division_id)]
+
+            triplets.add(Triplet(head=head_entity_id, relation=relation.value, tail=tail_entity_id))
+
+    return entities, list(triplets)
 
 
 def create_triplets_problem_with_tag(
@@ -22,7 +69,8 @@ def create_triplets_problem_with_tag(
     entity_id = list(entity_dict.values())[-1] + 1 if entity_dict else 0
     entities = []
     relation = RelationType.TAGGED
-    triplets = []
+    triplets = set()
+
     for problem in dataset.problems:
         if ("problem", problem.id) not in entity_dict:
             head_entity_id = entity_id
@@ -40,8 +88,8 @@ def create_triplets_problem_with_tag(
             else:
                 tail_entity_id = entity_dict[("tag", tag.id)]
 
-            triplets.append(Triplet(head=head_entity_id, relation=relation.value, tail=tail_entity_id))
-    return entities, triplets
+            triplets.add(Triplet(head=head_entity_id, relation=relation.value, tail=tail_entity_id))
+    return entities, list(triplets)
 
 
 def create_triplets_problem_with_difficulty(
@@ -51,7 +99,7 @@ def create_triplets_problem_with_difficulty(
     entity_id = list(entity_dict.values())[-1] + 1 if entity_dict else 0
     entities = []
     relation = RelationType.HAS_DIFFICULTY
-    triplets = []
+    triplets = set()
 
     for problem in dataset.problems:
         if problem.rating is None:
@@ -73,9 +121,9 @@ def create_triplets_problem_with_difficulty(
         else:
             tail_entity_id = entity_dict[("rating", problem.rating.id)]
 
-        triplets.append(Triplet(head=head_entity_id, relation=relation.value, tail=tail_entity_id))
+        triplets.add(Triplet(head=head_entity_id, relation=relation.value, tail=tail_entity_id))
 
-    return entities, triplets
+    return entities, list(triplets)
 
 
 def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Relation], list[Triplet]]:
@@ -84,6 +132,21 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     all_triplets = []
 
     entity_dict: EntityDict = {}
+
+    # # Add users to entities
+    # user_entities = get_users_entities(
+    #     dataset=dataset,
+    #     entity_dict=entity_dict,
+    # )
+    # entities.extend(user_entities)
+
+    # Create triplets for problem with contest division
+    contest_division_entities, contest_division_triplets = create_triplets_problem_with_contest_division(
+        dataset=dataset,
+        entity_dict=entity_dict,
+    )
+    entities.extend(contest_division_entities)
+    all_triplets.extend(contest_division_triplets)
 
     # Create triplets for problem with tag
     tagged_entities, tagged_triplets = create_triplets_problem_with_tag(

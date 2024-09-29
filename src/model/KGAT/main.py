@@ -40,7 +40,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 200
+EPOCH_NUM = 300
 STOP_STEPS = 10
 CF_BATCH_SIZE = 256
 KG_BATCH_SIZE = 256
@@ -304,13 +304,13 @@ def train(args: Namespace) -> None:
                 cf_batch_user_ids, cf_batch_positive_problems, cf_batch_negative_problems = (
                     preprocess.generate_cf_batch()
                 )
-                user_ids = torch.tensor(cf_batch_user_ids).to(device)
-                positive_item_ids = torch.tensor(cf_batch_positive_problems).to(device)
-                negative_item_ids = torch.tensor(cf_batch_negative_problems).to(device)
+                cf_batch_user_ids = cf_batch_user_ids.to(device)
+                cf_batch_positive_problems = cf_batch_positive_problems.to(device)
+                cf_batch_negative_problems = cf_batch_negative_problems.to(device)
                 cf_batch_loss: torch.Tensor = model(
-                    user_ids,
-                    positive_item_ids,
-                    negative_item_ids,
+                    cf_batch_user_ids,
+                    cf_batch_positive_problems,
+                    cf_batch_negative_problems,
                     mode=KGATMode.TRAIN_CF,
                 )
                 cf_batch_loss.backward()

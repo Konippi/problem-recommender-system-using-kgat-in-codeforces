@@ -1,5 +1,11 @@
 # Problem Recommender System using KGAT in Codeforces
 
+## KGAT
+
+> Knowledge Graph Attention Network (KGAT) is a new recommendation framework tailored to knowledge-aware personalized recommendation. Built upon the graph neural network framework, KGAT explicitly models the high-order relations in collaborative knowledge graph to provide better recommendation with item side information.
+
+by [KGAT: Knowledge Graph Attention Network for Recommendation](https://arxiv.org/abs/1905.07854)
+
 ## How to create the dataset :books:
 
 1. Move to the `src/dataset` directory
