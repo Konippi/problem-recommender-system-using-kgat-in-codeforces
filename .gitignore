@@ -1,0 +1,25 @@
+.DS_Store
+
+# venv
+.venv
+
+# cache
+.mypy_cache
+__pycache__
+
+# dataset
+dataset/entities*.json
+dataset/triplets*.json
+dataset/users-submission-history.json
+dataset/users-submission-history-sm.json
+
+# credentials
+src/dataset/.env
+
+# result
+src/model/KGAT/result/graph/*
+src/model/KGAT/result/metrics/*
+src/model/KGAT/result/model/*
+
+# .gitkeep
+!.gitkeep

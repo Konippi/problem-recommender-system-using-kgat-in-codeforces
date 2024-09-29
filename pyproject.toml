@@ -1,0 +1,85 @@
+[project]
+name = "problem-recommender-method-using-lstm-in-codeforces"
+version = "0.1.0"
+description = "Problem Recommender Method Using LSTM in Codeforces"
+readme = "README.md"
+requires-python = ">= 3.11"
+authors = [
+    { name = "Konippi", email = "konippi-114@outlook.jp" }
+]
+dependencies = [
+    "matplotlib>=3.8.4",
+    "requests>=2.31.0",
+    "scikit-learn>=1.4.2",
+    "dataclasses-json>=0.6.6",
+    "numpy>=1.25",
+    "scipy>=1.13.1",
+    "torch>=2.2.2",
+    "tqdm>=4.66.4",
+    "networkx>=3.3",
+    "python-dotenv>=1.0.1",
+    "tenacity>=9.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.4.1",
+    "mypy>=1.9.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.ruff]
+line-length = 119
+indent-width = 4
+target-version = "py312"
+exclude = [
+    ".git", 
+    ".vscode", 
+    ".venv", 
+    ".mypy_cache", 
+    "__pycache__"
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN101",
+    "COM812", "COM819",
+    "D",
+    "E111", "E114", "E117",
+    "ERA001",
+    "ISC001", "ISC002",
+    "PLR0913", "PLR0915",
+    "Q000", "Q001", "Q002", "Q003",
+    "TD",
+    "W191"
+]
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+disallow_untyped_defs = true
+warn_return_any = true
+disable_error_code = "import-untyped"

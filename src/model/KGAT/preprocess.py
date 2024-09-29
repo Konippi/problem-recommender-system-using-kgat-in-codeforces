@@ -1,0 +1,655 @@
+from argparse import Namespace
+from collections import OrderedDict, defaultdict
+from logging import getLogger
+from typing import Literal
+
+import numpy as np
+import numpy.typing as npt
+import scipy.sparse as sp
+import torch
+from sklearn.model_selection import train_test_split
+
+from src.constants import SEED
+from src.model.KGAT import kg_triplets_generator
+from src.model.KGAT.dataset import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory, User
+
+logger = getLogger(__name__)
+rng = np.random.default_rng()
+
+
+class Preprocess:
+    def __init__(self, args: Namespace, dataset: Dataset, cf_batch_size: int, kg_batch_size: int) -> None:
+        self._args = args
+        self._dataset = dataset
+        self._cf_batch_size = cf_batch_size
+        self._kg_batch_size = kg_batch_size
+
+        self.user_id_map = {user.id: user for user in self._dataset.users}
+        self.problem_id_map = {entity.id: entity for entity in self._dataset.problems}
+        self.relation_id_map = {relation.id: relation for relation in self._dataset.relations}
+
+    def _split_submission_history(self) -> list[SplitSubmissionHistoryByUser]:
+        """
+        Split submission history into train, test, and validation.
+
+        Returns
+        -------
+        split_submission_history_by_user: list[SplitSubmissionHistoryByUser]
+            List of SplitSubmissionHistoryByUser.
+        """
+        all_split_submission_history_by_user: list[SplitSubmissionHistoryByUser] = []
+
+        for user in self._dataset.users:
+            submission_history = sorted(
+                next(
+                    filter(
+                        lambda x: x.user.handle == user.handle,
+                        self._dataset.all_submission_history,
+                    )
+                ).submissions,
+                key=lambda x: x.created_at,
+            )
+
+            # TODO: at least 10 submissions to ensure the quality of training data. # noqa: FIX002
+            min_submissions = 10
+            if len(submission_history) < min_submissions:
+                continue
+
+            tmp_train, test = train_test_split(
+                submission_history,
+                train_size=0.8,
+                test_size=0.2,
+                shuffle=True,
+                random_state=SEED,
+            )
+            train, validation = train_test_split(
+                tmp_train,
+                train_size=0.9,
+                test_size=0.1,
+                shuffle=True,
+                random_state=SEED,
+            )
+            all_split_submission_history_by_user.append(
+                SplitSubmissionHistoryByUser(
+                    SubmissionHistory(user, train),
+                    SubmissionHistory(user, test),
+                    SubmissionHistory(user, validation),
+                )
+            )
+
+        train_num = 0
+        test_num = 0
+        validation_num = 0
+        for split_submission_history_by_user in all_split_submission_history_by_user:
+            train_num += len(split_submission_history_by_user.train.submissions)
+            test_num += len(split_submission_history_by_user.test.submissions)
+            validation_num += len(split_submission_history_by_user.validation.submissions)
+
+        logger.info("train submissions num: %s", train_num)
+        logger.info("test submissions num: %s", test_num)
+        logger.info("validation submissions num: %s", validation_num)
+
+        return all_split_submission_history_by_user
+
+    def _get_statistics(self) -> None:
+        """
+        Get statistics of dataset.
+        """
+        self.user_num = len(self._dataset.users)
+        self.item_num = len(self._dataset.problems)
+        self.entity_num = len(self.entities)
+        self.relation_num = len(self._relations)
+        self.triplet_num = len(self._triplets)
+
+        logger.info("users num: %s", self.user_num)
+        logger.info("problems num: %s", self.item_num)
+        logger.info("entities num: %s", self.entity_num)
+        logger.info("relations num (without interaction relation): %s", self.relation_num)
+        logger.info("triplets num: %s", self.triplet_num)
+
+    def _convert_to_sparse_matrix(
+        self,
+        matrix: npt.NDArray[np.int64],
+        row_offset_v: int,
+        col_offset_v: int,
+    ) -> tuple[sp.coo_matrix, sp.coo_matrix]:
+        all_num = self.user_num + self.entity_num
+        x_rows = matrix[:, 0] + row_offset_v
+        x_cols = matrix[:, 1] + col_offset_v
+        x_vals = [1.0] * len(x_rows)
+
+        y_rows = x_cols
+        y_cols = x_rows
+        y_vals = [1.0] * len(y_rows)
+
+        x_adjacency_matrix = sp.coo_matrix((x_vals, (x_rows, x_cols)), shape=(all_num, all_num))
+        y_adjacency_matrix = sp.coo_matrix((y_vals, (y_rows, y_cols)), shape=(all_num, all_num))
+
+        return x_adjacency_matrix, y_adjacency_matrix
+
+    def _get_adjacency_matrices(self) -> tuple[list[sp.coo_matrix], list[int]]:
+        """
+        Get adjacency matrices.
+
+        Returns
+        -------
+        adjacency_matrices: list[sp.coo_matrix]
+            List of adjacency matrices.
+        adjacency_relations: list[int]]
+            List of adjacency relations.
+        """
+        adjacency_matrices = []
+        adjacency_relations = []
+
+        #####################################
+        # Relation between user and problem
+        #####################################
+        interaction_adjacency_matrix, interaction_adjacency_matrix_inv = self._convert_to_sparse_matrix(
+            matrix=self.interaction_matrix,
+            row_offset_v=0,
+            col_offset_v=self.user_num,
+        )
+        adjacency_matrices.append(interaction_adjacency_matrix)
+        adjacency_relations.append(0)
+        adjacency_matrices.append(interaction_adjacency_matrix_inv)
+        adjacency_relations.append(self.relation_num + 1)
+
+        #############################
+        # Ralation between entities
+        #############################
+        for relation in self._relations:
+            entity_matrix = [
+                (triplet.head, triplet.tail) for triplet in self._triplets if triplet.relation == relation.id
+            ]
+            entity_adjacency_matrix, entity_adjacency_matrix_inv = self._convert_to_sparse_matrix(
+                matrix=np.array(entity_matrix),
+                row_offset_v=self.user_num,
+                col_offset_v=self.user_num,
+            )
+            adjacency_matrices.append(entity_adjacency_matrix)
+            adjacency_relations.append(relation.id + 1)
+            adjacency_matrices.append(entity_adjacency_matrix_inv)
+            adjacency_relations.append(relation.id + 2 + self.relation_num)
+        self.relation_num = len(adjacency_relations)
+
+        return adjacency_matrices, adjacency_relations
+
+    def _get_bi_norm_laplacian_matrices(self) -> list[sp.coo_matrix]:
+        """
+        Get Laplacian matrices.
+
+        Returns
+        -------
+        laplacian_matrices: list[sp.coo_matrix]
+            List of Laplacian matrices.
+        """
+
+        def _bi_normalize(matrix: sp.coo_matrix) -> sp.coo_matrix:
+            row_sum = np.array(matrix.sum(axis=1))
+            row_sum_inv_sqrt = np.power(row_sum, -0.5).flatten()
+            row_sum_inv_sqrt[np.isinf(row_sum_inv_sqrt)] = 0.0
+            diagonal_matrix_with_row_sum_inv_sqrt = sp.diags(row_sum_inv_sqrt)
+            return (
+                diagonal_matrix_with_row_sum_inv_sqrt.dot(matrix)
+                .transpose()
+                .dot(diagonal_matrix_with_row_sum_inv_sqrt)
+                .tocoo()
+            )
+
+        return [_bi_normalize(matrix=adjacency_matrix) for adjacency_matrix in self._adjacency_matrices]
+
+    def _get_kg_dict(self) -> dict[EntityID, list[tuple[RelationID, EntityID]]]:
+        """
+        Get Knowlege Graph Dictionary.
+
+        Returns
+        -------
+        kg_dict: dict[EntityID, tuple[RelationID, EntityID]]
+            Knowlege Graph Dictionary (k: head, v: (relation, tail)).
+        """
+        kg_dict = defaultdict(list)
+        for laplacian_id, laplacian_matrix in enumerate(self.laplacian_matrices):
+            rows = laplacian_matrix.row
+            cols = laplacian_matrix.col
+            for idx in range(len(rows)):
+                head = rows[idx]
+                relation = self.adjacency_relations[laplacian_id]
+                tail = cols[idx]
+                kg_dict[head].append((relation, tail))
+        return dict(kg_dict)
+
+    def _get_kg_data(self) -> tuple[list[EntityID], list[RelationID], list[EntityID], list[float]]:
+        """
+        Get Knowlege Graph Data.
+
+        Returns
+        -------
+        all_heads: list[EntityID]
+            List of heads.
+        all_relations: list[RelationID]
+            List of relations.
+        all_tails: list[EntityID]
+            List of tails.
+        """
+        all_heads: list[EntityID] = []
+        all_relations: list[RelationID] = []
+        all_tails: list[EntityID] = []
+        all_values = []
+
+        for laplacian_id, laplacian_matrix in enumerate(self.laplacian_matrices):
+            rows = laplacian_matrix.row
+            cols = laplacian_matrix.col
+            values = laplacian_matrix.data
+            all_heads.extend(rows)
+            all_relations.extend([self.adjacency_relations[laplacian_id]] * len(rows))
+            all_tails.extend(cols)
+            all_values.extend(values)
+
+        head_dict: dict[EntityID, tuple[list[RelationID], list[EntityID], list[float]]] = {}
+        for idx, head in enumerate(all_heads):
+            if head not in head_dict:
+                head_dict[head] = ([], [], [])
+
+            head_dict[head][0].append(all_relations[idx])
+            head_dict[head][1].append(all_tails[idx])
+            head_dict[head][2].append(all_values[idx])
+
+        sorted_head_dict: dict[EntityID, tuple[list[RelationID], list[EntityID], list[float]]] = {}
+        for head in head_dict:
+            relations, tails, values = head_dict[head]
+            order = np.argsort(tails)
+            sorted_head_dict[head] = (
+                np.array(relations, dtype=np.int64)[order].tolist(),
+                np.array(tails, dtype=np.int64)[order].tolist(),
+                np.array(values, dtype=np.float32)[order].tolist(),
+            )
+
+        ordered_head_dict = OrderedDict(sorted(sorted_head_dict.items()))
+        new_all_heads: list[EntityID] = []
+        new_all_relations: list[RelationID] = []
+        new_all_tails: list[EntityID] = []
+        new_all_values: list[float] = []
+
+        for head, (relations, tails, values) in ordered_head_dict.items():
+            new_all_heads.extend([head] * len(tails))
+            new_all_relations.extend(relations)
+            new_all_tails.extend(tails)
+            new_all_values.extend(values)
+
+        return new_all_heads, new_all_relations, new_all_tails, new_all_values
+
+    def _sample_positive_problems(self, interaction_matrix: np.ndarray, target_user_id: int, num: int) -> list[int]:
+        """
+        Sample positive problems.
+
+        Parameters
+        ----------
+        interaction_matrix: np.ndarray
+            Interaction matrix.
+        target_user_id: int
+            Target user id.
+
+        Returns
+        -------
+        sampled_positive_problem_ids: list[int]
+            List of sampled positive problem ids.
+        """
+        positive_problem_ids = [problem_id for user_id, problem_id in interaction_matrix if user_id == target_user_id]
+        sampled_positive_problem_ids: list[int] = rng.choice(a=positive_problem_ids, size=num, replace=False).tolist()
+        return sampled_positive_problem_ids
+
+    def _sample_negative_problems(self, positive_problem_ids: list[int], num: int) -> list[int]:
+        """
+        Sample negative problems.
+
+        Parameters
+        ----------
+        positive_problem_ids: list[int]
+            List of positive problem ids.
+        num: int
+            Number of negative problems.
+
+        Returns
+        -------
+        negative_problem_ids: list[int]
+            List of negative problem ids.
+        """
+        negative_problem_ids: set[int] = set()
+        while len(negative_problem_ids) < num:
+            negative_problem_id = rng.integers(low=1, high=self.item_num + 1)
+            if negative_problem_id not in positive_problem_ids:
+                negative_problem_ids.add(negative_problem_id)
+        return list(negative_problem_ids)
+
+    def generate_cf_batch(self) -> tuple[list[int], list[int], list[int]]:
+        """
+        Generate CF batch.
+
+        Parameters
+        ----------
+        batch_size: int
+            Batch size.
+        Returns
+        -------
+        user_ids: list[int]
+            List of user ids.
+        positive_problem_ids: list[int]
+            List of positive problem ids.
+        negative_item_ids: list[int]
+            List of negative problem ids.
+        """
+        allow_duplicates = True
+        if self._cf_batch_size <= self.user_num:
+            allow_duplicates = False
+        user_ids: list[int] = rng.choice(
+            a=[user.id for user in self._dataset.users],
+            size=self._cf_batch_size,
+            replace=allow_duplicates,
+        ).tolist()
+        positive_problem_ids, negative_item_ids = [], []
+        for user_id in user_ids:
+            positive_problem_ids.extend(
+                self._sample_positive_problems(
+                    interaction_matrix=self.interaction_matrix, target_user_id=user_id, num=1
+                )
+            )
+            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids=positive_problem_ids, num=1))
+
+        return user_ids, positive_problem_ids, negative_item_ids
+
+    def _sample_positive_triplets_for_head(self, head: EntityID, num: int) -> tuple[list[RelationID], list[EntityID]]:
+        """
+        Sample positive triplets for head.
+
+        Parameters
+        ----------
+        head: EntityID
+            Head.
+        num: int
+            Number of positive triplets.
+
+        Returns
+        -------
+        positive_relations: list[RelationID]
+            List of sampled positive relations.
+        positive_tails: list[EntityID]
+            List of sampled positive tails.
+        """
+        positive_triplets = self._kg_dict[head]
+        positive_relations: list[RelationID] = []
+        positive_tails: list[EntityID] = []
+
+        while True:
+            if len(positive_relations) >= num:
+                break
+
+            triplet_id = rng.integers(low=0, high=len(positive_triplets))
+            relation = positive_triplets[triplet_id][0]
+            tail = positive_triplets[triplet_id][1]
+
+            if relation not in positive_relations and tail not in positive_tails:
+                positive_relations.append(relation)
+                positive_tails.append(tail)
+
+        return positive_relations, positive_tails
+
+    def _sample_negative_triplets_for_head(self, head: EntityID, relation: RelationID, num: int) -> list[EntityID]:
+        """
+        Sample negative triplets for head.
+
+        Parameters
+        ----------
+        head: EntityID
+            Head.
+        relation: RelationID
+            Relation.
+        num: int
+            Number of negative triplets.
+
+        Returns
+        -------
+        negative_tails: list[EntityID]
+            List of sampled negative tails.
+        """
+        positive_triplets = self._kg_dict[head]
+        negative_tails: list[EntityID] = []
+
+        while True:
+            if len(negative_tails) >= num:
+                break
+
+            tail = rng.integers(low=0, high=self.user_num + self.entity_num)
+            if (relation, tail) not in positive_triplets and tail not in negative_tails:
+                negative_tails.append(tail)
+
+        return negative_tails
+
+    def generate_kg_batch(self) -> tuple[list[EntityID], list[RelationID], list[EntityID], list[EntityID]]:
+        """
+        Generate KG batch.
+
+        Parameters
+        ----------
+        batch_size: int
+            Batch size.
+
+        Returns
+        -------
+        heads: list[EntityID]
+            List of heads.
+        positive_relation_batch: list[RelationID]
+            List of positive relations.
+        positive_tail_batch: list[EntityID]
+            List of positive tails.
+        negative_tail_batch: list[EntityID]
+            List of negative tails.
+        """
+        exist_heads = list(self._kg_dict.keys())
+        allow_duplicates = True
+        if self._kg_batch_size <= len(exist_heads):
+            allow_duplicates = False
+        heads: list[EntityID] = rng.choice(
+            a=exist_heads,
+            size=self._kg_batch_size,
+            replace=allow_duplicates,
+        ).tolist()
+
+        positive_relation_batch, positive_tail_batch, negative_tail_batch = [], [], []
+
+        for head in heads:
+            positive_relations, positive_tails = self._sample_positive_triplets_for_head(
+                head=head,
+                num=1,
+            )
+            positive_relation_batch.extend(positive_relations)
+            positive_tail_batch.extend(positive_tails)
+            negative_tails = self._sample_negative_triplets_for_head(
+                head=head,
+                relation=positive_relations[0],
+                num=1,
+            )
+            negative_tail_batch.extend(negative_tails)
+
+        return heads, positive_relation_batch, positive_tail_batch, negative_tail_batch
+
+    def _filter_users(
+        self, all_submission_history: list[SplitSubmissionHistoryByUser]
+    ) -> tuple[list[User], list[User], list[User]]:
+        """
+        Filter users who have submission history.
+
+        Parameters
+        ----------
+        all_submission_history: list[SplitSubmissionHistoryByUser]
+            List of submission history.
+
+        Returns
+        -------
+        filtered_train_users: list[User]
+            List of filtered train users.
+        filtered_test_users: list[User]
+            List of filtered test users.
+        filtered_validation_users: list[User]
+            List of filtered validation users.
+        """
+        filtered_train_users = []
+        filtered_test_users = []
+        filtered_validation_users = []
+
+        for user in self._dataset.users:
+            for submission_history in all_submission_history:
+                if user.id == submission_history.train.user.id:
+                    filtered_train_users.append(user)
+                if user.id == submission_history.test.user.id:
+                    filtered_test_users.append(user)
+                if user.id == submission_history.validation.user.id:
+                    filtered_validation_users.append(user)
+
+        return filtered_train_users, filtered_test_users, filtered_validation_users
+
+    def _get_interction_matrix(self, all_submission_history: list[SubmissionHistory]) -> np.ndarray:
+        """
+        Get interaction matrix.
+
+        Parameters
+        ----------
+        all_submission_history: list[SubmissionHistory]
+            List of submission history.
+
+        Returns
+        -------
+        interaction_matrix: np.ndarray
+            Interaction matrix.
+        """
+        interaction_matrix = [
+            [submission_history.user.id, submission.problem.id]
+            for submission_history in all_submission_history
+            for submission in submission_history.submissions
+        ]
+
+        return np.array(interaction_matrix)
+
+    def _convert_to_interaction_dict(self) -> tuple[dict[int, list[int]], dict[int, list[int]], dict[int, list[int]]]:
+        """
+        Convert to interaction dictionary.
+
+        Returns
+        -------
+        train_interaction_dict: dict[int, list[int]]
+            Train interaction dictionary.
+        test_interaction_dict: dict[int, list[int]]
+            Test interaction dictionary.
+        validation_interaction_dict: dict[int, list[int]]
+            Validation interaction dictionary.
+        """
+        train_interaction_dict = defaultdict(list)
+        test_interaction_dict = defaultdict(list)
+        validation_interaction_dict = defaultdict(list)
+
+        for user_id, problem_id in self.train_interaction_matrix:
+            train_interaction_dict[user_id].append(problem_id)
+
+        for user_id, problem_id in self.test_interaction_matrix:
+            test_interaction_dict[user_id].append(problem_id)
+
+        for user_id, problem_id in self.validation_interaction_matrix:
+            validation_interaction_dict[user_id].append(problem_id)
+
+        return dict(train_interaction_dict), dict(test_interaction_dict), dict(validation_interaction_dict)
+
+    def run(self, dataset_name: Literal["training", "test", "validation"]) -> None:
+        # Split submission history into train, test, and validation.
+        all_submission_history = self._split_submission_history()
+
+        # Filter users who have submission history.
+        self._train_users, self._test_users, self._valiadtion_users = self._filter_users(all_submission_history)
+
+        # Generate triplets for train.
+        self._train_dataset = Dataset(
+            users=self._train_users,
+            all_submission_history=[submission_history.train for submission_history in all_submission_history],
+            problems=self._dataset.problems,
+            relations=self._dataset.relations,
+        )
+
+        # Generate triplets for test.
+        self._test_dataset = Dataset(
+            users=self._test_users,
+            all_submission_history=[submission_history.test for submission_history in all_submission_history],
+            problems=self._dataset.problems,
+            relations=self._dataset.relations,
+        )
+
+        # Generate triplets for validation.
+        self._validation_dataset = Dataset(
+            users=self._valiadtion_users,
+            all_submission_history=[submission_history.validation for submission_history in all_submission_history],
+            problems=self._dataset.problems,
+            relations=self._dataset.relations,
+        )
+
+        # Generate interaction matrix for train.
+        all_train_submission_history = self._train_dataset.all_submission_history
+        self.train_interaction_matrix = self._get_interction_matrix(
+            all_submission_history=all_train_submission_history
+        )
+
+        # Generate interaction matrix for test.
+        all_test_submission_history = [submission_history.test for submission_history in all_submission_history]
+        self.test_interaction_matrix = self._get_interction_matrix(all_submission_history=all_test_submission_history)
+
+        # Generate interaction matrix for validation.
+        all_validation_submission_history = [
+            submission_history.validation for submission_history in all_submission_history
+        ]
+        self.validation_interaction_matrix = self._get_interction_matrix(
+            all_submission_history=all_validation_submission_history
+        )
+
+        self._dataset = (
+            self._train_dataset
+            if dataset_name == "training"
+            else self._test_dataset
+            if dataset_name == "test"
+            else self._validation_dataset
+        )
+
+        self.interaction_matrix = (
+            self.train_interaction_matrix
+            if dataset_name == "training"
+            else self.test_interaction_matrix
+            if dataset_name == "test"
+            else self.validation_interaction_matrix
+        )
+
+        self.train_interaction_dict, self.test_interaction_dict, self.validation_interaction_dict = (
+            self._convert_to_interaction_dict()
+        )
+
+        # Generate tripplets for Knowledge Graph (without interaction triplets).
+        self.entities, self._relations, self._triplets = kg_triplets_generator.generate(
+            args=self._args, dataset=self._dataset
+        )
+
+        # Get statistics of train dataset.
+        self._get_statistics()
+
+        # Get adjacency matrix.
+        self._adjacency_matrices, self.adjacency_relations = self._get_adjacency_matrices()
+
+        # Get Laplacian matrix.
+        self.laplacian_matrices = self._get_bi_norm_laplacian_matrices()
+
+        # Get Knowlege Graph Dictionary (k: head, v: (relation, tail)).
+        self._kg_dict = self._get_kg_dict()
+
+        # Get Knowlege Graph Data.
+        self.all_heads, self.all_relation_indices, self.all_tails, self.all_values = self._get_kg_data()
+
+        # Sum up all laplacian matrices
+        total_laplacian_matrix = sum(self.laplacian_matrices).tocoo()
+        self.attentive_matrix = torch.sparse_coo_tensor(
+            indices=torch.LongTensor(np.vstack((total_laplacian_matrix.row, total_laplacian_matrix.col))),
+            values=torch.FloatTensor(total_laplacian_matrix.data),
+            size=torch.Size(total_laplacian_matrix.shape),
+        )
