@@ -9,9 +9,9 @@ import scipy.sparse as sp
 import torch
 from sklearn.model_selection import train_test_split
 
-from src.constants import SEED
 from src.model.KGAT import kg_triplets_generator
 from src.model.KGAT.dataset import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory, User
+from src.model.KGAT.main import SEED
 
 logger = getLogger(__name__)
 rng = np.random.default_rng()
