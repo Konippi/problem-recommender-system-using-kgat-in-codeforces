@@ -18,7 +18,14 @@ rng = np.random.default_rng()
 
 
 class Preprocess:
-    def __init__(self, args: Namespace, dataset: Dataset, cf_batch_size: int, kg_batch_size: int) -> None:
+    def __init__(
+        self,
+        args: Namespace,
+        dataset: Dataset,
+        cf_batch_size: int,
+        kg_batch_size: int,
+        device: torch.device,
+    ) -> None:
         self._args = args
         self._dataset = dataset
         self._cf_batch_size = cf_batch_size
@@ -27,6 +34,7 @@ class Preprocess:
         self.user_id_map = {user.id: user for user in self._dataset.users}
         self.problem_id_map = {entity.id: entity for entity in self._dataset.problems}
         self.relation_id_map = {relation.id: relation for relation in self._dataset.relations}
+        self.device = device
 
     def _split_submission_history(self) -> list[SplitSubmissionHistoryByUser]:
         """
@@ -278,7 +286,7 @@ class Preprocess:
 
         return new_all_heads, new_all_relations, new_all_tails, new_all_values
 
-    def _sample_positive_problems(self, interaction_matrix: np.ndarray, target_user_id: int, num: int) -> list[int]:
+    def _sample_positive_problems(self, target_user_id: int, num: int) -> list[int]:
         """
         Sample positive problems.
 
@@ -294,9 +302,10 @@ class Preprocess:
         sampled_positive_problem_ids: list[int]
             List of sampled positive problem ids.
         """
-        positive_problem_ids = [problem_id for user_id, problem_id in interaction_matrix if user_id == target_user_id]
-        sampled_positive_problem_ids: list[int] = rng.choice(a=positive_problem_ids, size=num, replace=False).tolist()
-        return sampled_positive_problem_ids
+        positive_problem_ids: list[int] = rng.choice(
+            a=self.user_with_positive_problems[target_user_id], size=num, replace=False
+        ).tolist()
+        return positive_problem_ids
 
     def _sample_negative_problems(self, positive_problem_ids: list[int], num: int) -> list[int]:
         """
@@ -316,7 +325,7 @@ class Preprocess:
         """
         negative_problem_ids: set[int] = set()
         while len(negative_problem_ids) < num:
-            negative_problem_id = rng.integers(low=1, high=self.item_num + 1)
+            negative_problem_id = rng.integers(low=0, high=self.item_num)
             if negative_problem_id not in positive_problem_ids:
                 negative_problem_ids.add(negative_problem_id)
         return list(negative_problem_ids)
@@ -341,19 +350,17 @@ class Preprocess:
         allow_duplicates = True
         if self._cf_batch_size <= self.user_num:
             allow_duplicates = False
-        user_ids: list[int] = rng.choice(
+        user_ids = rng.choice(
             a=[user.id for user in self._dataset.users],
             size=self._cf_batch_size,
             replace=allow_duplicates,
-        ).tolist()
-        positive_problem_ids, negative_item_ids = [], []
+        )
+        positive_problem_ids = []
+        negative_item_ids = []
+
         for user_id in user_ids:
-            positive_problem_ids.extend(
-                self._sample_positive_problems(
-                    interaction_matrix=self.interaction_matrix, target_user_id=user_id, num=1
-                )
-            )
-            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids=positive_problem_ids, num=1))
+            positive_problem_ids.extend(self._sample_positive_problems(target_user_id=user_id, num=1))
+            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids, num=1))
 
         return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
 
@@ -624,6 +631,9 @@ class Preprocess:
             if dataset_name == "test"
             else self.validation_interaction_matrix
         )
+        self.user_with_positive_problems = defaultdict(list)
+        for user_id, problem_id in self.interaction_matrix:
+            self.user_with_positive_problems[user_id].append(problem_id)
 
         self.train_interaction_dict, self.test_interaction_dict, self.validation_interaction_dict = (
             self._convert_to_interaction_dict()

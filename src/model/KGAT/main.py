@@ -258,6 +258,7 @@ def train(args: Namespace) -> None:
         dataset=dataset,
         cf_batch_size=CF_BATCH_SIZE,
         kg_batch_size=KG_BATCH_SIZE,
+        device=device,
     )
     preprocess.run(dataset_name="training")
     logger.info("Preprocessed!\n====================================")
@@ -501,6 +502,7 @@ def predict(args: Namespace) -> None:
         dataset=dataset,
         cf_batch_size=CF_BATCH_SIZE,
         kg_batch_size=KG_BATCH_SIZE,
+        device=device,
     )
     preprocess.run(dataset_name="test")
     logger.info("Preprocessed!\n====================================")
@@ -549,6 +551,7 @@ def recommend(args: Namespace) -> None:
         dataset=dataset,
         cf_batch_size=CF_BATCH_SIZE,
         kg_batch_size=KG_BATCH_SIZE,
+        device=device,
     )
     preprocess.run(dataset_name="test")
     logger.info("Preprocessed!\n====================================")
@@ -604,6 +607,7 @@ def testing(args: Namespace) -> None:
         dataset=dataset,
         cf_batch_size=CF_BATCH_SIZE,
         kg_batch_size=KG_BATCH_SIZE,
+        device=device,
     )
     preprocess.run(dataset_name="training")
     logger.info("Preprocessed!\n====================================")

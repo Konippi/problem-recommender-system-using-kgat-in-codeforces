@@ -180,9 +180,9 @@ class KGAT(nn.Module):
             The loss for collaborative filtering.
         """
         all_embeddings = self._build_cf_embeddings()  # (user_num + entity_num, concatentated_dim)
-        user_embedding = all_embeddings[user_ids]  # (cf_batch_size, concatentated_dim)
-        positive_item_embedding = all_embeddings[positive_item_ids]  # (cf_batch_size, concatentated_dim)
-        negative_item_embedding = all_embeddings[negative_item_ids]  # (cf_batch_size, concatentated_dim)
+        user_embedding = all_embeddings[user_ids.long()]  # (cf_batch_size, concatentated_dim)
+        positive_item_embedding = all_embeddings[positive_item_ids.long()]  # (cf_batch_size, concatentated_dim)
+        negative_item_embedding = all_embeddings[negative_item_ids.long()]  # (cf_batch_size, concatentated_dim)
         positive_scores = torch.sum(user_embedding * positive_item_embedding, dim=1)  # (cf_batch_size,)
         negative_scores = torch.sum(user_embedding * negative_item_embedding, dim=1)  # (cf_batch_size,)
 
