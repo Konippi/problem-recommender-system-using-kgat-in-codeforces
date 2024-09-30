@@ -18,6 +18,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
+from src.constants import SEED
 from src.model.KGAT.data_loader import DataLoader
 from src.model.KGAT.graph_drawer import plot_loss, plot_metrics
 from src.model.KGAT.metrics_calculator import Metrics, metrics_at_k
@@ -39,7 +40,6 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-SEED = 2024
 EPOCH_NUM = 300
 STOP_STEPS = 10
 CF_BATCH_SIZE = 256
