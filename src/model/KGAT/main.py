@@ -21,6 +21,7 @@ from tqdm import tqdm
 from src.constants import SEED
 from src.model.KGAT.data_loader import DataLoader
 from src.model.KGAT.graph_drawer import plot_loss, plot_metrics
+from src.model.KGAT.kg_visualizer import visualize_kg
 from src.model.KGAT.metrics_calculator import Metrics, metrics_at_k
 from src.model.KGAT.model import (
     KGAT,
@@ -78,22 +79,18 @@ def evaluate(
         torch.LongTensor(test_user_ids[i : i + TEST_BATCH_SIZE]) for i in range(0, len(test_user_ids), TEST_BATCH_SIZE)
     ]
 
-    all_items = set()
-    for item in train_interaction_dict.values():
-        all_items.update(item)
-    for item in eval_interaction_dict.values():
-        all_items.update(item)
-    item_to_idx = {item: idx for idx, item in enumerate(sorted(all_items))}
+    all_item_ids = set()
+    for item_id in train_interaction_dict.values():
+        all_item_ids.update(item_id)
+    for item_id in eval_interaction_dict.values():
+        all_item_ids.update(item_id)
+    all_items_ids = sorted(all_item_ids)
 
     # Convert item ids to indices
-    train_interaction_dict = {
-        user_id: [item_to_idx[item_id] for item_id in item_ids] for user_id, item_ids in train_interaction_dict.items()
-    }
-    eval_interaction_dict = {
-        user_id: [item_to_idx[item_id] for item_id in item_ids] for user_id, item_ids in eval_interaction_dict.items()
-    }
+    train_interaction_dict = dict(train_interaction_dict.items())
+    eval_interaction_dict = dict(eval_interaction_dict.items())
 
-    item_num = len(all_items)
+    item_num = len(all_items_ids)
     item_ids = torch.arange(item_num, dtype=torch.long).to(device)
 
     cf_scores = []
@@ -581,13 +578,42 @@ def recommend(args: Namespace) -> None:
 
     user_idx_with_recommended_problems: dict[int, list[Problem]] = defaultdict(list)
     for user_idx in range(preprocess.user_num):
-        user = preprocess.user_id_map[user_idx + 1]
+        user = preprocess.user_id_map[user_idx]
         recommended_problems = [preprocess.problem_id_map[problem_id] for problem_id in top_k_problems[user_idx]]
         logger.info("Recommendations for user: %s", user.handle)
-        for i, problem in enumerate(recommended_problems, 1):
+        for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
-            logger.info("%d. (%d, %s)", i, problem.contest_id, problem.index)
+            logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
         logger.info("--------------------")
+
+
+def kg_visualize(args: Namespace) -> None:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    logger.info("Device: %s", device)
+
+    # Load dataset
+    logger.info("Loading dataset...")
+    dataset_loader = DataLoader(dataset_dir=Path("../dataset"))
+    dataset = dataset_loader.load_dataset(args=args)
+    logger.info("Dataset loaded!\n====================================")
+
+    # Preprocess
+    logger.info("Preprocessing...")
+    preprocess = Preprocess(
+        args=args,
+        dataset=dataset,
+        cf_batch_size=CF_BATCH_SIZE,
+        kg_batch_size=KG_BATCH_SIZE,
+        device=device,
+    )
+    preprocess.run(dataset_name="training")
+    logger.info("Preprocessed!\n====================================")
+
+    triplets = preprocess.triplets
+    entities = preprocess.entities
+
+    # Visualize knowledge graph
+    visualize_kg(triplets=triplets, entities=entities)
 
 
 def testing(args: Namespace) -> None:
@@ -645,12 +671,15 @@ if __name__ == "__main__":
     parser.add_argument("--sm", help="for using small dataset", action="store_true")
     parser.add_argument("--predict", help="for prediction", action="store_true")
     parser.add_argument("--recommend", help="for recommendation", action="store_true")
+    parser.add_argument("--kg_visualize", help="for knowledge graph visualization", action="store_true")
     parser.add_argument("--testing", help="for testing", action="store_true")
     args = parser.parse_args()
     if args.predict:
         predict(args=args)
     elif args.recommend:
         recommend(args=args)
+    elif args.kg_visualize:
+        kg_visualize(args=args)
     elif args.testing:
         testing(args=args)
     else:

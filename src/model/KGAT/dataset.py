@@ -101,7 +101,7 @@ Weight = float
 @dataclass
 class Entity:
     id: EntityID
-    target_type: Literal["user", "problem", "contest_division", "tag", "rating"]
+    target_type: Literal["problem", "contest_division", "tag", "rating"]
     target_id: int
 
 

@@ -40,7 +40,7 @@ def plot_metrics(
     plt.xlabel("Epoch")
     plt.xticks(ticks=np.arange(0, epoch_num + 1, 5))
     plt.ylabel(label)
-    plt.yticks(ticks=np.arange(0, 0.5, 0.05))
+    plt.yticks(ticks=np.arange(0, 0.15, 0.01))
     plt.legend()
     plt.grid(visible=True)
     Path("./result/graph").mkdir(parents=True, exist_ok=True)

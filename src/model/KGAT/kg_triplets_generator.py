@@ -7,7 +7,7 @@ from src.model.KGAT.data_loader import DataLoader
 from src.model.KGAT.dataset import Dataset, Entity, EntityID, Relation, RelationType, Triplet
 from src.utils import json_writer
 
-EntityDict = dict[tuple[Literal["user", "problem", "contest_division", "tag", "rating"], int], EntityID]
+EntityDict = dict[tuple[Literal["problem", "contest_division", "tag", "rating"], int], EntityID]
 
 
 def load_dataset(args: Namespace) -> Dataset:

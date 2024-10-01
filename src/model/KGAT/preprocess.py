@@ -107,7 +107,7 @@ class Preprocess:
         self.item_num = len(self._dataset.problems)
         self.entity_num = len(self.entities)
         self.relation_num = len(self._relations)
-        self.triplet_num = len(self._triplets)
+        self.triplet_num = len(self.triplets)
 
         logger.info("users num: %s", self.user_num)
         logger.info("problems num: %s", self.item_num)
@@ -167,7 +167,7 @@ class Preprocess:
         #############################
         for relation in self._relations:
             entity_matrix = [
-                (triplet.head, triplet.tail) for triplet in self._triplets if triplet.relation == relation.id
+                (triplet.head, triplet.tail) for triplet in self.triplets if triplet.relation == relation.id
             ]
             entity_adjacency_matrix, entity_adjacency_matrix_inv = self._convert_to_sparse_matrix(
                 matrix=np.array(entity_matrix),
@@ -360,7 +360,7 @@ class Preprocess:
 
         for user_id in user_ids:
             positive_problem_ids.extend(self._sample_positive_problems(target_user_id=user_id, num=1))
-            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids, num=1))
+            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids=positive_problem_ids, num=1))
 
         return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
 
@@ -640,7 +640,7 @@ class Preprocess:
         )
 
         # Generate tripplets for Knowledge Graph (without interaction triplets).
-        self.entities, self._relations, self._triplets = kg_triplets_generator.generate(
+        self.entities, self._relations, self.triplets = kg_triplets_generator.generate(
             args=self._args, dataset=self._dataset
         )
 
