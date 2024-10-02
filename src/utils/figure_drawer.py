@@ -20,8 +20,8 @@ def plot_loss(
     plt.ylabel("Loss")
     plt.legend()
     plt.grid(visible=True)
-    Path("./result/graph").mkdir(parents=True, exist_ok=True)
-    plt.savefig(f"./result/graph/training-{loss_type}-loss.png")
+    Path("./result/figure").mkdir(parents=True, exist_ok=True)
+    plt.savefig(f"./result/figure/training-{loss_type}-loss.png")
     plt.close()
 
 
@@ -43,6 +43,6 @@ def plot_metrics(
     plt.yticks(ticks=np.arange(0, 0.15, 0.01))
     plt.legend()
     plt.grid(visible=True)
-    Path("./result/graph").mkdir(parents=True, exist_ok=True)
-    plt.savefig(f"./result/graph/{dataset_name}-{metrics_name}.png")
+    Path("./result/figure").mkdir(parents=True, exist_ok=True)
+    plt.savefig(f"./result/figure/{dataset_name}-{metrics_name}.png")
     plt.close()
