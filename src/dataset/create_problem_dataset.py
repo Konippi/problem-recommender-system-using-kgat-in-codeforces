@@ -13,7 +13,7 @@ from requests import Session
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from src.constants import HTTP_USER_AGENT
-from src.model.KGAT.dataset import Contest, Division, Problem, Rating, Tag
+from src.type import Contest, Division, Problem, Rating, Tag
 from src.utils import json_writer, retry_settings
 
 basicConfig(level=INFO)

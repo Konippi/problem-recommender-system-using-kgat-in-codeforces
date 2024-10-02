@@ -1,7 +1,7 @@
 from argparse import Namespace
 from pathlib import Path
 
-from src.model.KGAT.dataset import Contest, Dataset, Problem, Relation, SubmissionHistory, User
+from src.type import Contest, Dataset, Problem, Relation, SubmissionHistory, User
 from src.utils import json_loader
 
 

@@ -10,8 +10,8 @@ import torch
 from sklearn.model_selection import train_test_split
 
 from src.constants import SEED
-from src.model.KGAT import kg_triplets_generator
-from src.model.KGAT.dataset import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory, User
+from src.type import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory, User
+from src.utils import kg_triplets_generator
 
 logger = getLogger(__name__)
 rng = np.random.default_rng()
@@ -492,27 +492,27 @@ class Preprocess:
 
         Returns
         -------
-        filtered_train_users: list[User]
+        train_users: list[User]
             List of filtered train users.
-        filtered_test_users: list[User]
+        test_users: list[User]
             List of filtered test users.
         filtered_validation_users: list[User]
             List of filtered validation users.
         """
-        filtered_train_users = []
-        filtered_test_users = []
+        train_users = []
+        test_users = []
         filtered_validation_users = []
 
         for user in self._dataset.users:
             for submission_history in all_submission_history:
                 if user.id == submission_history.train.user.id:
-                    filtered_train_users.append(user)
+                    train_users.append(user)
                 if user.id == submission_history.test.user.id:
-                    filtered_test_users.append(user)
+                    test_users.append(user)
                 if user.id == submission_history.validation.user.id:
                     filtered_validation_users.append(user)
 
-        return filtered_train_users, filtered_test_users, filtered_validation_users
+        return train_users, test_users, filtered_validation_users
 
     def _get_interction_matrix(self, all_submission_history: list[SubmissionHistory]) -> np.ndarray:
         """
@@ -568,12 +568,9 @@ class Preprocess:
         # Split submission history into train, test, and validation.
         all_submission_history = self._split_submission_history()
 
-        # Filter users who have submission history.
-        self._train_users, self._test_users, self._valiadtion_users = self._filter_users(all_submission_history)
-
         # Generate triplets for train.
         self._train_dataset = Dataset(
-            users=self._train_users,
+            users=self._dataset.users,
             all_submission_history=[submission_history.train for submission_history in all_submission_history],
             contests=self._dataset.contests,
             problems=self._dataset.problems,
@@ -582,7 +579,7 @@ class Preprocess:
 
         # Generate triplets for test.
         self._test_dataset = Dataset(
-            users=self._test_users,
+            users=self._dataset.users,
             all_submission_history=[submission_history.test for submission_history in all_submission_history],
             contests=self._dataset.contests,
             problems=self._dataset.problems,
@@ -591,7 +588,7 @@ class Preprocess:
 
         # Generate triplets for validation.
         self._validation_dataset = Dataset(
-            users=self._valiadtion_users,
+            users=self._dataset.users,
             all_submission_history=[submission_history.validation for submission_history in all_submission_history],
             contests=self._dataset.contests,
             problems=self._dataset.problems,
@@ -631,6 +628,7 @@ class Preprocess:
             if dataset_name == "test"
             else self.validation_interaction_matrix
         )
+
         self.user_with_positive_problems = defaultdict(list)
         for user_id, problem_id in self.interaction_matrix:
             self.user_with_positive_problems[user_id].append(problem_id)
@@ -644,7 +642,7 @@ class Preprocess:
             args=self._args, dataset=self._dataset
         )
 
-        # Get statistics of train dataset.
+        # Get statistics of dataset.
         self._get_statistics()
 
         # Get adjacency matrix.

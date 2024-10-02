@@ -19,10 +19,7 @@ import torch
 from tqdm import tqdm
 
 from src.constants import SEED
-from src.model.KGAT.data_loader import DataLoader
-from src.model.KGAT.graph_drawer import plot_loss, plot_metrics
 from src.model.KGAT.kg_visualizer import visualize_kg
-from src.model.KGAT.metrics_calculator import Metrics, metrics_at_k
 from src.model.KGAT.model import (
     KGAT,
     KGATArgs,
@@ -30,9 +27,12 @@ from src.model.KGAT.model import (
 )
 from src.model.KGAT.preprocess import Preprocess
 from src.model.KGAT.weights_visualizer import visualize_attention_scores
+from src.utils.data_loader import DataLoader
+from src.utils.figure_drawer import plot_loss, plot_metrics
+from src.utils.metrics_calculator import Metrics, metrics_at_k
 
 if TYPE_CHECKING:
-    from src.model.KGAT.dataset import Problem
+    from src.type import Problem
 
 # from src.model.KGAT.weights_visualizer import visualize_attention_scores
 
@@ -43,8 +43,8 @@ logger = getLogger(__name__)
 
 EPOCH_NUM = 300
 STOP_STEPS = 10
-CF_BATCH_SIZE = 256
-KG_BATCH_SIZE = 256
+TRAIN_CF_BATCH_SIZE = 256
+TRAIN_KG_BATCH_SIZE = 256
 TEST_BATCH_SIZE = 256
 EDGE_DROPOUT = [0.1, 0.1, 0.1]
 NODE_DROPOUT = [0.1]
@@ -68,6 +68,7 @@ def set_seed() -> None:
 
 def evaluate(
     model: KGAT,
+    preprocess: Preprocess,
     train_interaction_dict: dict[int, list[int]],
     eval_interaction_dict: dict[int, list[int]],
     device: torch.device,
@@ -79,18 +80,11 @@ def evaluate(
         torch.LongTensor(test_user_ids[i : i + TEST_BATCH_SIZE]) for i in range(0, len(test_user_ids), TEST_BATCH_SIZE)
     ]
 
-    all_item_ids = set()
-    for item_id in train_interaction_dict.values():
-        all_item_ids.update(item_id)
-    for item_id in eval_interaction_dict.values():
-        all_item_ids.update(item_id)
-    all_items_ids = sorted(all_item_ids)
-
     # Convert item ids to indices
     train_interaction_dict = dict(train_interaction_dict.items())
     eval_interaction_dict = dict(eval_interaction_dict.items())
 
-    item_num = len(all_items_ids)
+    item_num = preprocess.item_num
     item_ids = torch.arange(item_num, dtype=torch.long).to(device)
 
     cf_scores = []
@@ -138,6 +132,7 @@ def evaluate(
 def evaluate_on_dataset(
     model: KGAT,
     device: torch.device,
+    preprocess: Preprocess,
     train_interaction_dict: dict[int, list[int]],
     eval_interaction_dict: dict[int, list[int]],
     dataset_name: Literal["training", "test", "validation"],
@@ -146,6 +141,7 @@ def evaluate_on_dataset(
     logger.info("Evaluating model on %s dataset...", dataset_name)
     _, metrics_dict = evaluate(
         model=model,
+        preprocess=preprocess,
         train_interaction_dict=train_interaction_dict,
         eval_interaction_dict=eval_interaction_dict,
         device=device,
@@ -253,8 +249,8 @@ def train(args: Namespace) -> None:
     preprocess = Preprocess(
         args=args,
         dataset=dataset,
-        cf_batch_size=CF_BATCH_SIZE,
-        kg_batch_size=KG_BATCH_SIZE,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
     preprocess.run(dataset_name="training")
@@ -296,7 +292,7 @@ def train(args: Namespace) -> None:
         # Training for collaborative filtering
         logger.info("Training for collaborative filtering...")
         train_cf_loss = 0.0
-        cf_batch_num = len(preprocess.interaction_matrix) // CF_BATCH_SIZE + 1
+        cf_batch_num = len(preprocess.interaction_matrix) // TRAIN_CF_BATCH_SIZE + 1
         with tqdm(initial=1, total=cf_batch_num + 1, desc="CF Training") as bar:
             for _ in range(1, cf_batch_num + 1):
                 cf_batch_user_ids, cf_batch_positive_problems, cf_batch_negative_problems = (
@@ -323,7 +319,7 @@ def train(args: Namespace) -> None:
         # Training for knowledge graph
         logger.info("Training for knowledge graph...")
         train_kg_loss = 0.0
-        kg_batch_num = len(preprocess.all_heads) // KG_BATCH_SIZE + 1
+        kg_batch_num = len(preprocess.all_heads) // TRAIN_KG_BATCH_SIZE + 1
         with tqdm(initial=1, total=kg_batch_num + 1, desc="KG Training") as bar:
             for _ in range(1, kg_batch_num + 1):
                 kg_batch_heads, kg_batch_relations, kg_batch_positive_tails, kg_batch_negative_tails = (
@@ -360,6 +356,7 @@ def train(args: Namespace) -> None:
         train_precision, train_recall, train_ndcg = evaluate_on_dataset(
             model=model,
             device=device,
+            preprocess=preprocess,
             train_interaction_dict=preprocess.train_interaction_dict,
             eval_interaction_dict=preprocess.test_interaction_dict,
             dataset_name="training",
@@ -374,6 +371,7 @@ def train(args: Namespace) -> None:
         validation_precision, validation_recall, validation_ndcg = evaluate_on_dataset(
             model=model,
             device=device,
+            preprocess=preprocess,
             train_interaction_dict=preprocess.train_interaction_dict,
             eval_interaction_dict=preprocess.validation_interaction_dict,
             dataset_name="validation",
@@ -497,8 +495,8 @@ def predict(args: Namespace) -> None:
     preprocess = Preprocess(
         args=args,
         dataset=dataset,
-        cf_batch_size=CF_BATCH_SIZE,
-        kg_batch_size=KG_BATCH_SIZE,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
     preprocess.run(dataset_name="test")
@@ -521,6 +519,7 @@ def predict(args: Namespace) -> None:
     test_precisions, test_recalls, test_ndcgs = evaluate_on_dataset(
         model=model,
         device=device,
+        preprocess=preprocess,
         train_interaction_dict=preprocess.train_interaction_dict,
         eval_interaction_dict=preprocess.test_interaction_dict,
         dataset_name="test",
@@ -546,8 +545,8 @@ def recommend(args: Namespace) -> None:
     preprocess = Preprocess(
         args=args,
         dataset=dataset,
-        cf_batch_size=CF_BATCH_SIZE,
-        kg_batch_size=KG_BATCH_SIZE,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
     preprocess.run(dataset_name="test")
@@ -602,8 +601,8 @@ def kg_visualize(args: Namespace) -> None:
     preprocess = Preprocess(
         args=args,
         dataset=dataset,
-        cf_batch_size=CF_BATCH_SIZE,
-        kg_batch_size=KG_BATCH_SIZE,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
     preprocess.run(dataset_name="training")
@@ -631,8 +630,8 @@ def testing(args: Namespace) -> None:
     preprocess = Preprocess(
         args=args,
         dataset=dataset,
-        cf_batch_size=CF_BATCH_SIZE,
-        kg_batch_size=KG_BATCH_SIZE,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
     preprocess.run(dataset_name="training")

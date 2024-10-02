@@ -4,7 +4,7 @@ sys.path.append("../..")
 
 from pathlib import Path
 
-from src.model.KGAT.dataset import RelationType
+from src.type import RelationType
 from src.utils import json_writer
 
 

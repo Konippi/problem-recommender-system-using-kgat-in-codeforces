@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from src.constants import SEED
-from src.model.KGAT.dataset import Entity, Triplet
+from src.type import Entity, Triplet
 
 
 def visualize_kg(triplets: list[Triplet], entities: list[Entity]) -> None:

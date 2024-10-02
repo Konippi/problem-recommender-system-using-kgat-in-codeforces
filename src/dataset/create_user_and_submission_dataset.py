@@ -16,7 +16,7 @@ from requests import Session
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from src.constants import HTTP_USER_AGENT
-from src.model.KGAT.dataset import Problem, Submission, SubmissionHistory, User
+from src.type import Problem, Submission, SubmissionHistory, User
 from src.utils import json_loader, json_writer, retry_settings
 
 SM_USER_NUM = 100
