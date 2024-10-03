@@ -19,6 +19,3 @@ src/dataset/.env
 # result
 src/model/KGAT/result/*
 src/model/NFM/result/*
-
-# .gitkeep
-!.gitkeep
