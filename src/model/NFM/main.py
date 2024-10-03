@@ -30,8 +30,8 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 300
-STOP_STEPS = 50
+EPOCH_NUM = 500
+STOP_STEPS = 10
 TRAIN_BATCH_SIZE = 64
 TEST_BATCH_SIZE = 16
 LEARNING_RATE = 0.0001
