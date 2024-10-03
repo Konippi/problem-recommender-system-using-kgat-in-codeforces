@@ -10,7 +10,7 @@ import torch
 from sklearn.model_selection import train_test_split
 
 from src.constants import SEED
-from src.type import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory, User
+from src.type import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory
 from src.utils import kg_triplets_generator
 
 logger = getLogger(__name__)
@@ -303,7 +303,7 @@ class Preprocess:
             List of sampled positive problem ids.
         """
         positive_problem_ids: list[int] = rng.choice(
-            a=self.user_with_positive_problems[target_user_id], size=num, replace=False
+            a=self.interaction_dict[target_user_id], size=num, replace=False
         ).tolist()
         return positive_problem_ids
 
@@ -479,42 +479,9 @@ class Preprocess:
 
         return heads, positive_relation_batch, positive_tail_batch, negative_tail_batch
 
-    def _filter_users(
-        self, all_submission_history: list[SplitSubmissionHistoryByUser]
-    ) -> tuple[list[User], list[User], list[User]]:
-        """
-        Filter users who have submission history.
-
-        Parameters
-        ----------
-        all_submission_history: list[SplitSubmissionHistoryByUser]
-            List of submission history.
-
-        Returns
-        -------
-        train_users: list[User]
-            List of filtered train users.
-        test_users: list[User]
-            List of filtered test users.
-        filtered_validation_users: list[User]
-            List of filtered validation users.
-        """
-        train_users = []
-        test_users = []
-        filtered_validation_users = []
-
-        for user in self._dataset.users:
-            for submission_history in all_submission_history:
-                if user.id == submission_history.train.user.id:
-                    train_users.append(user)
-                if user.id == submission_history.test.user.id:
-                    test_users.append(user)
-                if user.id == submission_history.validation.user.id:
-                    filtered_validation_users.append(user)
-
-        return train_users, test_users, filtered_validation_users
-
-    def _get_interction_matrix(self, all_submission_history: list[SubmissionHistory]) -> np.ndarray:
+    def _get_interction_matrix(
+        self, all_submission_history: list[SubmissionHistory]
+    ) -> tuple[np.ndarray, dict[int, list[int]]]:
         """
         Get interaction matrix.
 
@@ -528,41 +495,16 @@ class Preprocess:
         interaction_matrix: np.ndarray
             Interaction matrix.
         """
-        interaction_matrix = [
-            [submission_history.user.id, submission.problem.id]
+        interaction_map = {
+            submission_history.user.id: list({submission.problem.id for submission in submission_history.submissions})
             for submission_history in all_submission_history
-            for submission in submission_history.submissions
+        }
+
+        interaction_matrix = [
+            [user_id, problem_id] for user_id, problem_ids in interaction_map.items() for problem_id in problem_ids
         ]
 
-        return np.array(interaction_matrix)
-
-    def _convert_to_interaction_dict(self) -> tuple[dict[int, list[int]], dict[int, list[int]], dict[int, list[int]]]:
-        """
-        Convert to interaction dictionary.
-
-        Returns
-        -------
-        train_interaction_dict: dict[int, list[int]]
-            Train interaction dictionary.
-        test_interaction_dict: dict[int, list[int]]
-            Test interaction dictionary.
-        validation_interaction_dict: dict[int, list[int]]
-            Validation interaction dictionary.
-        """
-        train_interaction_dict = defaultdict(list)
-        test_interaction_dict = defaultdict(list)
-        validation_interaction_dict = defaultdict(list)
-
-        for user_id, problem_id in self.train_interaction_matrix:
-            train_interaction_dict[user_id].append(problem_id)
-
-        for user_id, problem_id in self.test_interaction_matrix:
-            test_interaction_dict[user_id].append(problem_id)
-
-        for user_id, problem_id in self.validation_interaction_matrix:
-            validation_interaction_dict[user_id].append(problem_id)
-
-        return dict(train_interaction_dict), dict(test_interaction_dict), dict(validation_interaction_dict)
+        return np.array(interaction_matrix), interaction_map
 
     def run(self, dataset_name: Literal["training", "test", "validation"]) -> None:
         # Split submission history into train, test, and validation.
@@ -595,24 +537,18 @@ class Preprocess:
             relations=self._dataset.relations,
         )
 
-        # Generate interaction matrix for train.
-        all_train_submission_history = self._train_dataset.all_submission_history
-        self.train_interaction_matrix = self._get_interction_matrix(
-            all_submission_history=all_train_submission_history
+        # Generate interaction matrices.
+        self.train_interaction_matrix, self.train_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._train_dataset.all_submission_history
+        )
+        self.test_interaction_matrix, self.test_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._test_dataset.all_submission_history
+        )
+        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._validation_dataset.all_submission_history
         )
 
-        # Generate interaction matrix for test.
-        all_test_submission_history = [submission_history.test for submission_history in all_submission_history]
-        self.test_interaction_matrix = self._get_interction_matrix(all_submission_history=all_test_submission_history)
-
-        # Generate interaction matrix for validation.
-        all_validation_submission_history = [
-            submission_history.validation for submission_history in all_submission_history
-        ]
-        self.validation_interaction_matrix = self._get_interction_matrix(
-            all_submission_history=all_validation_submission_history
-        )
-
+        # Set dataset.
         self._dataset = (
             self._train_dataset
             if dataset_name == "training"
@@ -620,7 +556,6 @@ class Preprocess:
             if dataset_name == "test"
             else self._validation_dataset
         )
-
         self.interaction_matrix = (
             self.train_interaction_matrix
             if dataset_name == "training"
@@ -628,13 +563,12 @@ class Preprocess:
             if dataset_name == "test"
             else self.validation_interaction_matrix
         )
-
-        self.user_with_positive_problems = defaultdict(list)
-        for user_id, problem_id in self.interaction_matrix:
-            self.user_with_positive_problems[user_id].append(problem_id)
-
-        self.train_interaction_dict, self.test_interaction_dict, self.validation_interaction_dict = (
-            self._convert_to_interaction_dict()
+        self.interaction_dict = (
+            self.train_interaction_dict
+            if dataset_name == "training"
+            else self.test_interaction_dict
+            if dataset_name == "test"
+            else self.validation_interaction_dict
         )
 
         # Generate tripplets for Knowledge Graph (without interaction triplets).

@@ -43,7 +43,7 @@ logger = getLogger(__name__)
 
 EPOCH_NUM = 500
 STOP_STEPS = 10
-TRAIN_CF_BATCH_SIZE = 256
+TRAIN_CF_BATCH_SIZE = 64
 TRAIN_KG_BATCH_SIZE = 256
 TEST_BATCH_SIZE = 256
 EDGE_DROPOUT = [0.1, 0.1, 0.1]
@@ -292,7 +292,7 @@ def train(args: Namespace) -> None:
         # Training for collaborative filtering
         logger.info("Training for collaborative filtering...")
         train_cf_loss = 0.0
-        cf_batch_num = len(preprocess.interaction_matrix) // TRAIN_CF_BATCH_SIZE + 1
+        cf_batch_num = len(preprocess.interaction_dict.keys()) // TRAIN_CF_BATCH_SIZE + 1
         with tqdm(initial=1, total=cf_batch_num + 1, desc="CF Training") as bar:
             for _ in range(1, cf_batch_num + 1):
                 cf_batch_user_ids, cf_batch_positive_problems, cf_batch_negative_problems = (

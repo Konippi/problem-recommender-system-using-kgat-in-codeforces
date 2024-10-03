@@ -93,7 +93,7 @@ class Preprocess:
 
     def _get_interction_matrix(
         self, all_submission_history: list[SubmissionHistory]
-    ) -> tuple[tuple[np.ndarray, np.ndarray], dict[int, list[int]]]:
+    ) -> tuple[np.ndarray, dict[int, list[int]]]:
         """
         Get interaction matrix.
 
@@ -107,20 +107,16 @@ class Preprocess:
         interaction_matrix: np.ndarray
             Interaction matrix.
         """
-        users, items = [], []
-        interaction_map = {}
+        interaction_map = {
+            submission_history.user.id: list({submission.problem.id for submission in submission_history.submissions})
+            for submission_history in all_submission_history
+        }
 
-        for submission_history in all_submission_history:
-            user_id = submission_history.user.id
-            problem_ids = list({submission.problem.id for submission in submission_history.submissions})
+        interaction_matrix = [
+            [user_id, problem_id] for user_id, problem_ids in interaction_map.items() for problem_id in problem_ids
+        ]
 
-            for problem_id in problem_ids:
-                users.append(user_id)
-                items.append(problem_id)
-
-            interaction_map[user_id] = problem_ids
-
-        return (np.array(users, dtype=np.int32), np.array(items, dtype=np.int32)), interaction_map
+        return np.array(interaction_matrix), interaction_map
 
     def _get_statistics(self) -> None:
         """
