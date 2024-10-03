@@ -40,16 +40,14 @@ class NFM(nn.Module):
         self._layer_size = len(self._hidden_dim)
 
         self._linear = nn.Linear(self._feature_num, 1)
-        nn.init.xavier_uniform_(self._linear.weight)
 
         self._feature_embedding = nn.Parameter(torch.Tensor(self._feature_num, self._embedding_dim))
-        nn.init.xavier_uniform_(self._feature_embedding)
 
         # Hidden Layer
-        self._hidden_laryes = nn.ModuleList()
+        self._hidden_layers = nn.ModuleList()
         layers = [self._embedding_dim, *self._hidden_dim]
         for layer_id in range(self._layer_size):
-            self._hidden_laryes.append(
+            self._hidden_layers.append(
                 HiddenLayer(
                     HiddenLayerArgs(
                         input_dim=layers[layer_id],
@@ -61,6 +59,15 @@ class NFM(nn.Module):
 
         # Output layer
         self._output_layer = nn.Linear(self._hidden_dim[-1], 1, bias=False)
+
+        self._init_weights()
+
+    def _init_weights(self) -> None:
+        """
+        Initialize weights.
+        """
+        nn.init.xavier_uniform_(self._linear.weight)
+        nn.init.xavier_uniform_(self._feature_embedding)
         nn.init.xavier_uniform_(self._output_layer.weight)
 
     def _calc_score(
@@ -82,10 +89,10 @@ class NFM(nn.Module):
         """
         # Bi-interaction
         sum_embeddings = torch.mm(feature_values, self._feature_embedding).pow(2)
-        squared_embeddings = torch.mm(torch.pow(feature_values, 2), torch.pow(self._feature_embedding, 2))
+        squared_embeddings = torch.mm(feature_values.pow(2), self._feature_embedding.pow(2))
         z = 0.5 * (sum_embeddings - squared_embeddings)
 
-        for layer in self._hidden_laryes:
+        for layer in self._hidden_layers:
             z = layer(z)
 
         # Output layer

@@ -23,10 +23,13 @@ class HiddenLayer(nn.Module):
         self._activation = nn.ReLU()
         self._message_dropout = nn.Dropout(self._dropout)
 
+        self._init_weights()
+
+    def _init_weights(self) -> None:
         nn.init.xavier_uniform_(self._linear.weight)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         tmp = self._linear(x)
-        tmp = self._message_dropout(tmp)
-        out: torch.Tensor = self._activation(tmp)
+        tmp = self._activation(tmp)
+        out: torch.Tensor = self._message_dropout(tmp)
         return out

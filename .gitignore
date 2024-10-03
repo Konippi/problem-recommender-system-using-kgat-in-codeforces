@@ -17,9 +17,8 @@ dataset/users-submission-history-sm.json
 src/dataset/.env
 
 # result
-src/model/KGAT/result/graph/*
-src/model/KGAT/result/metrics/*
-src/model/KGAT/result/model/*
+src/model/KGAT/result/*
+src/model/NFM/result/*
 
 # .gitkeep
 !.gitkeep

@@ -42,7 +42,7 @@ basicConfig(level=INFO)
 logger = getLogger(__name__)
 
 EPOCH_NUM = 300
-STOP_STEPS = 10
+STOP_STEPS = 50
 TRAIN_CF_BATCH_SIZE = 256
 TRAIN_KG_BATCH_SIZE = 256
 TEST_BATCH_SIZE = 256

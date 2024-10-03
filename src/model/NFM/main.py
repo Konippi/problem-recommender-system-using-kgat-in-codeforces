@@ -31,7 +31,7 @@ basicConfig(level=INFO)
 logger = getLogger(__name__)
 
 EPOCH_NUM = 300
-STOP_STEPS = 10
+STOP_STEPS = 50
 TRAIN_BATCH_SIZE = 64
 TEST_BATCH_SIZE = 16
 LEARNING_RATE = 0.0001
@@ -275,7 +275,7 @@ def train(args: Namespace) -> None:
         model.train()
 
         train_loss = 0.0
-        batch_num = len(preprocess.interaction_matrix) // TRAIN_BATCH_SIZE + 1
+        batch_num = len(preprocess.interaction_matrix[0]) // TRAIN_BATCH_SIZE + 1
 
         with tqdm(initial=1, total=batch_num + 1, desc="Training") as bar:
             for _ in range(1, batch_num + 1):

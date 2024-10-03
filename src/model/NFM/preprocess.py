@@ -1,5 +1,4 @@
 from argparse import Namespace
-from collections import defaultdict
 from logging import getLogger
 from typing import Literal
 
@@ -92,7 +91,9 @@ class Preprocess:
 
         return all_split_submission_history_by_user
 
-    def _get_interction_matrix(self, all_submission_history: list[SubmissionHistory]) -> np.ndarray:
+    def _get_interction_matrix(
+        self, all_submission_history: list[SubmissionHistory]
+    ) -> tuple[tuple[np.ndarray, np.ndarray], dict[int, list[int]]]:
         """
         Get interaction matrix.
 
@@ -106,41 +107,20 @@ class Preprocess:
         interaction_matrix: np.ndarray
             Interaction matrix.
         """
-        interaction_matrix = [
-            [submission_history.user.id, submission.problem.id]
-            for submission_history in all_submission_history
-            for submission in submission_history.submissions
-        ]
+        users, items = [], []
+        interaction_map = {}
 
-        return np.array(interaction_matrix)
+        for submission_history in all_submission_history:
+            user_id = submission_history.user.id
+            problem_ids = list({submission.problem.id for submission in submission_history.submissions})
 
-    def _convert_to_interaction_dict(self) -> tuple[dict[int, list[int]], dict[int, list[int]], dict[int, list[int]]]:
-        """
-        Convert to interaction dictionary.
+            for problem_id in problem_ids:
+                users.append(user_id)
+                items.append(problem_id)
 
-        Returns
-        -------
-        train_interaction_dict: dict[int, list[int]]
-            Train interaction dictionary.
-        test_interaction_dict: dict[int, list[int]]
-            Test interaction dictionary.
-        validation_interaction_dict: dict[int, list[int]]
-            Validation interaction dictionary.
-        """
-        train_interaction_dict = defaultdict(list)
-        test_interaction_dict = defaultdict(list)
-        validation_interaction_dict = defaultdict(list)
+            interaction_map[user_id] = problem_ids
 
-        for user_id, problem_id in self.train_interaction_matrix:
-            train_interaction_dict[user_id].append(problem_id)
-
-        for user_id, problem_id in self.test_interaction_matrix:
-            test_interaction_dict[user_id].append(problem_id)
-
-        for user_id, problem_id in self.validation_interaction_matrix:
-            validation_interaction_dict[user_id].append(problem_id)
-
-        return dict(train_interaction_dict), dict(test_interaction_dict), dict(validation_interaction_dict)
+        return (np.array(users, dtype=np.int32), np.array(items, dtype=np.int32)), interaction_map
 
     def _get_statistics(self) -> None:
         """
@@ -214,7 +194,7 @@ class Preprocess:
             List of sampled positive problem ids.
         """
         positive_problem_ids: list[int] = rng.choice(
-            a=self.user_with_positive_problems[target_user_id], size=num, replace=False
+            a=self.interaction_dict[target_user_id], size=num, replace=False
         ).tolist()
         return positive_problem_ids
 
@@ -370,24 +350,18 @@ class Preprocess:
             relations=self._dataset.relations,
         )
 
-        # Generate interaction matrix for train.
-        all_train_submission_history = self._train_dataset.all_submission_history
-        self.train_interaction_matrix = self._get_interction_matrix(
-            all_submission_history=all_train_submission_history
+        # Generate interaction matrices.
+        self.train_interaction_matrix, self.train_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._train_dataset.all_submission_history
+        )
+        self.test_interaction_matrix, self.test_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._test_dataset.all_submission_history
+        )
+        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interction_matrix(
+            all_submission_history=self._validation_dataset.all_submission_history
         )
 
-        # Generate interaction matrix for test.
-        all_test_submission_history = [submission_history.test for submission_history in all_submission_history]
-        self.test_interaction_matrix = self._get_interction_matrix(all_submission_history=all_test_submission_history)
-
-        # Generate interaction matrix for validation.
-        all_validation_submission_history = [
-            submission_history.validation for submission_history in all_submission_history
-        ]
-        self.validation_interaction_matrix = self._get_interction_matrix(
-            all_submission_history=all_validation_submission_history
-        )
-
+        # Set dataset.
         self._dataset = (
             self._train_dataset
             if dataset_name == "training"
@@ -395,7 +369,6 @@ class Preprocess:
             if dataset_name == "test"
             else self._validation_dataset
         )
-
         self.interaction_matrix = (
             self.train_interaction_matrix
             if dataset_name == "training"
@@ -403,13 +376,12 @@ class Preprocess:
             if dataset_name == "test"
             else self.validation_interaction_matrix
         )
-
-        self.user_with_positive_problems = defaultdict(list)
-        for user_id, problem_id in self.interaction_matrix:
-            self.user_with_positive_problems[user_id].append(problem_id)
-
-        self.train_interaction_dict, self.test_interaction_dict, self.validation_interaction_dict = (
-            self._convert_to_interaction_dict()
+        self.interaction_dict = (
+            self.train_interaction_dict
+            if dataset_name == "training"
+            else self.test_interaction_dict
+            if dataset_name == "test"
+            else self.validation_interaction_dict
         )
 
         # Generate tripplets for Knowledge Graph (without interaction triplets).

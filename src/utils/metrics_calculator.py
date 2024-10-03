@@ -11,73 +11,73 @@ class Metrics(StrEnum):
     NDCG = "ndcg"
 
 
-MetricsDict = dict[int, dict[Metrics, NDArray[np.float64]]]
+MetricsDict = dict[int, dict[Metrics, NDArray[np.float32]]]
 
 
-def precision_at_k_batch(hits: NDArray[np.float64], k: int) -> NDArray[np.float64]:
+def precision_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate precision@k for a batch of hits.
 
     Parameters
     ----------
-    hits: NDArray[np.float64]
+    hits: NDArray[np.float32]
         The hits.
     k: int
         The k.
 
     Returns
     -------
-    score: NDArray[np.float64]
+    result: NDArray[np.float32]
         The precision@k.
     """
-    total: NDArray[np.float64] = hits[:, :k].sum(axis=1)
-    return total / k
+    result: NDArray[np.float32] = hits[:, :k].mean(axis=1)
+    return result
 
 
-def recall_at_k_batch(hits: NDArray[np.float64], k: int) -> NDArray[np.float64]:
+def recall_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate recall@k for a batch of hits.
 
     Parameters
     ----------e
-    hits: NDArray[np.float64]
+    hits: NDArray[np.float32]
         The hits.
     k: int
         The k.
 
     Returns
     -------
-    score: NDArray[np.float64]
+    score: NDArray[np.float32]
         The recall@k.
     """
-    tp: NDArray[np.float64] = hits[:, :k].sum(axis=1)
-    tp_with_fn: NDArray[np.float64] = hits.sum(axis=1)
+    tp: NDArray[np.float32] = hits[:, :k].sum(axis=1)
+    tp_with_fn: NDArray[np.float32] = hits.sum(axis=1)
     return tp / tp_with_fn
 
 
-def ndcg_at_k_batch(hits: NDArray[np.float64], k: int) -> NDArray[np.float64]:
+def ndcg_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate NDCG@k for a batch of hits.
 
     Parameters
     ----------
-    hits: NDArray[np.float64]
+    hits: NDArray[np.float32]
         The hits.
     k: int
         The k.
 
     Returns
     -------
-    score: NDArray[np.float64]
+    score: NDArray[np.float32]
         The NDCG@k.
     """
     hits_k = hits[:, :k]
-    dcg: NDArray[np.float64] = np.sum((2**hits_k - 1) / np.log2(np.arange(2, k + 2)), axis=1)
+    dcg: NDArray[np.float32] = np.sum((2**hits_k - 1) / np.log2(np.arange(2, k + 2)), axis=1)
 
     sorted_hits_k = np.flip(np.sort(hits), axis=1)[:, :k]
-    idcg: NDArray[np.float64] = np.sum((2**sorted_hits_k - 1) / np.log2(np.arange(2, k + 2)), axis=1)
+    idcg: NDArray[np.float32] = np.sum((2**sorted_hits_k - 1) / np.log2(np.arange(2, k + 2)), axis=1)
 
-    idcg[idcg == 0] = 1
+    idcg[idcg == 0] = np.inf
     return dcg / idcg
 
 
@@ -111,7 +111,7 @@ def metrics_at_k(
     metrics_dict: MetricsDict
         The metrics.
     """
-    positive_items_binary = np.zeros([len(user_ids), len(item_ids)], dtype=np.float64)
+    positive_items_binary = np.zeros([len(user_ids), len(item_ids)], dtype=np.float32)
     for idx, user_id in enumerate(user_ids):
         train_positive_items = train_interaction_dict[user_id]
         test_positive_items = test_interaction_dict[user_id]
@@ -119,7 +119,7 @@ def metrics_at_k(
         positive_items_binary[idx][test_positive_items] = 1
 
     _, rank_indices = torch.sort(cf_scores, descending=True)
-    hits = np.array([positive_items_binary[idx][rank_indices[idx]] for idx in range(len(user_ids))], dtype=np.float64)
+    hits = np.array([positive_items_binary[idx][rank_indices[idx]] for idx in range(len(user_ids))], dtype=np.float32)
 
     metrics_dict: MetricsDict = {}
     for k in k_list:
