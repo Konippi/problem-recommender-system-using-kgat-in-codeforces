@@ -425,7 +425,7 @@ class Preprocess:
             if len(negative_tails) >= num:
                 break
 
-            tail = rng.integers(low=0, high=self.user_num + self.entity_num)
+            tail = rng.integers(low=0, high=self.user_num + self.entity_num, size=1)[0]
             if (relation, tail) not in positive_triplets and tail not in negative_tails:
                 negative_tails.append(tail)
 

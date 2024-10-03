@@ -275,7 +275,7 @@ def train(args: Namespace) -> None:
         model.train()
 
         train_loss = 0.0
-        batch_num = len(preprocess.interaction_dict.keys()) // TRAIN_BATCH_SIZE + 1
+        batch_num = len(preprocess.interaction_matrix) // TRAIN_BATCH_SIZE + 1
 
         with tqdm(initial=1, total=batch_num + 1, desc="Training") as bar:
             for _ in range(1, batch_num + 1):
