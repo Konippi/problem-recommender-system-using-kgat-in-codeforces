@@ -10,7 +10,6 @@ from typing import Any
 
 import requests
 from requests import Session
-from tenacity import retry, stop_after_attempt, wait_fixed
 
 from src.constants import HTTP_USER_AGENT
 from src.type import Contest, Division, Problem, Rating, Tag
@@ -20,36 +19,42 @@ basicConfig(level=INFO)
 logger = getLogger(__name__)
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(60))
 def get_all_problems(session: Session, contest_ids: list[int]) -> list[dict[str, Any]]:
     """
     Get All Problems in Codeforces
-    -----------
-    Parameters:
-        None
-    --------
-    Returns:
-        problems: list[dict[str, Any]]
-    --------
-    Example:
-        [
-            {
-                "contestId": 1956,
-                "index": F,
-                "name": "Nene and the Passing Game",
-                "type": "PROGRAMMING",
-                "points": 2500.0,
-                "rating": 2000,
-                "tags": [
-                    "constructive algorithms",
-                    "data structures",
-                    "dsu",
-                    "graphs",
-                    "sortings"
-                ]
-            },
-            ...
-        ]
+
+    Parameters
+    ----------
+    session: Session
+        session
+    contest_id: int
+        contest id
+
+    Returns
+    -------
+    problems: list[dict[str, Any]]
+        problems
+
+    Example
+    -------
+    [
+        {
+            "contestId": 1956,
+            "index": F,
+            "name": "Nene and the Passing Game",
+            "type": "PROGRAMMING",
+            "points": 2500.0,
+            "rating": 2000,
+            "tags": [
+                "constructive algorithms",
+                "data structures",
+                "dsu",
+                "graphs",
+                "sortings"
+            ]
+        },
+        ...
+    ]
     """
     problems = []
     for contest_id in contest_ids:
@@ -64,59 +69,16 @@ def get_all_problems(session: Session, contest_ids: list[int]) -> list[dict[str,
         except requests.HTTPError:
             if str(response.status_code).startswith("4"):  # 4xx Client Error
                 logger.warning("Not Found Contest Id: %s", contest_id)
-                time.sleep(0.2)
+                time.sleep(0.5)
                 continue
 
             logger.exception("HTTP Request Error: %s", response.status_code)
+            continue
 
         problems.extend(response.json()["result"]["problems"])
         time.sleep(0.5)
 
     return problems  # type: ignore[no-any-return]
-
-
-def get_all_problems_from_problemsets(session: Session) -> list[dict[str, Any]]:
-    """
-    Get All Problems from Problemsets in Codeforces
-    -----------
-    Parameters:
-        None
-    --------
-    Returns:
-        problems: list[dict[str, Any]]
-    --------
-    Example:
-        [
-            {
-                "contestId": 1956,
-                "index": F,
-                "name": "Nene and the Passing Game",
-                "type": "PROGRAMMING",
-                "points": 2500.0,
-                "rating": 2000,
-                "tags": [
-                    "constructive algorithms",
-                    "data structures",
-                    "dsu",
-                    "graphs",
-                    "sortings"
-                ]
-            },
-            ...
-        ]
-    """
-    url = "https://codeforces.com/api/problemset.problems"
-    headers = {"Content-Type": "application/json", "User-Agent": HTTP_USER_AGENT}
-
-    logger.info("GET: %s", url)
-
-    try:
-        response = session.get(url=url, headers=headers, timeout=60)
-        response.raise_for_status()
-    except requests.HTTPError:
-        logger.exception("HTTP Request Error: %s", response.status_code)
-
-    return response.json()["result"]["problems"]  # type: ignore[no-any-return]
 
 
 def get_all_contests(session: Session) -> list[dict[str, Any]]:

@@ -91,7 +91,7 @@ class Preprocess:
 
         return all_split_submission_history_by_user
 
-    def _get_interction_matrix(
+    def _get_interaction_matrix(
         self, all_submission_history: list[SubmissionHistory]
     ) -> tuple[np.ndarray, dict[int, list[int]]]:
         """
@@ -347,13 +347,13 @@ class Preprocess:
         )
 
         # Generate interaction matrices.
-        self.train_interaction_matrix, self.train_interaction_dict = self._get_interction_matrix(
+        self.train_interaction_matrix, self.train_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._train_dataset.all_submission_history
         )
-        self.test_interaction_matrix, self.test_interaction_dict = self._get_interction_matrix(
+        self.test_interaction_matrix, self.test_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._test_dataset.all_submission_history
         )
-        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interction_matrix(
+        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._validation_dataset.all_submission_history
         )
 

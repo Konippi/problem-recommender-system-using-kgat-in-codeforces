@@ -12,13 +12,13 @@ dependencies = [
     "requests>=2.31.0",
     "scikit-learn>=1.4.2",
     "dataclasses-json>=0.6.6",
-    "numpy>=1.25",
     "scipy>=1.13.1",
-    "torch>=2.2.2",
     "tqdm>=4.66.4",
     "networkx>=3.3",
     "python-dotenv>=1.0.1",
     "tenacity>=9.0.0",
+    "torch>=2.2.2",
+    "numpy<=1.26.4",
 ]
 
 [build-system]

@@ -1,5 +1,5 @@
 {
-  "date": "2024-09-29",
+  "date": "2024-10-08",
   "contents": [
     {
       "id": 1,
@@ -10985,6 +10985,16 @@
       "division_id": 3
     },
     {
+      "id": 2011,
+      "name": "Kotlin Heroes: Episode 11",
+      "type": "ICPC"
+    },
+    {
+      "id": 2012,
+      "name": "Kotlin Heroes: Practice 11",
+      "type": "ICPC"
+    },
+    {
       "id": 2013,
       "name": "Codeforces Round 973 (Div. 2)",
       "type": "CF",
@@ -11010,6 +11020,18 @@
     {
       "id": 2019,
       "name": "Codeforces Round 975 (Div. 2)",
+      "type": "CF",
+      "division_id": 1
+    },
+    {
+      "id": 2020,
+      "name": "Codeforces Round 976 (Div. 2) and Divide By Zero 9.0",
+      "type": "CF",
+      "division_id": 1
+    },
+    {
+      "id": 2021,
+      "name": "Codeforces Round 977 (Div. 2, based on COMPFEST 16 - Final Round)",
       "type": "CF",
       "division_id": 1
     }

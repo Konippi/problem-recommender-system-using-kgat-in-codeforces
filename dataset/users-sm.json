@@ -1,605 +1,3005 @@
 {
-  "date": "2024-09-29",
+  "date": "2024-10-08",
   "contents": [
     {
       "id": 0,
-      "handle": "tourist",
-      "rating": 4009,
-      "max_rating": 4009
-    },
-    {
-      "id": 1,
       "handle": "jiangly",
       "rating": 3839,
       "max_rating": 3859
     },
     {
-      "id": 2,
-      "handle": "Radewoosh",
-      "rating": 3646,
-      "max_rating": 3759
-    },
-    {
-      "id": 3,
+      "id": 1,
       "handle": "ecnerwala",
       "rating": 3494,
       "max_rating": 3668
     },
     {
-      "id": 4,
-      "handle": "Um_nik",
-      "rating": 3396,
-      "max_rating": 3663
-    },
-    {
-      "id": 5,
+      "id": 2,
       "handle": "ksun48",
       "rating": 3315,
       "max_rating": 3654
     },
     {
-      "id": 6,
+      "id": 3,
       "handle": "turmax",
       "rating": 3309,
       "max_rating": 3309
     },
     {
-      "id": 7,
-      "handle": "LJC00118",
-      "rating": 3297,
-      "max_rating": 3297
-    },
-    {
-      "id": 8,
+      "id": 4,
       "handle": "maroonrk",
       "rating": 3223,
       "max_rating": 3650
     },
     {
-      "id": 9,
+      "id": 5,
       "handle": "hos.lyric",
       "rating": 3220,
       "max_rating": 3338
     },
     {
-      "id": 10,
-      "handle": "Ormlis",
-      "rating": 3159,
-      "max_rating": 3410
-    },
-    {
-      "id": 11,
+      "id": 6,
       "handle": "Nachia",
       "rating": 3151,
       "max_rating": 3151
     },
     {
-      "id": 12,
+      "id": 7,
       "handle": "maspy",
       "rating": 3141,
       "max_rating": 3385
     },
     {
-      "id": 13,
-      "handle": "ugly2333",
-      "rating": 3141,
-      "max_rating": 3296
-    },
-    {
-      "id": 14,
+      "id": 8,
       "handle": "Petr",
       "rating": 3127,
       "max_rating": 3597
     },
     {
-      "id": 15,
+      "id": 9,
       "handle": "Kevin114514",
       "rating": 3120,
       "max_rating": 3228
     },
     {
-      "id": 16,
+      "id": 10,
       "handle": "BurnedChicken",
       "rating": 3109,
       "max_rating": 3255
     },
     {
-      "id": 17,
+      "id": 11,
       "handle": "dXqwq",
       "rating": 3101,
       "max_rating": 3101
     },
     {
-      "id": 18,
+      "id": 12,
       "handle": "kiwihadron",
       "rating": 3089,
       "max_rating": 3114
     },
     {
-      "id": 19,
+      "id": 13,
       "handle": "Szoboszlai10",
       "rating": 3083,
       "max_rating": 3083
     },
     {
-      "id": 20,
+      "id": 14,
       "handle": "Egor",
       "rating": 3081,
       "max_rating": 3235
     },
     {
-      "id": 21,
-      "handle": "noimi",
-      "rating": 3079,
-      "max_rating": 3353
-    },
-    {
-      "id": 22,
-      "handle": "jiangbowen_",
-      "rating": 3074,
-      "max_rating": 3074
-    },
-    {
-      "id": 23,
-      "handle": "Kapt",
-      "rating": 3072,
-      "max_rating": 3072
-    },
-    {
-      "id": 24,
+      "id": 15,
       "handle": "crazy_sea",
       "rating": 3066,
       "max_rating": 3146
     },
     {
-      "id": 25,
-      "handle": "peti1234",
-      "rating": 3050,
-      "max_rating": 3093
-    },
-    {
-      "id": 26,
-      "handle": "liuhengxi",
-      "rating": 3045,
-      "max_rating": 3045
-    },
-    {
-      "id": 27,
+      "id": 16,
       "handle": "StarSilk",
       "rating": 3032,
       "max_rating": 3132
     },
     {
-      "id": 28,
+      "id": 17,
       "handle": "1a2b3c4",
       "rating": 3029,
       "max_rating": 3029
     },
     {
-      "id": 29,
-      "handle": "Flamire",
-      "rating": 3024,
-      "max_rating": 3024
-    },
-    {
-      "id": 30,
+      "id": 18,
       "handle": "arvindf232",
       "rating": 3009,
       "max_rating": 3081
     },
     {
-      "id": 31,
+      "id": 19,
       "handle": "dorijanlendvaj",
       "rating": 3008,
       "max_rating": 3204
     },
     {
-      "id": 32,
+      "id": 20,
       "handle": "skip2004",
       "rating": 3001,
       "max_rating": 3075
     },
     {
-      "id": 33,
+      "id": 21,
       "handle": "Sugar_fan",
       "rating": 2993,
       "max_rating": 3023
     },
     {
-      "id": 34,
+      "id": 22,
       "handle": "PEIMUDA",
       "rating": 2989,
       "max_rating": 2989
     },
     {
-      "id": 35,
+      "id": 23,
       "handle": "qiuzx",
       "rating": 2957,
       "max_rating": 2957
     },
     {
-      "id": 36,
+      "id": 24,
       "handle": "Swistakk",
       "rating": 2952,
       "max_rating": 3105
     },
     {
-      "id": 37,
+      "id": 25,
       "handle": "Golovanov399",
       "rating": 2944,
       "max_rating": 3303
     },
     {
-      "id": 38,
-      "handle": "TLEwpdus",
-      "rating": 2938,
-      "max_rating": 3036
-    },
-    {
-      "id": 39,
+      "id": 26,
       "handle": "-Eternity-",
       "rating": 2931,
       "max_rating": 2958
     },
     {
-      "id": 40,
+      "id": 27,
       "handle": "Endagorion",
       "rating": 2922,
       "max_rating": 3313
     },
     {
-      "id": 41,
+      "id": 28,
       "handle": "potato167",
       "rating": 2921,
       "max_rating": 3209
     },
     {
-      "id": 42,
-      "handle": "cmk666",
-      "rating": 2919,
-      "max_rating": 2919
-    },
-    {
-      "id": 43,
+      "id": 29,
       "handle": "kotatsugame",
       "rating": 2917,
       "max_rating": 3094
     },
     {
-      "id": 44,
+      "id": 30,
       "handle": "neal",
       "rating": 2913,
       "max_rating": 3147
     },
     {
-      "id": 45,
+      "id": 31,
       "handle": "tute7627",
       "rating": 2912,
       "max_rating": 3073
     },
     {
-      "id": 46,
+      "id": 32,
       "handle": "xuanxuan001",
       "rating": 2909,
       "max_rating": 2909
     },
     {
-      "id": 47,
+      "id": 33,
       "handle": "Crystally",
       "rating": 2903,
       "max_rating": 3035
     },
     {
-      "id": 48,
+      "id": 34,
       "handle": "dog_of_Nesraychan",
       "rating": 2902,
       "max_rating": 2902
     },
     {
-      "id": 49,
+      "id": 35,
       "handle": "ainta",
       "rating": 2896,
       "max_rating": 3318
     },
     {
-      "id": 50,
+      "id": 36,
       "handle": "Rubikun",
       "rating": 2895,
       "max_rating": 3033
     },
     {
-      "id": 51,
-      "handle": "Karuna",
-      "rating": 2893,
-      "max_rating": 2957
-    },
-    {
-      "id": 52,
+      "id": 37,
       "handle": "JoesSR",
       "rating": 2890,
       "max_rating": 2929
     },
     {
-      "id": 53,
-      "handle": "dl720125",
-      "rating": 2888,
-      "max_rating": 2944
-    },
-    {
-      "id": 54,
+      "id": 38,
       "handle": "shiomusubi496",
       "rating": 2888,
       "max_rating": 2888
     },
     {
-      "id": 55,
-      "handle": "Licha06",
-      "rating": 2885,
-      "max_rating": 2885
-    },
-    {
-      "id": 56,
+      "id": 39,
       "handle": "femboy-wannabe",
       "rating": 2877,
       "max_rating": 2892
     },
     {
-      "id": 57,
+      "id": 40,
       "handle": "244mhq",
       "rating": 2875,
       "max_rating": 3278
     },
     {
-      "id": 58,
-      "handle": "dlalswp25",
-      "rating": 2874,
-      "max_rating": 2993
-    },
-    {
-      "id": 59,
+      "id": 41,
       "handle": "yuto1115",
       "rating": 2869,
       "max_rating": 3051
     },
     {
-      "id": 60,
+      "id": 42,
       "handle": "le0n",
-      "rating": 2868,
+      "rating": 2867,
       "max_rating": 2905
     },
     {
-      "id": 61,
+      "id": 43,
       "handle": "Sulfox",
       "rating": 2855,
       "max_rating": 2921
     },
     {
-      "id": 62,
+      "id": 44,
       "handle": "tatyam",
       "rating": 2845,
       "max_rating": 3134
     },
     {
-      "id": 63,
+      "id": 45,
       "handle": "Dominater069",
       "rating": 2840,
       "max_rating": 2840
     },
     {
-      "id": 64,
+      "id": 46,
       "handle": "Xylenox",
       "rating": 2840,
       "max_rating": 2972
     },
     {
-      "id": 65,
+      "id": 47,
       "handle": "fengqiyuka",
       "rating": 2830,
       "max_rating": 2885
     },
     {
-      "id": 66,
+      "id": 48,
       "handle": "BEAR0131",
       "rating": 2829,
       "max_rating": 2829
     },
     {
-      "id": 67,
-      "handle": "Forested",
-      "rating": 2829,
-      "max_rating": 2979
-    },
-    {
-      "id": 68,
+      "id": 49,
       "handle": "daubi",
       "rating": 2822,
       "max_rating": 2960
     },
     {
-      "id": 69,
+      "id": 50,
       "handle": "Fido_Puppy",
       "rating": 2820,
       "max_rating": 2820
     },
     {
-      "id": 70,
+      "id": 51,
       "handle": "PCTprobability",
       "rating": 2820,
       "max_rating": 2883
     },
     {
-      "id": 71,
-      "handle": "jeroenodb",
-      "rating": 2820,
-      "max_rating": 2950
-    },
-    {
-      "id": 72,
+      "id": 52,
       "handle": "oleh1421",
       "rating": 2818,
       "max_rating": 2996
     },
     {
-      "id": 73,
-      "handle": "peltorator",
-      "rating": 2808,
-      "max_rating": 2887
-    },
-    {
-      "id": 74,
+      "id": 53,
       "handle": "E869120",
       "rating": 2806,
       "max_rating": 2909
     },
     {
-      "id": 75,
-      "handle": "jiangbowen",
-      "rating": 2795,
-      "max_rating": 2799
-    },
-    {
-      "id": 76,
+      "id": 54,
       "handle": "physics0523",
       "rating": 2795,
       "max_rating": 2795
     },
     {
-      "id": 77,
+      "id": 55,
       "handle": "alireza_kaviani",
       "rating": 2784,
       "max_rating": 3012
     },
     {
-      "id": 78,
-      "handle": "snuke",
-      "rating": 2782,
-      "max_rating": 3251
-    },
-    {
-      "id": 79,
+      "id": 56,
       "handle": "Z-301",
       "rating": 2781,
       "max_rating": 2781
     },
     {
-      "id": 80,
-      "handle": "cxm1024",
-      "rating": 2781,
-      "max_rating": 2898
-    },
-    {
-      "id": 81,
+      "id": 57,
       "handle": "Sol1",
       "rating": 2777,
       "max_rating": 2865
     },
     {
-      "id": 82,
+      "id": 58,
       "handle": "green_gold_dog",
       "rating": 2777,
       "max_rating": 2777
     },
     {
-      "id": 83,
-      "handle": "caubetraidatmarvin",
-      "rating": 2774,
-      "max_rating": 2887
-    },
-    {
-      "id": 84,
+      "id": 59,
       "handle": "Nyaan",
       "rating": 2759,
       "max_rating": 2949
     },
     {
-      "id": 85,
+      "id": 60,
       "handle": "Isoeasy",
       "rating": 2757,
       "max_rating": 2771
     },
     {
-      "id": 86,
+      "id": 61,
       "handle": "Tlatoani",
       "rating": 2756,
       "max_rating": 2892
     },
     {
-      "id": 87,
+      "id": 62,
       "handle": "arbuzick",
       "rating": 2756,
       "max_rating": 2763
     },
     {
-      "id": 88,
+      "id": 63,
       "handle": "asdsasd",
-      "rating": 2751,
+      "rating": 2750,
       "max_rating": 2886
     },
     {
-      "id": 89,
+      "id": 64,
       "handle": "Morphymorphymorphy",
       "rating": 2746,
       "max_rating": 2806
     },
     {
-      "id": 90,
+      "id": 65,
       "handle": "QwertyPi",
       "rating": 2745,
       "max_rating": 2839
     },
     {
-      "id": 91,
+      "id": 66,
       "handle": "LeoPro",
       "rating": 2740,
       "max_rating": 2886
     },
     {
-      "id": 92,
-      "handle": "RDDCCD",
-      "rating": 2740,
-      "max_rating": 2804
-    },
-    {
-      "id": 93,
-      "handle": "EnofTaiPeople",
-      "rating": 2735,
-      "max_rating": 2735
-    },
-    {
-      "id": 94,
+      "id": 67,
       "handle": "DPprince",
       "rating": 2731,
       "max_rating": 2731
     },
     {
-      "id": 95,
+      "id": 68,
       "handle": "Otomachi_Una",
       "rating": 2729,
       "max_rating": 2729
     },
     {
-      "id": 96,
+      "id": 69,
       "handle": "YocyCraft",
       "rating": 2729,
       "max_rating": 2739
     },
     {
-      "id": 97,
+      "id": 70,
       "handle": "wwwwodddd",
       "rating": 2724,
       "max_rating": 2724
     },
     {
-      "id": 98,
+      "id": 71,
       "handle": "Nutella3000-7",
       "rating": 2720,
       "max_rating": 2720
     },
     {
-      "id": 99,
+      "id": 72,
       "handle": "OIer_kzc",
       "rating": 2720,
       "max_rating": 2720
+    },
+    {
+      "id": 73,
+      "handle": "fallleaves01",
+      "rating": 2720,
+      "max_rating": 2793
+    },
+    {
+      "id": 74,
+      "handle": "rniya",
+      "rating": 2718,
+      "max_rating": 2718
+    },
+    {
+      "id": 75,
+      "handle": "kdh9949",
+      "rating": 2710,
+      "max_rating": 2881
+    },
+    {
+      "id": 76,
+      "handle": "E_fireworks",
+      "rating": 2703,
+      "max_rating": 2748
+    },
+    {
+      "id": 77,
+      "handle": "Rafi22",
+      "rating": 2700,
+      "max_rating": 2700
+    },
+    {
+      "id": 78,
+      "handle": "abc864197532",
+      "rating": 2695,
+      "max_rating": 2807
+    },
+    {
+      "id": 79,
+      "handle": "_lbw_",
+      "rating": 2693,
+      "max_rating": 2693
+    },
+    {
+      "id": 80,
+      "handle": "pashka",
+      "rating": 2692,
+      "max_rating": 2983
+    },
+    {
+      "id": 81,
+      "handle": "hzr",
+      "rating": 2686,
+      "max_rating": 2827
+    },
+    {
+      "id": 82,
+      "handle": "H_stove",
+      "rating": 2684,
+      "max_rating": 2684
+    },
+    {
+      "id": 83,
+      "handle": "sansen",
+      "rating": 2680,
+      "max_rating": 2827
+    },
+    {
+      "id": 84,
+      "handle": "risujiroh",
+      "rating": 2678,
+      "max_rating": 2857
+    },
+    {
+      "id": 85,
+      "handle": "zjy2008",
+      "rating": 2677,
+      "max_rating": 2799
+    },
+    {
+      "id": 86,
+      "handle": "zidder",
+      "rating": 2672,
+      "max_rating": 2672
+    },
+    {
+      "id": 87,
+      "handle": "RanRankeainie",
+      "rating": 2671,
+      "max_rating": 2671
+    },
+    {
+      "id": 88,
+      "handle": "LMydd0225",
+      "rating": 2670,
+      "max_rating": 2670
+    },
+    {
+      "id": 89,
+      "handle": "yydtq",
+      "rating": 2666,
+      "max_rating": 2666
+    },
+    {
+      "id": 90,
+      "handle": "TKT_YI",
+      "rating": 2661,
+      "max_rating": 2696
+    },
+    {
+      "id": 91,
+      "handle": "qwerasdfzxcl",
+      "rating": 2657,
+      "max_rating": 2781
+    },
+    {
+      "id": 92,
+      "handle": "lexiyvv",
+      "rating": 2656,
+      "max_rating": 2723
+    },
+    {
+      "id": 93,
+      "handle": "PinkieRabbit",
+      "rating": 2654,
+      "max_rating": 2956
+    },
+    {
+      "id": 94,
+      "handle": "SanguineChameleon",
+      "rating": 2654,
+      "max_rating": 2682
+    },
+    {
+      "id": 95,
+      "handle": "syx2567",
+      "rating": 2651,
+      "max_rating": 2651
+    },
+    {
+      "id": 96,
+      "handle": "no_dream",
+      "rating": 2646,
+      "max_rating": 2660
+    },
+    {
+      "id": 97,
+      "handle": "LuCpp",
+      "rating": 2641,
+      "max_rating": 2692
+    },
+    {
+      "id": 98,
+      "handle": "BigBag",
+      "rating": 2639,
+      "max_rating": 2864
+    },
+    {
+      "id": 99,
+      "handle": "hhoppitree",
+      "rating": 2638,
+      "max_rating": 2638
+    },
+    {
+      "id": 100,
+      "handle": "Enucai",
+      "rating": 2631,
+      "max_rating": 2631
+    },
+    {
+      "id": 101,
+      "handle": "pigstd",
+      "rating": 2630,
+      "max_rating": 2640
+    },
+    {
+      "id": 102,
+      "handle": "YoshikaMiyafuji",
+      "rating": 2622,
+      "max_rating": 2639
+    },
+    {
+      "id": 103,
+      "handle": "AndreySergunin",
+      "rating": 2620,
+      "max_rating": 2997
+    },
+    {
+      "id": 104,
+      "handle": "jinqihao2026",
+      "rating": 2619,
+      "max_rating": 2647
+    },
+    {
+      "id": 105,
+      "handle": "Kude",
+      "rating": 2614,
+      "max_rating": 2710
+    },
+    {
+      "id": 106,
+      "handle": "0wuming0",
+      "rating": 2612,
+      "max_rating": 2648
+    },
+    {
+      "id": 107,
+      "handle": "xukai",
+      "rating": 2610,
+      "max_rating": 2826
+    },
+    {
+      "id": 108,
+      "handle": "grass9cow",
+      "rating": 2607,
+      "max_rating": 2703
+    },
+    {
+      "id": 109,
+      "handle": "greatpaul2008",
+      "rating": 2605,
+      "max_rating": 2605
+    },
+    {
+      "id": 110,
+      "handle": "hhhyyyfff",
+      "rating": 2603,
+      "max_rating": 2645
+    },
+    {
+      "id": 111,
+      "handle": "noya2",
+      "rating": 2603,
+      "max_rating": 2616
+    },
+    {
+      "id": 112,
+      "handle": "tfg",
+      "rating": 2603,
+      "max_rating": 2841
+    },
+    {
+      "id": 113,
+      "handle": "Kilani",
+      "rating": 2601,
+      "max_rating": 2676
+    },
+    {
+      "id": 114,
+      "handle": "zwh2008",
+      "rating": 2601,
+      "max_rating": 2601
+    },
+    {
+      "id": 115,
+      "handle": "w4p3r",
+      "rating": 2599,
+      "max_rating": 2606
+    },
+    {
+      "id": 116,
+      "handle": "alexxela12345",
+      "rating": 2598,
+      "max_rating": 2739
+    },
+    {
+      "id": 117,
+      "handle": "gabrielwu",
+      "rating": 2598,
+      "max_rating": 2818
+    },
+    {
+      "id": 118,
+      "handle": "PhoenixRebirth",
+      "rating": 2595,
+      "max_rating": 2595
+    },
+    {
+      "id": 119,
+      "handle": "KroosTheKeenGlint",
+      "rating": 2593,
+      "max_rating": 2764
+    },
+    {
+      "id": 120,
+      "handle": "superguymj",
+      "rating": 2593,
+      "max_rating": 2699
+    },
+    {
+      "id": 121,
+      "handle": "b6e0",
+      "rating": 2592,
+      "max_rating": 2592
+    },
+    {
+      "id": 122,
+      "handle": "Potassium",
+      "rating": 2591,
+      "max_rating": 2759
+    },
+    {
+      "id": 123,
+      "handle": "yixiuge777",
+      "rating": 2590,
+      "max_rating": 2590
+    },
+    {
+      "id": 124,
+      "handle": "zltzlt",
+      "rating": 2585,
+      "max_rating": 2630
+    },
+    {
+      "id": 125,
+      "handle": "wutongchun",
+      "rating": 2569,
+      "max_rating": 2569
+    },
+    {
+      "id": 126,
+      "handle": "MakaPakka",
+      "rating": 2563,
+      "max_rating": 2719
+    },
+    {
+      "id": 127,
+      "handle": "_l_l_",
+      "rating": 2563,
+      "max_rating": 2563
+    },
+    {
+      "id": 128,
+      "handle": "antekb",
+      "rating": 2562,
+      "max_rating": 2807
+    },
+    {
+      "id": 129,
+      "handle": "cjZYZtcl",
+      "rating": 2562,
+      "max_rating": 2562
+    },
+    {
+      "id": 130,
+      "handle": "__builtin_gjr",
+      "rating": 2561,
+      "max_rating": 2623
+    },
+    {
+      "id": 131,
+      "handle": "k1r1t0",
+      "rating": 2560,
+      "max_rating": 2560
+    },
+    {
+      "id": 132,
+      "handle": "sevlll777",
+      "rating": 2560,
+      "max_rating": 2612
+    },
+    {
+      "id": 133,
+      "handle": "sunzh",
+      "rating": 2560,
+      "max_rating": 2757
+    },
+    {
+      "id": 134,
+      "handle": "jason_sun",
+      "rating": 2556,
+      "max_rating": 2556
+    },
+    {
+      "id": 135,
+      "handle": "siganai",
+      "rating": 2556,
+      "max_rating": 2692
+    },
+    {
+      "id": 136,
+      "handle": "kmjp",
+      "rating": 2553,
+      "max_rating": 2901
+    },
+    {
+      "id": 137,
+      "handle": "mtsd",
+      "rating": 2550,
+      "max_rating": 2879
+    },
+    {
+      "id": 138,
+      "handle": "zeliboba",
+      "rating": 2550,
+      "max_rating": 2837
+    },
+    {
+      "id": 139,
+      "handle": "chinerist",
+      "rating": 2549,
+      "max_rating": 2782
+    },
+    {
+      "id": 140,
+      "handle": "gloria_mundi",
+      "rating": 2541,
+      "max_rating": 2541
+    },
+    {
+      "id": 141,
+      "handle": "kaemic",
+      "rating": 2538,
+      "max_rating": 2538
+    },
+    {
+      "id": 142,
+      "handle": "AngusRitossa",
+      "rating": 2537,
+      "max_rating": 2729
+    },
+    {
+      "id": 143,
+      "handle": "tiger2005",
+      "rating": 2537,
+      "max_rating": 2537
+    },
+    {
+      "id": 144,
+      "handle": "iakovlev.zakhar",
+      "rating": 2536,
+      "max_rating": 2662
+    },
+    {
+      "id": 145,
+      "handle": "hhhgjyismine",
+      "rating": 2533,
+      "max_rating": 2556
+    },
+    {
+      "id": 146,
+      "handle": "installb",
+      "rating": 2532,
+      "max_rating": 2532
+    },
+    {
+      "id": 147,
+      "handle": "_Purslane_",
+      "rating": 2531,
+      "max_rating": 2531
+    },
+    {
+      "id": 148,
+      "handle": "CodeFurces",
+      "rating": 2528,
+      "max_rating": 2561
+    },
+    {
+      "id": 149,
+      "handle": "EJIC_B_KEDAX",
+      "rating": 2525,
+      "max_rating": 2564
+    },
+    {
+      "id": 150,
+      "handle": "feeder1",
+      "rating": 2525,
+      "max_rating": 2696
+    },
+    {
+      "id": 151,
+      "handle": "marvinthang",
+      "rating": 2525,
+      "max_rating": 2525
+    },
+    {
+      "id": 152,
+      "handle": "Onjo",
+      "rating": 2523,
+      "max_rating": 2530
+    },
+    {
+      "id": 153,
+      "handle": "ProjectCF",
+      "rating": 2522,
+      "max_rating": 2608
+    },
+    {
+      "id": 154,
+      "handle": "DylanSmith",
+      "rating": 2521,
+      "max_rating": 2521
+    },
+    {
+      "id": 155,
+      "handle": "mickeyjung",
+      "rating": 2520,
+      "max_rating": 2600
+    },
+    {
+      "id": 156,
+      "handle": "complexor",
+      "rating": 2518,
+      "max_rating": 2518
+    },
+    {
+      "id": 157,
+      "handle": "Scintilla06",
+      "rating": 2510,
+      "max_rating": 2719
+    },
+    {
+      "id": 158,
+      "handle": "lvkaiyi0811",
+      "rating": 2510,
+      "max_rating": 2510
+    },
+    {
+      "id": 159,
+      "handle": "tarjen",
+      "rating": 2509,
+      "max_rating": 2509
+    },
+    {
+      "id": 160,
+      "handle": "anmichi",
+      "rating": 2508,
+      "max_rating": 2508
+    },
+    {
+      "id": 161,
+      "handle": "Arterm",
+      "rating": 2502,
+      "max_rating": 2859
+    },
+    {
+      "id": 162,
+      "handle": "ace5",
+      "rating": 2502,
+      "max_rating": 2690
+    },
+    {
+      "id": 163,
+      "handle": "nuip",
+      "rating": 2502,
+      "max_rating": 2880
+    },
+    {
+      "id": 164,
+      "handle": "zdc123456",
+      "rating": 2499,
+      "max_rating": 2499
+    },
+    {
+      "id": 165,
+      "handle": "red-stone",
+      "rating": 2490,
+      "max_rating": 2499
+    },
+    {
+      "id": 166,
+      "handle": "Savior-of-Cross",
+      "rating": 2488,
+      "max_rating": 2768
+    },
+    {
+      "id": 167,
+      "handle": "leinad2",
+      "rating": 2487,
+      "max_rating": 2589
+    },
+    {
+      "id": 168,
+      "handle": "HHY_zZhu",
+      "rating": 2485,
+      "max_rating": 2485
+    },
+    {
+      "id": 169,
+      "handle": "lmqzzz",
+      "rating": 2484,
+      "max_rating": 2531
+    },
+    {
+      "id": 170,
+      "handle": "KnownError_",
+      "rating": 2477,
+      "max_rating": 2572
+    },
+    {
+      "id": 171,
+      "handle": "RP-1",
+      "rating": 2473,
+      "max_rating": 2513
+    },
+    {
+      "id": 172,
+      "handle": "__jk__",
+      "rating": 2473,
+      "max_rating": 2492
+    },
+    {
+      "id": 173,
+      "handle": "qwef_",
+      "rating": 2471,
+      "max_rating": 2471
+    },
+    {
+      "id": 174,
+      "handle": "MridulAhi",
+      "rating": 2470,
+      "max_rating": 2562
+    },
+    {
+      "id": 175,
+      "handle": "kes0716",
+      "rating": 2469,
+      "max_rating": 2469
+    },
+    {
+      "id": 176,
+      "handle": "afuafu",
+      "rating": 2466,
+      "max_rating": 2466
+    },
+    {
+      "id": 177,
+      "handle": "libobil",
+      "rating": 2466,
+      "max_rating": 2581
+    },
+    {
+      "id": 178,
+      "handle": "zhaohaikun",
+      "rating": 2465,
+      "max_rating": 2675
+    },
+    {
+      "id": 179,
+      "handle": "Daniel081024",
+      "rating": 2464,
+      "max_rating": 2464
+    },
+    {
+      "id": 180,
+      "handle": "leaf1415",
+      "rating": 2463,
+      "max_rating": 2727
+    },
+    {
+      "id": 181,
+      "handle": "-is-this-fft-",
+      "rating": 2462,
+      "max_rating": 2645
+    },
+    {
+      "id": 182,
+      "handle": "cuom1999",
+      "rating": 2462,
+      "max_rating": 2506
+    },
+    {
+      "id": 183,
+      "handle": "415411",
+      "rating": 2460,
+      "max_rating": 2460
+    },
+    {
+      "id": 184,
+      "handle": "Imdie",
+      "rating": 2460,
+      "max_rating": 2483
+    },
+    {
+      "id": 185,
+      "handle": "amirhoseinfar1385",
+      "rating": 2458,
+      "max_rating": 2461
+    },
+    {
+      "id": 186,
+      "handle": "pooty",
+      "rating": 2457,
+      "max_rating": 2592
+    },
+    {
+      "id": 187,
+      "handle": "emthrm",
+      "rating": 2454,
+      "max_rating": 2771
+    },
+    {
+      "id": 188,
+      "handle": "fyable",
+      "rating": 2451,
+      "max_rating": 2539
+    },
+    {
+      "id": 189,
+      "handle": "Atalasion",
+      "rating": 2435,
+      "max_rating": 2497
+    },
+    {
+      "id": 190,
+      "handle": "piggy123",
+      "rating": 2435,
+      "max_rating": 2435
+    },
+    {
+      "id": 191,
+      "handle": "amano_hina",
+      "rating": 2434,
+      "max_rating": 2506
+    },
+    {
+      "id": 192,
+      "handle": "rqoi031",
+      "rating": 2434,
+      "max_rating": 2434
+    },
+    {
+      "id": 193,
+      "handle": "sharaelong",
+      "rating": 2434,
+      "max_rating": 2490
+    },
+    {
+      "id": 194,
+      "handle": "registeretsiger",
+      "rating": 2429,
+      "max_rating": 2771
+    },
+    {
+      "id": 195,
+      "handle": "win100627",
+      "rating": 2429,
+      "max_rating": 2429
+    },
+    {
+      "id": 196,
+      "handle": "Cantabile",
+      "rating": 2425,
+      "max_rating": 2425
+    },
+    {
+      "id": 197,
+      "handle": "Focalors",
+      "rating": 2425,
+      "max_rating": 2425
+    },
+    {
+      "id": 198,
+      "handle": "superyijin_txdy",
+      "rating": 2425,
+      "max_rating": 2435
+    },
+    {
+      "id": 199,
+      "handle": "SATSKY_2024target_IGM",
+      "rating": 2423,
+      "max_rating": 2503
+    },
+    {
+      "id": 200,
+      "handle": "damjandavkov",
+      "rating": 2420,
+      "max_rating": 2420
+    },
+    {
+      "id": 201,
+      "handle": "diandian2020",
+      "rating": 2420,
+      "max_rating": 2420
+    },
+    {
+      "id": 202,
+      "handle": "InkyFlameMaster",
+      "rating": 2418,
+      "max_rating": 2451
+    },
+    {
+      "id": 203,
+      "handle": "MoQZ",
+      "rating": 2418,
+      "max_rating": 2418
+    },
+    {
+      "id": 204,
+      "handle": "rainboy",
+      "rating": 2415,
+      "max_rating": 2475
+    },
+    {
+      "id": 205,
+      "handle": "Xellos",
+      "rating": 2414,
+      "max_rating": 2865
+    },
+    {
+      "id": 206,
+      "handle": "C2021zyz",
+      "rating": 2412,
+      "max_rating": 2412
+    },
+    {
+      "id": 207,
+      "handle": "nishkarsh",
+      "rating": 2411,
+      "max_rating": 2454
+    },
+    {
+      "id": 208,
+      "handle": "Akulyat",
+      "rating": 2410,
+      "max_rating": 2702
+    },
+    {
+      "id": 209,
+      "handle": "flashmt",
+      "rating": 2409,
+      "max_rating": 2598
+    },
+    {
+      "id": 210,
+      "handle": "79brue",
+      "rating": 2403,
+      "max_rating": 2554
+    },
+    {
+      "id": 211,
+      "handle": "defnotmee",
+      "rating": 2403,
+      "max_rating": 2586
+    },
+    {
+      "id": 212,
+      "handle": "Anonymous_Noob",
+      "rating": 2400,
+      "max_rating": 2563
+    },
+    {
+      "id": 213,
+      "handle": "Lycorisqwq",
+      "rating": 2399,
+      "max_rating": 2399
+    },
+    {
+      "id": 214,
+      "handle": "YuJiahe",
+      "rating": 2399,
+      "max_rating": 2399
+    },
+    {
+      "id": 215,
+      "handle": "Muelsyse",
+      "rating": 2398,
+      "max_rating": 2501
+    },
+    {
+      "id": 216,
+      "handle": "cfhj",
+      "rating": 2398,
+      "max_rating": 2475
+    },
+    {
+      "id": 217,
+      "handle": "hzt1",
+      "rating": 2398,
+      "max_rating": 2453
+    },
+    {
+      "id": 218,
+      "handle": "shobonvip",
+      "rating": 2398,
+      "max_rating": 2451
+    },
+    {
+      "id": 219,
+      "handle": "Andy_Lin",
+      "rating": 2397,
+      "max_rating": 2397
+    },
+    {
+      "id": 220,
+      "handle": "InternetPerson10",
+      "rating": 2397,
+      "max_rating": 2672
+    },
+    {
+      "id": 221,
+      "handle": "_UMqwq_",
+      "rating": 2397,
+      "max_rating": 2397
+    },
+    {
+      "id": 222,
+      "handle": "Anonyme",
+      "rating": 2394,
+      "max_rating": 2394
+    },
+    {
+      "id": 223,
+      "handle": "propane",
+      "rating": 2394,
+      "max_rating": 2476
+    },
+    {
+      "id": 224,
+      "handle": "briX1210",
+      "rating": 2393,
+      "max_rating": 2455
+    },
+    {
+      "id": 225,
+      "handle": "Linx",
+      "rating": 2391,
+      "max_rating": 2467
+    },
+    {
+      "id": 226,
+      "handle": "TimeLimitExceed",
+      "rating": 2391,
+      "max_rating": 2391
+    },
+    {
+      "id": 227,
+      "handle": "36champ",
+      "rating": 2390,
+      "max_rating": 2442
+    },
+    {
+      "id": 228,
+      "handle": "the_Despair_",
+      "rating": 2390,
+      "max_rating": 2390
+    },
+    {
+      "id": 229,
+      "handle": "Hyperbolic",
+      "rating": 2389,
+      "max_rating": 2572
+    },
+    {
+      "id": 230,
+      "handle": "keisuke6",
+      "rating": 2389,
+      "max_rating": 2405
+    },
+    {
+      "id": 231,
+      "handle": "_acsm_",
+      "rating": 2387,
+      "max_rating": 2387
+    },
+    {
+      "id": 232,
+      "handle": "little_vegetable",
+      "rating": 2387,
+      "max_rating": 2431
+    },
+    {
+      "id": 233,
+      "handle": "qwq123",
+      "rating": 2386,
+      "max_rating": 2391
+    },
+    {
+      "id": 234,
+      "handle": "Sai_t",
+      "rating": 2384,
+      "max_rating": 2384
+    },
+    {
+      "id": 235,
+      "handle": "Kite_kuma",
+      "rating": 2383,
+      "max_rating": 2699
+    },
+    {
+      "id": 236,
+      "handle": "Waldi",
+      "rating": 2383,
+      "max_rating": 2383
+    },
+    {
+      "id": 237,
+      "handle": "lijunyi",
+      "rating": 2383,
+      "max_rating": 2391
+    },
+    {
+      "id": 238,
+      "handle": "Qzarv",
+      "rating": 2382,
+      "max_rating": 2382
+    },
+    {
+      "id": 239,
+      "handle": "Reanap",
+      "rating": 2382,
+      "max_rating": 2401
+    },
+    {
+      "id": 240,
+      "handle": "aryanc403",
+      "rating": 2381,
+      "max_rating": 2452
+    },
+    {
+      "id": 241,
+      "handle": "peiwenjun",
+      "rating": 2381,
+      "max_rating": 2545
+    },
+    {
+      "id": 242,
+      "handle": "MateoCV",
+      "rating": 2380,
+      "max_rating": 2574
+    },
+    {
+      "id": 243,
+      "handle": "Zanite",
+      "rating": 2379,
+      "max_rating": 2461
+    },
+    {
+      "id": 244,
+      "handle": "4eT_llpuyHblJl",
+      "rating": 2377,
+      "max_rating": 2420
+    },
+    {
+      "id": 245,
+      "handle": "PixelRebelz",
+      "rating": 2376,
+      "max_rating": 2376
+    },
+    {
+      "id": 246,
+      "handle": "sheercold",
+      "rating": 2375,
+      "max_rating": 2420
+    },
+    {
+      "id": 247,
+      "handle": "cpchenpi",
+      "rating": 2373,
+      "max_rating": 2404
+    },
+    {
+      "id": 248,
+      "handle": "okwedook",
+      "rating": 2373,
+      "max_rating": 2517
+    },
+    {
+      "id": 249,
+      "handle": "mff",
+      "rating": 2372,
+      "max_rating": 2392
+    },
+    {
+      "id": 250,
+      "handle": "sohsoh",
+      "rating": 2371,
+      "max_rating": 2541
+    },
+    {
+      "id": 251,
+      "handle": "bunH2O",
+      "rating": 2369,
+      "max_rating": 2390
+    },
+    {
+      "id": 252,
+      "handle": "Bungmint",
+      "rating": 2368,
+      "max_rating": 2380
+    },
+    {
+      "id": 253,
+      "handle": "yeminghan",
+      "rating": 2368,
+      "max_rating": 2440
+    },
+    {
+      "id": 254,
+      "handle": "Suwan",
+      "rating": 2365,
+      "max_rating": 2365
+    },
+    {
+      "id": 255,
+      "handle": "wukaichen888",
+      "rating": 2364,
+      "max_rating": 2364
+    },
+    {
+      "id": 256,
+      "handle": "irkstepanov",
+      "rating": 2363,
+      "max_rating": 2691
+    },
+    {
+      "id": 257,
+      "handle": "YuukiS",
+      "rating": 2362,
+      "max_rating": 2435
+    },
+    {
+      "id": 258,
+      "handle": "BreakPlus",
+      "rating": 2360,
+      "max_rating": 2422
+    },
+    {
+      "id": 259,
+      "handle": "Meatherm",
+      "rating": 2359,
+      "max_rating": 2359
+    },
+    {
+      "id": 260,
+      "handle": "happypotato",
+      "rating": 2359,
+      "max_rating": 2387
+    },
+    {
+      "id": 261,
+      "handle": "automaton",
+      "rating": 2357,
+      "max_rating": 2408
+    },
+    {
+      "id": 262,
+      "handle": "leihonglongyin",
+      "rating": 2357,
+      "max_rating": 2357
+    },
+    {
+      "id": 263,
+      "handle": "Irmuun.Ch",
+      "rating": 2355,
+      "max_rating": 2388
+    },
+    {
+      "id": 264,
+      "handle": "limanjun",
+      "rating": 2355,
+      "max_rating": 2455
+    },
+    {
+      "id": 265,
+      "handle": "ZzzzRKkkkkRrrrr",
+      "rating": 2354,
+      "max_rating": 2354
+    },
+    {
+      "id": 266,
+      "handle": "realcomplex",
+      "rating": 2353,
+      "max_rating": 2596
+    },
+    {
+      "id": 267,
+      "handle": "Andycipation",
+      "rating": 2350,
+      "max_rating": 2726
+    },
+    {
+      "id": 268,
+      "handle": "kevin",
+      "rating": 2350,
+      "max_rating": 2350
+    },
+    {
+      "id": 269,
+      "handle": "08kevin",
+      "rating": 2348,
+      "max_rating": 2348
+    },
+    {
+      "id": 270,
+      "handle": "karinohito",
+      "rating": 2347,
+      "max_rating": 2431
+    },
+    {
+      "id": 271,
+      "handle": "JeanBombeur",
+      "rating": 2344,
+      "max_rating": 2594
+    },
+    {
+      "id": 272,
+      "handle": "adam01",
+      "rating": 2342,
+      "max_rating": 2348
+    },
+    {
+      "id": 273,
+      "handle": "surajchip2",
+      "rating": 2342,
+      "max_rating": 2342
+    },
+    {
+      "id": 274,
+      "handle": "Vectors_Master",
+      "rating": 2341,
+      "max_rating": 2341
+    },
+    {
+      "id": 275,
+      "handle": "ballpoint_pen",
+      "rating": 2341,
+      "max_rating": 2357
+    },
+    {
+      "id": 276,
+      "handle": "lyx123886a123886",
+      "rating": 2340,
+      "max_rating": 2340
+    },
+    {
+      "id": 277,
+      "handle": "makrav",
+      "rating": 2340,
+      "max_rating": 2468
+    },
+    {
+      "id": 278,
+      "handle": "ToniB",
+      "rating": 2339,
+      "max_rating": 2367
+    },
+    {
+      "id": 279,
+      "handle": "FantasyNumber",
+      "rating": 2333,
+      "max_rating": 2333
+    },
+    {
+      "id": 280,
+      "handle": "PedroBigMan",
+      "rating": 2333,
+      "max_rating": 2427
+    },
+    {
+      "id": 281,
+      "handle": "zfmdhy786",
+      "rating": 2333,
+      "max_rating": 2333
+    },
+    {
+      "id": 282,
+      "handle": "zlxFTH",
+      "rating": 2333,
+      "max_rating": 2377
+    },
+    {
+      "id": 283,
+      "handle": "DeadlyCritic",
+      "rating": 2331,
+      "max_rating": 2331
+    },
+    {
+      "id": 284,
+      "handle": "RingedGenesis",
+      "rating": 2330,
+      "max_rating": 2381
+    },
+    {
+      "id": 285,
+      "handle": "Galetx",
+      "rating": 2329,
+      "max_rating": 2353
+    },
+    {
+      "id": 286,
+      "handle": "OG_Matveychick1",
+      "rating": 2329,
+      "max_rating": 2420
+    },
+    {
+      "id": 287,
+      "handle": "Dalek_of_Rivia",
+      "rating": 2328,
+      "max_rating": 2379
+    },
+    {
+      "id": 288,
+      "handle": "gvihvo",
+      "rating": 2328,
+      "max_rating": 2328
+    },
+    {
+      "id": 289,
+      "handle": "zse",
+      "rating": 2328,
+      "max_rating": 2328
+    },
+    {
+      "id": 290,
+      "handle": "e3e",
+      "rating": 2327,
+      "max_rating": 2398
+    },
+    {
+      "id": 291,
+      "handle": "thembululquaUwU",
+      "rating": 2326,
+      "max_rating": 2337
+    },
+    {
+      "id": 292,
+      "handle": "AkiyamaMizuki",
+      "rating": 2325,
+      "max_rating": 2325
+    },
+    {
+      "id": 293,
+      "handle": "ValenciaTravis",
+      "rating": 2324,
+      "max_rating": 2324
+    },
+    {
+      "id": 294,
+      "handle": "JueFan",
+      "rating": 2323,
+      "max_rating": 2323
+    },
+    {
+      "id": 295,
+      "handle": "Saquariu",
+      "rating": 2323,
+      "max_rating": 2339
+    },
+    {
+      "id": 296,
+      "handle": "nguyentunglam",
+      "rating": 2322,
+      "max_rating": 2322
+    },
+    {
+      "id": 297,
+      "handle": "TulipeNoire",
+      "rating": 2321,
+      "max_rating": 2321
+    },
+    {
+      "id": 298,
+      "handle": "aimoon",
+      "rating": 2321,
+      "max_rating": 2321
+    },
+    {
+      "id": 299,
+      "handle": "Flandre",
+      "rating": 2320,
+      "max_rating": 2473
+    },
+    {
+      "id": 300,
+      "handle": "GSH_gsh",
+      "rating": 2320,
+      "max_rating": 2320
+    },
+    {
+      "id": 301,
+      "handle": "mhb2010",
+      "rating": 2320,
+      "max_rating": 2320
+    },
+    {
+      "id": 302,
+      "handle": "DoNotMoZheng",
+      "rating": 2317,
+      "max_rating": 2408
+    },
+    {
+      "id": 303,
+      "handle": "akua",
+      "rating": 2317,
+      "max_rating": 2317
+    },
+    {
+      "id": 304,
+      "handle": "Papaver",
+      "rating": 2316,
+      "max_rating": 2316
+    },
+    {
+      "id": 305,
+      "handle": "gyydp123_LIM",
+      "rating": 2315,
+      "max_rating": 2315
+    },
+    {
+      "id": 306,
+      "handle": "bthero",
+      "rating": 2313,
+      "max_rating": 2625
+    },
+    {
+      "id": 307,
+      "handle": "4977",
+      "rating": 2311,
+      "max_rating": 2311
+    },
+    {
+      "id": 308,
+      "handle": "dongyc666",
+      "rating": 2311,
+      "max_rating": 2311
+    },
+    {
+      "id": 309,
+      "handle": "Egg_eating_master",
+      "rating": 2309,
+      "max_rating": 2309
+    },
+    {
+      "id": 310,
+      "handle": "hhhyh",
+      "rating": 2309,
+      "max_rating": 2309
+    },
+    {
+      "id": 311,
+      "handle": "zas111lll",
+      "rating": 2309,
+      "max_rating": 2341
+    },
+    {
+      "id": 312,
+      "handle": "IzhtskiyTimofey",
+      "rating": 2308,
+      "max_rating": 2352
+    },
+    {
+      "id": 313,
+      "handle": "qkm66666",
+      "rating": 2307,
+      "max_rating": 2356
+    },
+    {
+      "id": 314,
+      "handle": "ClHg2",
+      "rating": 2306,
+      "max_rating": 2411
+    },
+    {
+      "id": 315,
+      "handle": "Teja-Smart",
+      "rating": 2306,
+      "max_rating": 2334
+    },
+    {
+      "id": 316,
+      "handle": "xuyifei1",
+      "rating": 2304,
+      "max_rating": 2304
+    },
+    {
+      "id": 317,
+      "handle": "blyat",
+      "rating": 2301,
+      "max_rating": 2453
+    },
+    {
+      "id": 318,
+      "handle": "heeew",
+      "rating": 2301,
+      "max_rating": 2301
+    },
+    {
+      "id": 319,
+      "handle": "Raiden_Bosenmori_Mei",
+      "rating": 2300,
+      "max_rating": 2300
+    },
+    {
+      "id": 320,
+      "handle": "MAKMED1337",
+      "rating": 2299,
+      "max_rating": 2544
+    },
+    {
+      "id": 321,
+      "handle": "Nevll",
+      "rating": 2299,
+      "max_rating": 2334
+    },
+    {
+      "id": 322,
+      "handle": "tem_shett",
+      "rating": 2299,
+      "max_rating": 2346
+    },
+    {
+      "id": 323,
+      "handle": "Gassa",
+      "rating": 2298,
+      "max_rating": 2616
+    },
+    {
+      "id": 324,
+      "handle": "TimDee",
+      "rating": 2297,
+      "max_rating": 2297
+    },
+    {
+      "id": 325,
+      "handle": "kalimm",
+      "rating": 2297,
+      "max_rating": 2607
+    },
+    {
+      "id": 326,
+      "handle": "LOL_I_AM_SERZH",
+      "rating": 2296,
+      "max_rating": 2335
+    },
+    {
+      "id": 327,
+      "handle": "awu",
+      "rating": 2295,
+      "max_rating": 2295
+    },
+    {
+      "id": 328,
+      "handle": ".I.",
+      "rating": 2294,
+      "max_rating": 2584
+    },
+    {
+      "id": 329,
+      "handle": "Chengxixi",
+      "rating": 2294,
+      "max_rating": 2294
+    },
+    {
+      "id": 330,
+      "handle": "HNO2",
+      "rating": 2294,
+      "max_rating": 2358
+    },
+    {
+      "id": 331,
+      "handle": "dannyboy20031204",
+      "rating": 2294,
+      "max_rating": 2366
+    },
+    {
+      "id": 332,
+      "handle": "ivan.alexeev",
+      "rating": 2293,
+      "max_rating": 2338
+    },
+    {
+      "id": 333,
+      "handle": "dspt",
+      "rating": 2292,
+      "max_rating": 2292
+    },
+    {
+      "id": 334,
+      "handle": "Boboge",
+      "rating": 2291,
+      "max_rating": 2358
+    },
+    {
+      "id": 335,
+      "handle": "Hexagons",
+      "rating": 2291,
+      "max_rating": 2291
+    },
+    {
+      "id": 336,
+      "handle": "Survivor_loser",
+      "rating": 2290,
+      "max_rating": 2290
+    },
+    {
+      "id": 337,
+      "handle": "FattyPenguin",
+      "rating": 2289,
+      "max_rating": 2413
+    },
+    {
+      "id": 338,
+      "handle": "maomao90",
+      "rating": 2289,
+      "max_rating": 2597
+    },
+    {
+      "id": 339,
+      "handle": "Traumatize",
+      "rating": 2287,
+      "max_rating": 2287
+    },
+    {
+      "id": 340,
+      "handle": "PixelCat",
+      "rating": 2286,
+      "max_rating": 2318
+    },
+    {
+      "id": 341,
+      "handle": "OIerGegu1019",
+      "rating": 2285,
+      "max_rating": 2285
+    },
+    {
+      "id": 342,
+      "handle": "SampsonYW",
+      "rating": 2285,
+      "max_rating": 2285
+    },
+    {
+      "id": 343,
+      "handle": "cqbztl",
+      "rating": 2285,
+      "max_rating": 2285
+    },
+    {
+      "id": 344,
+      "handle": "shinchankosen",
+      "rating": 2285,
+      "max_rating": 2285
+    },
+    {
+      "id": 345,
+      "handle": "PvPro",
+      "rating": 2284,
+      "max_rating": 2312
+    },
+    {
+      "id": 346,
+      "handle": "phoenix0423",
+      "rating": 2284,
+      "max_rating": 2313
+    },
+    {
+      "id": 347,
+      "handle": "nigus",
+      "rating": 2283,
+      "max_rating": 2743
+    },
+    {
+      "id": 348,
+      "handle": "zacharychao",
+      "rating": 2282,
+      "max_rating": 2305
+    },
+    {
+      "id": 349,
+      "handle": "paulzrm",
+      "rating": 2281,
+      "max_rating": 2281
+    },
+    {
+      "id": 350,
+      "handle": "Farmer_D",
+      "rating": 2280,
+      "max_rating": 2280
+    },
+    {
+      "id": 351,
+      "handle": "zhenja",
+      "rating": 2280,
+      "max_rating": 2280
+    },
+    {
+      "id": 352,
+      "handle": "abeker",
+      "rating": 2279,
+      "max_rating": 2585
+    },
+    {
+      "id": 353,
+      "handle": "juan_123",
+      "rating": 2279,
+      "max_rating": 2341
+    },
+    {
+      "id": 354,
+      "handle": "zmy_",
+      "rating": 2279,
+      "max_rating": 2342
+    },
+    {
+      "id": 355,
+      "handle": "toma_ariciu",
+      "rating": 2278,
+      "max_rating": 2278
+    },
+    {
+      "id": 356,
+      "handle": "Hevix",
+      "rating": 2277,
+      "max_rating": 2295
+    },
+    {
+      "id": 357,
+      "handle": "darkkcyan",
+      "rating": 2277,
+      "max_rating": 2546
+    },
+    {
+      "id": 358,
+      "handle": "menborong",
+      "rating": 2277,
+      "max_rating": 2482
+    },
+    {
+      "id": 359,
+      "handle": "vlp",
+      "rating": 2277,
+      "max_rating": 2277
+    },
+    {
+      "id": 360,
+      "handle": "Kawaii2DIdolOfGSHS",
+      "rating": 2276,
+      "max_rating": 2395
+    },
+    {
+      "id": 361,
+      "handle": "Kolychestiy",
+      "rating": 2275,
+      "max_rating": 2275
+    },
+    {
+      "id": 362,
+      "handle": "activedeltorre",
+      "rating": 2275,
+      "max_rating": 2275
+    },
+    {
+      "id": 363,
+      "handle": "EmmaXII",
+      "rating": 2274,
+      "max_rating": 2274
+    },
+    {
+      "id": 364,
+      "handle": "Octagons",
+      "rating": 2274,
+      "max_rating": 2274
+    },
+    {
+      "id": 365,
+      "handle": "Error_Yuan",
+      "rating": 2273,
+      "max_rating": 2291
+    },
+    {
+      "id": 366,
+      "handle": "2w51y318c",
+      "rating": 2272,
+      "max_rating": 2272
+    },
+    {
+      "id": 367,
+      "handle": "Empty_Dust",
+      "rating": 2272,
+      "max_rating": 2272
+    },
+    {
+      "id": 368,
+      "handle": "KumaTachiRen",
+      "rating": 2272,
+      "max_rating": 2486
+    },
+    {
+      "id": 369,
+      "handle": "qilby",
+      "rating": 2272,
+      "max_rating": 2272
+    },
+    {
+      "id": 370,
+      "handle": "lcyxds",
+      "rating": 2271,
+      "max_rating": 2271
+    },
+    {
+      "id": 371,
+      "handle": "lotusblume",
+      "rating": 2271,
+      "max_rating": 2366
+    },
+    {
+      "id": 372,
+      "handle": "lvovkir",
+      "rating": 2271,
+      "max_rating": 2271
+    },
+    {
+      "id": 373,
+      "handle": "_Grice",
+      "rating": 2270,
+      "max_rating": 2350
+    },
+    {
+      "id": 374,
+      "handle": "Redpo",
+      "rating": 2269,
+      "max_rating": 2338
+    },
+    {
+      "id": 375,
+      "handle": "Raiden_Mei_",
+      "rating": 2268,
+      "max_rating": 2308
+    },
+    {
+      "id": 376,
+      "handle": "ahmadkhafif",
+      "rating": 2268,
+      "max_rating": 2268
+    },
+    {
+      "id": 377,
+      "handle": "lnsuyn",
+      "rating": 2268,
+      "max_rating": 2329
+    },
+    {
+      "id": 378,
+      "handle": "0x0002",
+      "rating": 2267,
+      "max_rating": 2267
+    },
+    {
+      "id": 379,
+      "handle": "Wansur",
+      "rating": 2267,
+      "max_rating": 2275
+    },
+    {
+      "id": 380,
+      "handle": "dshindov",
+      "rating": 2267,
+      "max_rating": 2267
+    },
+    {
+      "id": 381,
+      "handle": "Xun_Xiaoyao",
+      "rating": 2266,
+      "max_rating": 2266
+    },
+    {
+      "id": 382,
+      "handle": "Midnights",
+      "rating": 2265,
+      "max_rating": 2265
+    },
+    {
+      "id": 383,
+      "handle": "Ivan_len",
+      "rating": 2264,
+      "max_rating": 2318
+    },
+    {
+      "id": 384,
+      "handle": "askd",
+      "rating": 2264,
+      "max_rating": 2362
+    },
+    {
+      "id": 385,
+      "handle": "AbdelmagedNour",
+      "rating": 2263,
+      "max_rating": 2292
+    },
+    {
+      "id": 386,
+      "handle": "Wolam",
+      "rating": 2262,
+      "max_rating": 2264
+    },
+    {
+      "id": 387,
+      "handle": "sillylittleidiot77",
+      "rating": 2262,
+      "max_rating": 2468
+    },
+    {
+      "id": 388,
+      "handle": "LOOP0",
+      "rating": 2261,
+      "max_rating": 2261
+    },
+    {
+      "id": 389,
+      "handle": "turkhuu622",
+      "rating": 2261,
+      "max_rating": 2338
+    },
+    {
+      "id": 390,
+      "handle": "jerry3128",
+      "rating": 2260,
+      "max_rating": 2260
+    },
+    {
+      "id": 391,
+      "handle": "10tus",
+      "rating": 2259,
+      "max_rating": 2265
+    },
+    {
+      "id": 392,
+      "handle": "Darko1",
+      "rating": 2259,
+      "max_rating": 2259
+    },
+    {
+      "id": 393,
+      "handle": "Silver187",
+      "rating": 2259,
+      "max_rating": 2259
+    },
+    {
+      "id": 394,
+      "handle": "jmyszka",
+      "rating": 2259,
+      "max_rating": 2259
+    },
+    {
+      "id": 395,
+      "handle": "sleep__",
+      "rating": 2258,
+      "max_rating": 2441
+    },
+    {
+      "id": 396,
+      "handle": "Peti",
+      "rating": 2257,
+      "max_rating": 2519
+    },
+    {
+      "id": 397,
+      "handle": "Krzychuo",
+      "rating": 2256,
+      "max_rating": 2256
+    },
+    {
+      "id": 398,
+      "handle": "piaoyun",
+      "rating": 2256,
+      "max_rating": 2341
+    },
+    {
+      "id": 399,
+      "handle": "c.young_sb",
+      "rating": 2254,
+      "max_rating": 2384
+    },
+    {
+      "id": 400,
+      "handle": "CHYYYY",
+      "rating": 2253,
+      "max_rating": 2253
+    },
+    {
+      "id": 401,
+      "handle": "DanielChang",
+      "rating": 2253,
+      "max_rating": 2320
+    },
+    {
+      "id": 402,
+      "handle": "fishcathu.",
+      "rating": 2252,
+      "max_rating": 2367
+    },
+    {
+      "id": 403,
+      "handle": "Flandre_495",
+      "rating": 2251,
+      "max_rating": 2285
+    },
+    {
+      "id": 404,
+      "handle": "OInfly",
+      "rating": 2251,
+      "max_rating": 2385
+    },
+    {
+      "id": 405,
+      "handle": "Hamed_Ghaffari",
+      "rating": 2250,
+      "max_rating": 2438
+    },
+    {
+      "id": 406,
+      "handle": "HuaJun",
+      "rating": 2250,
+      "max_rating": 2531
+    },
+    {
+      "id": 407,
+      "handle": "choujiangxiang",
+      "rating": 2250,
+      "max_rating": 2250
+    },
+    {
+      "id": 408,
+      "handle": "Vash_nick",
+      "rating": 2249,
+      "max_rating": 2249
+    },
+    {
+      "id": 409,
+      "handle": "kolomig0r",
+      "rating": 2249,
+      "max_rating": 2249
+    },
+    {
+      "id": 410,
+      "handle": "529",
+      "rating": 2248,
+      "max_rating": 2248
+    },
+    {
+      "id": 411,
+      "handle": "Nelson_loh",
+      "rating": 2248,
+      "max_rating": 2350
+    },
+    {
+      "id": 412,
+      "handle": "cszyf",
+      "rating": 2248,
+      "max_rating": 2397
+    },
+    {
+      "id": 413,
+      "handle": "Tobo",
+      "rating": 2247,
+      "max_rating": 2341
+    },
+    {
+      "id": 414,
+      "handle": "ian_HLX",
+      "rating": 2247,
+      "max_rating": 2306
+    },
+    {
+      "id": 415,
+      "handle": "xixizhiguan",
+      "rating": 2246,
+      "max_rating": 2246
+    },
+    {
+      "id": 416,
+      "handle": "..vince",
+      "rating": 2245,
+      "max_rating": 2489
+    },
+    {
+      "id": 417,
+      "handle": "maximrufed",
+      "rating": 2245,
+      "max_rating": 2365
+    },
+    {
+      "id": 418,
+      "handle": "sunkuangzheng",
+      "rating": 2245,
+      "max_rating": 2259
+    },
+    {
+      "id": 419,
+      "handle": "Berbi",
+      "rating": 2244,
+      "max_rating": 2302
+    },
+    {
+      "id": 420,
+      "handle": "beiyuli",
+      "rating": 2244,
+      "max_rating": 2402
+    },
+    {
+      "id": 421,
+      "handle": "ub33",
+      "rating": 2244,
+      "max_rating": 2373
+    },
+    {
+      "id": 422,
+      "handle": "JYJin",
+      "rating": 2243,
+      "max_rating": 2430
+    },
+    {
+      "id": 423,
+      "handle": "guagua0407",
+      "rating": 2243,
+      "max_rating": 2284
+    },
+    {
+      "id": 424,
+      "handle": "874641984",
+      "rating": 2240,
+      "max_rating": 2240
+    },
+    {
+      "id": 425,
+      "handle": "fft_ntt",
+      "rating": 2240,
+      "max_rating": 2265
+    },
+    {
+      "id": 426,
+      "handle": "ttamx",
+      "rating": 2240,
+      "max_rating": 2459
+    },
+    {
+      "id": 427,
+      "handle": "PBBx0",
+      "rating": 2239,
+      "max_rating": 2292
+    },
+    {
+      "id": 428,
+      "handle": "lfxxx",
+      "rating": 2239,
+      "max_rating": 2239
+    },
+    {
+      "id": 429,
+      "handle": "_LSA_",
+      "rating": 2238,
+      "max_rating": 2238
+    },
+    {
+      "id": 430,
+      "handle": "forelax",
+      "rating": 2238,
+      "max_rating": 2243
+    },
+    {
+      "id": 431,
+      "handle": "ligaydima",
+      "rating": 2237,
+      "max_rating": 2342
+    },
+    {
+      "id": 432,
+      "handle": "dyppp",
+      "rating": 2236,
+      "max_rating": 2475
+    },
+    {
+      "id": 433,
+      "handle": "janY_",
+      "rating": 2236,
+      "max_rating": 2236
+    },
+    {
+      "id": 434,
+      "handle": "t9unkubj",
+      "rating": 2236,
+      "max_rating": 2258
+    },
+    {
+      "id": 435,
+      "handle": "wyzz162534",
+      "rating": 2236,
+      "max_rating": 2236
+    },
+    {
+      "id": 436,
+      "handle": "Do_not_make_friends",
+      "rating": 2235,
+      "max_rating": 2270
+    },
+    {
+      "id": 437,
+      "handle": "JavaInTheSouth",
+      "rating": 2235,
+      "max_rating": 2235
+    },
+    {
+      "id": 438,
+      "handle": "taiwanguo",
+      "rating": 2234,
+      "max_rating": 2295
+    },
+    {
+      "id": 439,
+      "handle": "Mtaylor",
+      "rating": 2233,
+      "max_rating": 2326
+    },
+    {
+      "id": 440,
+      "handle": "_ANIG",
+      "rating": 2233,
+      "max_rating": 2233
+    },
+    {
+      "id": 441,
+      "handle": "proven",
+      "rating": 2233,
+      "max_rating": 2262
+    },
+    {
+      "id": 442,
+      "handle": "wangjinbo",
+      "rating": 2233,
+      "max_rating": 2233
+    },
+    {
+      "id": 443,
+      "handle": "yogzinhoo",
+      "rating": 2233,
+      "max_rating": 2307
+    },
+    {
+      "id": 444,
+      "handle": "Alpha_Q",
+      "rating": 2232,
+      "max_rating": 2462
+    },
+    {
+      "id": 445,
+      "handle": "wsc2008qwq",
+      "rating": 2232,
+      "max_rating": 2391
+    },
+    {
+      "id": 446,
+      "handle": "Cai_Guang",
+      "rating": 2231,
+      "max_rating": 2301
+    },
+    {
+      "id": 447,
+      "handle": "Gondozu",
+      "rating": 2231,
+      "max_rating": 2231
+    },
+    {
+      "id": 448,
+      "handle": "Warma_Cute",
+      "rating": 2231,
+      "max_rating": 2231
+    },
+    {
+      "id": 449,
+      "handle": "fs20091003",
+      "rating": 2231,
+      "max_rating": 2255
+    },
+    {
+      "id": 450,
+      "handle": "gabriel88766",
+      "rating": 2231,
+      "max_rating": 2249
+    },
+    {
+      "id": 451,
+      "handle": "lprdsb",
+      "rating": 2231,
+      "max_rating": 2290
+    },
+    {
+      "id": 452,
+      "handle": "tzl_Dedicatus545",
+      "rating": 2231,
+      "max_rating": 2231
+    },
+    {
+      "id": 453,
+      "handle": "Trial_light",
+      "rating": 2230,
+      "max_rating": 2263
+    },
+    {
+      "id": 454,
+      "handle": "mwen",
+      "rating": 2230,
+      "max_rating": 2339
+    },
+    {
+      "id": 455,
+      "handle": "-1e11",
+      "rating": 2229,
+      "max_rating": 2404
+    },
+    {
+      "id": 456,
+      "handle": "gravitsapa",
+      "rating": 2229,
+      "max_rating": 2229
+    },
+    {
+      "id": 457,
+      "handle": "Genius_dream",
+      "rating": 2228,
+      "max_rating": 2228
+    },
+    {
+      "id": 458,
+      "handle": "JakobZ",
+      "rating": 2228,
+      "max_rating": 2228
+    },
+    {
+      "id": 459,
+      "handle": "JeffreyLC",
+      "rating": 2227,
+      "max_rating": 2465
+    },
+    {
+      "id": 460,
+      "handle": "zhenghanyun3",
+      "rating": 2226,
+      "max_rating": 2226
+    },
+    {
+      "id": 461,
+      "handle": "Ilya_MSU",
+      "rating": 2225,
+      "max_rating": 2605
+    },
+    {
+      "id": 462,
+      "handle": "greencis",
+      "rating": 2225,
+      "max_rating": 2423
+    },
+    {
+      "id": 463,
+      "handle": "rubbishZ",
+      "rating": 2225,
+      "max_rating": 2225
+    },
+    {
+      "id": 464,
+      "handle": "fishy15",
+      "rating": 2224,
+      "max_rating": 2276
+    },
+    {
+      "id": 465,
+      "handle": "leo020630",
+      "rating": 2224,
+      "max_rating": 2302
+    },
+    {
+      "id": 466,
+      "handle": "MarcosK",
+      "rating": 2222,
+      "max_rating": 2288
+    },
+    {
+      "id": 467,
+      "handle": "US3RN4M3",
+      "rating": 2221,
+      "max_rating": 2308
+    },
+    {
+      "id": 468,
+      "handle": "brianhsu7476",
+      "rating": 2221,
+      "max_rating": 2337
+    },
+    {
+      "id": 469,
+      "handle": "penguin133",
+      "rating": 2221,
+      "max_rating": 2276
+    },
+    {
+      "id": 470,
+      "handle": "shenfe1",
+      "rating": 2221,
+      "max_rating": 2274
+    },
+    {
+      "id": 471,
+      "handle": "EasonLiang",
+      "rating": 2220,
+      "max_rating": 2334
+    },
+    {
+      "id": 472,
+      "handle": "FelixMP",
+      "rating": 2220,
+      "max_rating": 2370
+    },
+    {
+      "id": 473,
+      "handle": "lsxhyyds",
+      "rating": 2220,
+      "max_rating": 2263
+    },
+    {
+      "id": 474,
+      "handle": "tranhoangson",
+      "rating": 2220,
+      "max_rating": 2220
+    },
+    {
+      "id": 475,
+      "handle": "DadOfYuyang",
+      "rating": 2219,
+      "max_rating": 2219
+    },
+    {
+      "id": 476,
+      "handle": "_chroneZ",
+      "rating": 2218,
+      "max_rating": 2397
+    },
+    {
+      "id": 477,
+      "handle": "shiven",
+      "rating": 2217,
+      "max_rating": 2370
+    },
+    {
+      "id": 478,
+      "handle": "Dragokj03",
+      "rating": 2216,
+      "max_rating": 2216
+    },
+    {
+      "id": 479,
+      "handle": "d_k_d",
+      "rating": 2216,
+      "max_rating": 2216
+    },
+    {
+      "id": 480,
+      "handle": "misorin",
+      "rating": 2216,
+      "max_rating": 2361
+    },
+    {
+      "id": 481,
+      "handle": "operator_",
+      "rating": 2216,
+      "max_rating": 2264
+    },
+    {
+      "id": 482,
+      "handle": "tanaygad",
+      "rating": 2216,
+      "max_rating": 2216
+    },
+    {
+      "id": 483,
+      "handle": "tch1cherin",
+      "rating": 2216,
+      "max_rating": 2216
+    },
+    {
+      "id": 484,
+      "handle": "xcc_szy0905",
+      "rating": 2216,
+      "max_rating": 2299
+    },
+    {
+      "id": 485,
+      "handle": "Danncla",
+      "rating": 2215,
+      "max_rating": 2215
+    },
+    {
+      "id": 486,
+      "handle": "MCPlayer542",
+      "rating": 2215,
+      "max_rating": 2338
+    },
+    {
+      "id": 487,
+      "handle": "k1suxu",
+      "rating": 2215,
+      "max_rating": 2215
+    },
+    {
+      "id": 488,
+      "handle": "lddlinan",
+      "rating": 2215,
+      "max_rating": 2273
+    },
+    {
+      "id": 489,
+      "handle": "tatata96",
+      "rating": 2215,
+      "max_rating": 2330
+    },
+    {
+      "id": 490,
+      "handle": "oursaco",
+      "rating": 2213,
+      "max_rating": 2400
+    },
+    {
+      "id": 491,
+      "handle": "dragonmuffin",
+      "rating": 2212,
+      "max_rating": 2212
+    },
+    {
+      "id": 492,
+      "handle": "max0000561",
+      "rating": 2212,
+      "max_rating": 2254
+    },
+    {
+      "id": 493,
+      "handle": "0land",
+      "rating": 2211,
+      "max_rating": 2245
+    },
+    {
+      "id": 494,
+      "handle": "ASHWANTH_K",
+      "rating": 2211,
+      "max_rating": 2325
+    },
+    {
+      "id": 495,
+      "handle": "arzhantsev64",
+      "rating": 2211,
+      "max_rating": 2515
+    },
+    {
+      "id": 496,
+      "handle": "tas6",
+      "rating": 2211,
+      "max_rating": 2211
+    },
+    {
+      "id": 497,
+      "handle": "yangsonghan",
+      "rating": 2211,
+      "max_rating": 2257
+    },
+    {
+      "id": 498,
+      "handle": "VasyaMer",
+      "rating": 2210,
+      "max_rating": 2210
+    },
+    {
+      "id": 499,
+      "handle": "slah007",
+      "rating": 2210,
+      "max_rating": 2268
     }
   ]
 }
