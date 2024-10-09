@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 200
+EPOCH_NUM = 150
 STOP_STEPS = 10
 TRAIN_BATCH_SIZE = 256
 TEST_BATCH_SIZE = 64
@@ -373,6 +373,7 @@ def train(args: Namespace) -> None:
     save_metrics(dataset_name="validation")
 
     # Plot losses and metrics
+    best_epoch = EPOCH_NUM
     plot_loss(
         epoch_num=best_epoch,
         losses=train_losses,
