@@ -384,10 +384,10 @@ def train(args: Namespace) -> None:
 
         _, stop_flag = early_stopping(validation_recalls[k_min])
 
-        if stop_flag:
-            best_epoch = epoch_idx
-            logger.info("Early stopping!")
-            break
+        # if stop_flag:
+        #     best_epoch = epoch_idx
+        #     logger.info("Early stopping!")
+        #     break
 
     # Save model
     save_model(
