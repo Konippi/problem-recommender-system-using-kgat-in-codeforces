@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 500
+EPOCH_NUM = 200
 STOP_STEPS = 10
 TRAIN_BATCH_SIZE = 256
 TEST_BATCH_SIZE = 64
@@ -325,10 +325,10 @@ def train(args: Namespace) -> None:
 
         _, stop_flag = early_stopping(validation_recalls[k_min])
 
-        if stop_flag:
-            best_epoch = epoch_idx
-            logger.info("Early stopping!")
-            break
+        # if stop_flag:
+        #     best_epoch = epoch_idx
+        #     logger.info("Early stopping!")
+        #     break
 
     # Save model
     save_model(
