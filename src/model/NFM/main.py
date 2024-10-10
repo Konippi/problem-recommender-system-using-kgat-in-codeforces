@@ -417,12 +417,61 @@ def train(args: Namespace) -> None:
     )
 
 
+def predict(args: Namespace) -> None:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    logger.info("Device: %s", device)
+
+    # Load dataset
+    logger.info("Loading dataset...")
+    dataset_loader = DataLoader(dataset_dir=Path("../dataset"))
+    dataset = dataset_loader.load_dataset(args=args)
+    logger.info("Dataset loaded!\n====================================")
+
+    # Preprocess
+    logger.info("Preprocessing...")
+    preprocess = Preprocess(
+        args=args,
+        dataset=dataset,
+        train_batch_size=TRAIN_BATCH_SIZE,
+        test_batch_size=TEST_BATCH_SIZE,
+    )
+    preprocess.run(dataset_name="test")
+    logger.info("Preprocessed!\n====================================")
+
+    # Build model
+    logger.info("Building model...")
+    model_args = NFMArgs(
+        user_num=preprocess.user_num,
+        item_num=preprocess.item_num,
+        entity_num=preprocess.entity_num,
+    )
+    model = load_model(model=NFM(args=model_args), load_dir="./result/model")
+    model.to(device)
+
+    # Predict
+    logger.info("Predicting recommendations...")
+    model.eval()
+
+    test_precisions, test_recalls, test_ndcgs = evaluate_on_dataset(
+        model=model,
+        device=device,
+        preprocess=preprocess,
+        train_interaction_dict=preprocess.train_interaction_dict,
+        eval_interaction_dict=preprocess.test_interaction_dict,
+        dataset_name="test",
+    )
+
+    logger.info("Precision: %s", test_precisions)
+    logger.info("Recall: %s", test_recalls)
+    logger.info("nDCG: %s", test_ndcgs)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--sm", help="for using small dataset", action="store_true")
     parser.add_argument("--predict", help="for prediction", action="store_true")
     args = parser.parse_args()
-    # if args.predict:
-    #     predict(args=args)
-    # else:
-    train(args=args)
+    if args.predict:
+        predict(args=args)
+    else:
+        train(args=args)
