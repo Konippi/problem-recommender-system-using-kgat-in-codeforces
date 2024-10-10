@@ -277,6 +277,16 @@ class Preprocess:
         )
 
     def generate_train_batch(self) -> tuple[torch.Tensor, torch.Tensor]:
+        """
+        Generate train batch.
+
+        Returns
+        -------
+        positive_feature_values: torch.Tensor
+            Positive feature values.
+        negative_feature_values: torch.Tensor
+            Negative feature values.
+        """
         batch_user_ids, batch_positive_problem_ids, batch_negative_problem_ids = self._generate_cf_batch()
         batch_user_matrix = self._user_matrix[batch_user_ids.numpy()]
         batach_positive_feature_matrix = self._feature_matrix[batch_positive_problem_ids.numpy()]
