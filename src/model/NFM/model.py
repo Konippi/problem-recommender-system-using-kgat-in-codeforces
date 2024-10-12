@@ -58,7 +58,7 @@ class NFM(nn.Module):
             )
 
         # Output layer
-        self._output_layer = nn.Linear(self._hidden_dim[-1], 1, bias=False)
+        self._output_layer = nn.Linear(layers[-1], 1, bias=False)
 
         self._init_weights()
 

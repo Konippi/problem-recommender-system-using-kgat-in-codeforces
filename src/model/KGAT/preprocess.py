@@ -58,11 +58,6 @@ class Preprocess:
                 key=lambda x: x.created_at,
             )
 
-            # TODO: at least 10 submissions to ensure the quality of training data. # noqa: FIX002
-            min_submissions = 10
-            if len(submission_history) < min_submissions:
-                continue
-
             tmp_train, test = train_test_split(
                 submission_history,
                 train_size=0.8,
@@ -305,9 +300,10 @@ class Preprocess:
         positive_problem_ids: list[int] = rng.choice(
             a=self.interaction_dict[target_user_id], size=num, replace=False
         ).tolist()
+
         return positive_problem_ids
 
-    def _sample_negative_problems(self, positive_problem_ids: list[int], num: int) -> list[int]:
+    def _sample_negative_problems(self, target_user_id: int, num: int) -> list[int]:
         """
         Sample negative problems.
 
@@ -323,11 +319,14 @@ class Preprocess:
         negative_problem_ids: list[int]
             List of negative problem ids.
         """
+        positive_problem_ids = self.interaction_dict[target_user_id]
         negative_problem_ids: set[int] = set()
+
         while len(negative_problem_ids) < num:
             negative_problem_id = rng.integers(low=0, high=self.item_num)
             if negative_problem_id not in positive_problem_ids:
                 negative_problem_ids.add(negative_problem_id)
+
         return list(negative_problem_ids)
 
     def generate_cf_batch(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -338,6 +337,7 @@ class Preprocess:
         ----------
         batch_size: int
             Batch size.
+
         Returns
         -------
         user_ids: torch.Tensor
@@ -360,7 +360,7 @@ class Preprocess:
 
         for user_id in user_ids:
             positive_problem_ids.extend(self._sample_positive_problems(target_user_id=user_id, num=1))
-            negative_item_ids.extend(self._sample_negative_problems(positive_problem_ids=positive_problem_ids, num=1))
+            negative_item_ids.extend(self._sample_negative_problems(target_user_id=user_id, num=1))
 
         return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
 
@@ -479,7 +479,7 @@ class Preprocess:
 
         return heads, positive_relation_batch, positive_tail_batch, negative_tail_batch
 
-    def _get_interction_matrix(
+    def _get_interaction_matrix(
         self, all_submission_history: list[SubmissionHistory]
     ) -> tuple[np.ndarray, dict[int, list[int]]]:
         """
@@ -494,6 +494,8 @@ class Preprocess:
         -------
         interaction_matrix: np.ndarray
             Interaction matrix.
+        interaction_map: dict[int, list[int]]
+            Interaction map.
         """
         interaction_map = {
             submission_history.user.id: list({submission.problem.id for submission in submission_history.submissions})
@@ -538,13 +540,13 @@ class Preprocess:
         )
 
         # Generate interaction matrices.
-        self.train_interaction_matrix, self.train_interaction_dict = self._get_interction_matrix(
+        self.train_interaction_matrix, self.train_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._train_dataset.all_submission_history
         )
-        self.test_interaction_matrix, self.test_interaction_dict = self._get_interction_matrix(
+        self.test_interaction_matrix, self.test_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._test_dataset.all_submission_history
         )
-        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interction_matrix(
+        self.validation_interaction_matrix, self.validation_interaction_dict = self._get_interaction_matrix(
             all_submission_history=self._validation_dataset.all_submission_history
         )
 

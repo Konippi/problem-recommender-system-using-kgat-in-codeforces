@@ -67,8 +67,8 @@ def evaluate(
     ]
     user_num = len(user_ids)
     user_map = dict(zip(user_ids, range(user_num), strict=False))
-    item_ids = list(range(preprocess.item_num))
-    item_num = len(item_ids)
+    item_num = preprocess.item_num
+    item_ids = list(range(item_num))
 
     cf_users = []
     cf_items = []
@@ -283,7 +283,11 @@ def train(args: Namespace) -> None:
                 positive_feature_values = positive_feature_values.to(device)
                 negative_feature_values = negative_feature_values.to(device)
 
-                batch_loss = model(positive_feature_values, negative_feature_values, mode=NFMMode.TRAIN)
+                batch_loss = model(
+                    positive_feature_values,
+                    negative_feature_values,
+                    mode=NFMMode.TRAIN,
+                )
                 batch_loss.backward()
                 model.update_weights()
                 train_loss += batch_loss.item()
