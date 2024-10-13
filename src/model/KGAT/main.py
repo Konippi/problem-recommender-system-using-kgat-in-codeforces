@@ -30,6 +30,7 @@ from src.model.KGAT.weights_visualizer import visualize_attention_scores
 from src.utils.data_loader import DataLoader
 from src.utils.figure_drawer import plot_loss, plot_metrics
 from src.utils.metrics_calculator import Metrics, metrics_at_k
+from src.utils.visualize_problem_with_recommended_cnt import visualize_problem_with_recommended_cnt
 
 if TYPE_CHECKING:
     from src.type import Problem
@@ -577,14 +578,25 @@ def recommend(args: Namespace) -> None:
     ]
 
     user_idx_with_recommended_problems: dict[int, list[Problem]] = defaultdict(list)
+    problem_cnt_dict: dict[int, int] = defaultdict(int)
     for user_idx in range(preprocess.user_num):
         user = preprocess.user_id_map[user_idx]
         recommended_problems = [preprocess.problem_id_map[problem_id] for problem_id in top_k_problems[user_idx]]
-        logger.info("Recommendations for user: %s", user.handle)
+        # logger.info("Recommendations for user: %s", user.handle)
         for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
-            logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
-        logger.info("--------------------")
+            problem_cnt_dict[problem.id] += 1
+            # logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
+        # logger.info("--------------------")
+
+    for problem_id in range(preprocess.item_num):
+        if problem_id not in problem_cnt_dict:
+            problem_cnt_dict[problem_id] = 0
+    problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
+    problem_ids: list[int] = []
+    recommended_cnts: list[int] = []
+    problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
+    visualize_problem_with_recommended_cnt(problem_ids=problem_ids, recommended_cnts=recommended_cnts)
 
 
 def kg_visualize(args: Namespace) -> None:
