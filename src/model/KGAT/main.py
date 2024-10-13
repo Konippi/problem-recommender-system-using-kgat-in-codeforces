@@ -593,10 +593,8 @@ def recommend(args: Namespace) -> None:
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
-    problem_ids: list[int] = []
-    recommended_cnts: list[int] = []
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
-    visualize_problem_with_recommended_cnt(problem_ids=problem_ids, recommended_cnts=recommended_cnts)
+    visualize_problem_with_recommended_cnt(problem_ids=list(problem_ids), recommended_cnts=list(recommended_cnts))
 
 
 def kg_visualize(args: Namespace) -> None:
