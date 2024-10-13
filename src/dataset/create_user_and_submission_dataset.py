@@ -189,7 +189,7 @@ def run(args: Namespace) -> None:
         all_submission_history.append(SubmissionHistory(user=user, submissions=submissions))
 
         # For Small Dataset
-        if len(all_users) == SM_USER_NUM:
+        if args.sm and len(all_users) == SM_USER_NUM:
             break
 
         time.sleep(RATE_LIMIT_INTERVAL)
