@@ -17,6 +17,10 @@ predict:
 	@rye run python main.py --predict
 
 .PHONY: visualize
+# Need argument: dataset=training or dataset=test or dataset=validation
+visualize-dataset-sm:
+	@rye run python main.py --sm --dataset_visualize=$(dataset)
+
 visualize-kg-sm:
 	@rye run python main.py --sm --kg_visualize
 

@@ -88,9 +88,9 @@ class Preprocess:
             test_num += len(split_submission_history_by_user.test.submissions)
             validation_num += len(split_submission_history_by_user.validation.submissions)
 
-        logger.info("train submissions num: %s", train_num)
-        logger.info("test submissions num: %s", test_num)
-        logger.info("validation submissions num: %s", validation_num)
+        logger.info("train submissions num (with duplicate submissions): %s", train_num)
+        logger.info("test submissions num (with duplicate submissions): %s", test_num)
+        logger.info("validation submissions num (with duplicate submissions): %s", validation_num)
 
         return all_split_submission_history_by_user
 

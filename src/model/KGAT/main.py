@@ -9,7 +9,7 @@ if "google.colab" in sys.modules:
 import argparse
 import warnings
 from argparse import Namespace
-from collections import defaultdict
+from collections import Counter, defaultdict
 from logging import INFO, basicConfig, getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
@@ -26,11 +26,10 @@ from src.model.KGAT.model import (
     KGATMode,
 )
 from src.model.KGAT.preprocess import Preprocess
-from src.model.KGAT.weights_visualizer import visualize_attention_scores
+from src.utils import problem_with_count_visualizer
 from src.utils.data_loader import DataLoader
 from src.utils.figure_drawer import plot_loss, plot_metrics
 from src.utils.metrics_calculator import Metrics, metrics_at_k
-from src.utils.visualize_problem_with_recommended_cnt import visualize_problem_with_recommended_cnt
 
 if TYPE_CHECKING:
     from src.type import Problem
@@ -570,18 +569,17 @@ def recommend(args: Namespace) -> None:
     with torch.no_grad():
         scores: torch.Tensor = model(user_ids, item_ids, mode=KGATMode.PREDICT)
 
-    k = 10
+    # Recommend top-k problems for each user
+    k = 20
     _, all_top_k_problem_indices = torch.topk(scores, k=k, dim=1)
-    top_k_problems = [
-        [top_k_problem_idx + 1 for top_k_problem_idx in top_k_problem_indices]
-        for top_k_problem_indices in all_top_k_problem_indices.tolist()
-    ]
 
     user_idx_with_recommended_problems: dict[int, list[Problem]] = defaultdict(list)
     problem_cnt_dict: dict[int, int] = defaultdict(int)
     for user_idx in range(preprocess.user_num):
         user = preprocess.user_id_map[user_idx]
-        recommended_problems = [preprocess.problem_id_map[problem_id] for problem_id in top_k_problems[user_idx]]
+        recommended_problems = [
+            preprocess.problem_id_map[int(problem_id)] for problem_id in all_top_k_problem_indices[user_idx]
+        ]
         # logger.info("Recommendations for user: %s", user.handle)
         for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
@@ -594,7 +592,57 @@ def recommend(args: Namespace) -> None:
             problem_cnt_dict[problem_id] = 0
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
-    visualize_problem_with_recommended_cnt(problem_ids=list(problem_ids), recommended_cnts=list(recommended_cnts))
+    problem_with_count_visualizer.visualize(
+        problem_ids=list(problem_ids),
+        cnts=list(recommended_cnts),
+        title="Recommended Count for Each Problem",
+        x_label="Problem ID",
+        y_label="Recommended Count",
+        x_interval=1000,
+        y_interval=10,
+    )
+
+
+def dataset_visualize(args: Namespace) -> None:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    logger.info("Device: %s", device)
+
+    # Load dataset
+    logger.info("Loading dataset...")
+    dataset_loader = DataLoader(dataset_dir=Path("../dataset"))
+    dataset = dataset_loader.load_dataset(args=args)
+    logger.info("Dataset loaded!\n====================================")
+
+    # Preprocess
+    logger.info("Preprocessing...")
+    preprocess = Preprocess(
+        args=args,
+        dataset=dataset,
+        cf_batch_size=TRAIN_CF_BATCH_SIZE,
+        kg_batch_size=TRAIN_KG_BATCH_SIZE,
+        device=device,
+    )
+    dataset_name = args.dataset_visualize
+    if dataset_name is None:
+        msg = "dataset_name must be provided."
+        raise ValueError(msg)
+    preprocess.run(dataset_name=dataset_name)
+    logger.info("Preprocessed!\n====================================")
+
+    # Visualize problem with submission count
+    problem_with_submission_cnt = dict(Counter([row[1] for row in preprocess.interaction_matrix]))
+    for problem_id in range(preprocess.item_num):
+        if problem_id not in problem_with_submission_cnt:
+            problem_with_submission_cnt[problem_id] = 0
+    problem_with_count_visualizer.visualize(
+        problem_ids=list(range(preprocess.item_num)),
+        cnts=list(problem_with_submission_cnt.values()),
+        title="Submission Count for Each Problem",
+        x_label="Problem ID",
+        y_label="Submission Count",
+        x_interval=1000,
+        y_interval=25,
+    )
 
 
 def kg_visualize(args: Namespace) -> None:
@@ -681,6 +729,9 @@ if __name__ == "__main__":
     parser.add_argument("--sm", help="for using small dataset", action="store_true")
     parser.add_argument("--predict", help="for prediction", action="store_true")
     parser.add_argument("--recommend", help="for recommendation", action="store_true")
+    parser.add_argument(
+        "--dataset_visualize", help="for dataset visualization", type=str, choices=["training", "test", "validation"]
+    )
     parser.add_argument("--kg_visualize", help="for knowledge graph visualization", action="store_true")
     parser.add_argument("--testing", help="for testing", action="store_true")
     args = parser.parse_args()
@@ -688,6 +739,8 @@ if __name__ == "__main__":
         predict(args=args)
     elif args.recommend:
         recommend(args=args)
+    elif args.dataset_visualize:
+        dataset_visualize(args=args)
     elif args.kg_visualize:
         kg_visualize(args=args)
     elif args.testing:
