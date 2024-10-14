@@ -580,12 +580,12 @@ def recommend(args: Namespace) -> None:
         recommended_problems = [
             preprocess.problem_id_map[int(problem_id)] for problem_id in all_top_k_problem_indices[user_idx]
         ]
-        # logger.info("Recommendations for user: %s", user.handle)
+        logger.info("Recommendations for user: %s", user.handle)
         for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
             problem_cnt_dict[problem.id] += 1
-            # logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
-        # logger.info("--------------------")
+            logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
+        logger.info("--------------------")
 
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:

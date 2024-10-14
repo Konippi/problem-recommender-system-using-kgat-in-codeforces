@@ -165,6 +165,12 @@ class Preprocess:
             (feature_data, (feature_rows, feature_cols)), shape=(self.item_num, self.entity_num)
         ).tocsr()
 
+        # Check sparsity of feature matrix.
+        non_zero_count = feature_matrix.nnz
+        total_elements = feature_matrix.shape[0] * feature_matrix.shape[1]
+        sparsity = 1.0 - (non_zero_count / total_elements)
+
+        logger.info("Sparsity of feature matrix: %s", sparsity)
         logger.info("user matrix shape: %s", user_matrix.shape)
         logger.info("feature matrix shape: %s", feature_matrix.shape)
 
