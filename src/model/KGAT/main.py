@@ -72,7 +72,7 @@ def evaluate(
     train_interaction_dict: dict[int, list[int]],
     eval_interaction_dict: dict[int, list[int]],
     device: torch.device,
-) -> tuple[list[float], dict[int, dict[Metrics, float]]]:
+) -> tuple[torch.Tensor, dict[int, dict[Metrics, float]]]:
     model.eval()
 
     test_user_ids = list(eval_interaction_dict.keys())
@@ -111,7 +111,7 @@ def evaluate(
                 item_ids=item_ids.cpu().numpy(),
                 k_list=METRICS_K_LIST,
             )
-            cf_scores.append(batch_scores.numpy())
+            cf_scores.append(batch_scores.cpu())
 
             for k in METRICS_K_LIST:
                 for metrics in Metrics:
@@ -120,13 +120,13 @@ def evaluate(
             bar.update(1)
 
     metrics_result_dict: dict[int, dict[Metrics, float]] = {}
-    cf_scores = np.concatenate(cf_scores, axis=0)
+    scores = torch.cat(cf_scores)
     for k in METRICS_K_LIST:
         metrics_result_dict[k] = {metrics: 0.0 for metrics in Metrics}
         for metrics in Metrics:
             metrics_result_dict[k][metrics] = float(np.concatenate(metrics_dict[k][metrics]).mean())
 
-    return cf_scores, metrics_result_dict
+    return scores, metrics_result_dict
 
 
 def evaluate_on_dataset(
@@ -566,8 +566,22 @@ def recommend(args: Namespace) -> None:
     user_ids = torch.arange(preprocess.user_num, dtype=torch.long).to(device)
     item_ids = torch.arange(preprocess.item_num, dtype=torch.long).to(device)
 
-    with torch.no_grad():
-        scores: torch.Tensor = model(user_ids, item_ids, mode=KGATMode.PREDICT)
+    user_ids_batch_list = [
+        torch.LongTensor(user_ids[i : i + TEST_BATCH_SIZE]) for i in range(0, len(user_ids), TEST_BATCH_SIZE)
+    ]
+    cf_scores = []
+    for user_ids_batch in user_ids_batch_list:
+        user_ids = user_ids_batch.to(device)
+        with torch.no_grad():
+            batch_scores: torch.Tensor = model(
+                user_ids_batch,
+                item_ids,
+                mode=KGATMode.PREDICT,
+            )
+
+        batch_scores = batch_scores.cpu()
+        cf_scores.append(batch_scores.cpu())
+    scores = torch.cat(cf_scores)
 
     # Recommend top-k problems for each user
     k = 20
