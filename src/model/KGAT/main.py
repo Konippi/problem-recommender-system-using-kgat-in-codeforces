@@ -572,6 +572,7 @@ def recommend(args: Namespace) -> None:
     cf_scores = []
     for user_ids_batch in user_ids_batch_list:
         user_ids = user_ids_batch.to(device)
+
         with torch.no_grad():
             batch_scores: torch.Tensor = model(
                 user_ids_batch,
@@ -594,27 +595,27 @@ def recommend(args: Namespace) -> None:
         recommended_problems = [
             preprocess.problem_id_map[int(problem_id)] for problem_id in all_top_k_problem_indices[user_idx]
         ]
-        logger.info("Recommendations for user: %s", user.handle)
+        # logger.info("Recommendations for user: %s", user.handle)
         for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
             problem_cnt_dict[problem.id] += 1
-            logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
-        logger.info("--------------------")
+            # logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
+        # logger.info("--------------------")
 
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
-    problem_with_count_visualizer.visualize(
-        problem_ids=list(problem_ids),
-        cnts=list(recommended_cnts),
-        title="Recommended Count for Each Problem",
-        x_label="Problem ID",
-        y_label="Recommended Count",
-        x_interval=1000,
-        y_interval=10,
-    )
+    # problem_with_count_visualizer.visualize(
+    #     problem_ids=list(problem_ids),
+    #     cnts=list(recommended_cnts),
+    #     title="Recommended Count for Each Problem",
+    #     x_label="Problem ID",
+    #     y_label="Recommended Count",
+    #     x_interval=1000,
+    #     y_interval=10,
+    # )
 
 
 def dataset_visualize(args: Namespace) -> None:

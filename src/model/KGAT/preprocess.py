@@ -323,9 +323,9 @@ class Preprocess:
         negative_problem_ids: set[int] = set()
 
         while len(negative_problem_ids) < num:
-            negative_problem_id = rng.integers(low=0, high=self.item_num)
-            if negative_problem_id not in positive_problem_ids:
-                negative_problem_ids.add(negative_problem_id)
+            negative_item_id = rng.integers(low=0, high=self.item_num)
+            if negative_item_id not in positive_problem_ids:
+                negative_problem_ids.add(negative_item_id)
 
         return list(negative_problem_ids)
 
@@ -344,7 +344,7 @@ class Preprocess:
             List of user ids.
         positive_problem_ids: torch.Tensor
             List of positive problem ids.
-        negative_item_ids: torch.Tensor
+        negative_problem_ids: torch.Tensor
             List of negative problem ids.
         """
         allow_duplicates = True
@@ -356,13 +356,17 @@ class Preprocess:
             replace=allow_duplicates,
         )
         positive_problem_ids = []
-        negative_item_ids = []
+        negative_problem_ids = []
 
         for user_id in user_ids:
             positive_problem_ids.extend(self._sample_positive_problems(target_user_id=user_id, num=1))
-            negative_item_ids.extend(self._sample_negative_problems(target_user_id=user_id, num=1))
+            negative_problem_ids.extend(self._sample_negative_problems(target_user_id=user_id, num=1))
 
-        return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
+        return (
+            torch.LongTensor(user_ids),
+            torch.LongTensor(positive_problem_ids),
+            torch.LongTensor(negative_problem_ids),
+        )
 
     def _sample_positive_triplets_for_head(self, head: EntityID, num: int) -> tuple[list[RelationID], list[EntityID]]:
         """
