@@ -382,9 +382,9 @@ class KGAT(nn.Module):
         score: torch.Tensor
             The score.
         """
-        all_embeddings = self._build_cf_embeddings()
-        user_embeddings = all_embeddings[user_ids]
-        item_embeddings = all_embeddings[item_ids]
+        all_embeddings = self._build_cf_embeddings()  # (user_num + entity_num, concatentated_dim)
+        user_embeddings = all_embeddings[user_ids]  # (user_num, concatentated_dim)
+        item_embeddings = all_embeddings[item_ids]  # (item_num, concatentated_dim)
         return torch.matmul(input=user_embeddings, other=item_embeddings.transpose(0, 1))
 
     def build_optimizer(self, lr: float) -> None:

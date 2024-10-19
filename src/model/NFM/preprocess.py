@@ -192,11 +192,15 @@ class Preprocess:
         sampled_positive_problem_ids: list[int]
             List of sampled positive problem ids.
         """
-        positive_problem_ids: list[int] = rng.choice(
-            a=self.interaction_dict[target_user_id], size=num, replace=False
-        ).tolist()
+        positive_problem_ids = self.interaction_dict[target_user_id]
+        sample_positive_problem_ids: set[int] = set()
 
-        return positive_problem_ids
+        while len(sample_positive_problem_ids) < num:
+            random_idx = rng.integers(low=0, high=len(positive_problem_ids), size=1)[0]
+            positive_problem_id = positive_problem_ids[random_idx]
+            sample_positive_problem_ids.add(positive_problem_id)
+
+        return list(sample_positive_problem_ids)
 
     def _sample_negative_problems(self, target_user_id: int, num: int) -> list[int]:
         """
@@ -218,9 +222,9 @@ class Preprocess:
         negative_problem_ids: set[int] = set()
 
         while len(negative_problem_ids) < num:
-            negative_problem_id = rng.integers(low=0, high=self.item_num)
-            if negative_problem_id not in positive_problem_ids:
-                negative_problem_ids.add(negative_problem_id)
+            negative_item_id = rng.integers(low=0, high=self.item_num, size=1)[0]
+            if negative_item_id not in positive_problem_ids:
+                negative_problem_ids.add(negative_item_id)
 
         return list(negative_problem_ids)
 
@@ -239,25 +243,27 @@ class Preprocess:
             List of user ids.
         positive_problem_ids: torch.Tensor
             List of positive problem ids.
-        negative_item_ids: torch.Tensor
+        negative_problem_ids: torch.Tensor
             List of negative problem ids.
         """
-        allow_duplicates = True
-        if self._train_batch_size <= self.user_num:
-            allow_duplicates = False
-        user_ids = rng.choice(
-            a=[user.id for user in self._dataset.users],
-            size=self._train_batch_size,
-            replace=allow_duplicates,
-        )
+        exist_users = list(self.interaction_dict.keys())
+        if self._train_batch_size <= len(exist_users):
+            batch_users = rng.choice(exist_users, size=self._train_batch_size, replace=False)
+        else:
+            batch_users = rng.choice(exist_users, size=self._train_batch_size, replace=True)
+
         positive_problem_ids = []
-        negative_item_ids = []
+        negative_problem_ids = []
 
-        for user_id in user_ids:
-            positive_problem_ids.extend(self._sample_positive_problems(target_user_id=user_id, num=1))
-            negative_item_ids.extend(self._sample_negative_problems(target_user_id=user_id, num=1))
+        for user_id in batch_users:
+            positive_problem_ids.extend(self._sample_positive_problems(user_id, 1))
+            negative_problem_ids.extend(self._sample_negative_problems(user_id, 1))
 
-        return torch.LongTensor(user_ids), torch.LongTensor(positive_problem_ids), torch.LongTensor(negative_item_ids)
+        return (
+            torch.LongTensor(batch_users),
+            torch.LongTensor(positive_problem_ids),
+            torch.LongTensor(negative_problem_ids),
+        )
 
     def _convert_to_tensor(
         self,

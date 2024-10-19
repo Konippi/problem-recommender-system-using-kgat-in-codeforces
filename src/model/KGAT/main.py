@@ -607,15 +607,15 @@ def recommend(args: Namespace) -> None:
             problem_cnt_dict[problem_id] = 0
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
-    # problem_with_count_visualizer.visualize(
-    #     problem_ids=list(problem_ids),
-    #     cnts=list(recommended_cnts),
-    #     title="Recommended Count for Each Problem",
-    #     x_label="Problem ID",
-    #     y_label="Recommended Count",
-    #     x_interval=1000,
-    #     y_interval=10,
-    # )
+    problem_with_count_visualizer.visualize(
+        problem_ids=list(problem_ids),
+        cnts=list(recommended_cnts),
+        title="Recommended Count for Each Problem",
+        x_label="Problem ID",
+        y_label="Recommended Count",
+        x_interval=1000,
+        y_interval=10,
+    )
 
 
 def dataset_visualize(args: Namespace) -> None:
