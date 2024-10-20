@@ -30,10 +30,10 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 150
+EPOCH_NUM = 500
 STOP_STEPS = 10
 TRAIN_BATCH_SIZE = 1024
-TEST_BATCH_SIZE = 32
+TEST_BATCH_SIZE = 64
 LEARNING_RATE = 0.0001
 METRICS_K_LIST = [20, 40, 60, 80, 100]
 
@@ -329,10 +329,10 @@ def train(args: Namespace) -> None:
 
         _, stop_flag = early_stopping(validation_recalls[k_min])
 
-        # if stop_flag:
-        #     best_epoch = epoch_idx
-        #     logger.info("Early stopping!")
-        #     break
+        if stop_flag:
+            best_epoch = epoch_idx
+            logger.info("Early stopping!")
+            break
 
     # Save model
     save_model(
@@ -377,7 +377,6 @@ def train(args: Namespace) -> None:
     save_metrics(dataset_name="validation")
 
     # Plot losses and metrics
-    best_epoch = EPOCH_NUM
     plot_loss(
         epoch_num=best_epoch,
         losses=train_losses,

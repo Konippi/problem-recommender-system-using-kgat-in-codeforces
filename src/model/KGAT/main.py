@@ -41,7 +41,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 basicConfig(level=INFO)
 logger = getLogger(__name__)
 
-EPOCH_NUM = 150
+EPOCH_NUM = 500
 STOP_STEPS = 10
 TRAIN_CF_BATCH_SIZE = 256
 TRAIN_KG_BATCH_SIZE = 512
@@ -384,10 +384,10 @@ def train(args: Namespace) -> None:
 
         _, stop_flag = early_stopping(validation_recalls[k_min])
 
-        # if stop_flag:
-        #     best_epoch = epoch_idx
-        #     logger.info("Early stopping!")
-        #     break
+        if stop_flag:
+            best_epoch = epoch_idx
+            logger.info("Early stopping!")
+            break
 
     # Save model
     save_model(
@@ -432,7 +432,6 @@ def train(args: Namespace) -> None:
     save_metrics(dataset_name="validation")
 
     # Plot losses and metrics
-    best_epoch = EPOCH_NUM
     plot_loss(
         epoch_num=best_epoch,
         losses=train_cf_losses,
@@ -605,6 +604,7 @@ def recommend(args: Namespace) -> None:
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
+
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
     problem_with_count_visualizer.visualize(
