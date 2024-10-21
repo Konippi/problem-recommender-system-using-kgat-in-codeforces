@@ -32,9 +32,9 @@ logger = getLogger(__name__)
 
 EPOCH_NUM = 500
 STOP_STEPS = 10
-TRAIN_BATCH_SIZE = 1024
-TEST_BATCH_SIZE = 64
-LEARNING_RATE = 0.0001
+TRAIN_BATCH_SIZE = 512
+TEST_BATCH_SIZE = 32
+LEARNING_RATE = 0.00001
 METRICS_K_LIST = [20, 40, 60, 80, 100]
 
 
@@ -277,6 +277,7 @@ def train(args: Namespace) -> None:
         train_loss = 0.0
         batch_num = len(preprocess.interaction_matrix) // TRAIN_BATCH_SIZE + 1
 
+        grad_norms = {name: 0.0 for name, _ in model.named_parameters()}
         with tqdm(initial=1, total=batch_num + 1, desc="Training") as bar:
             for _ in range(1, batch_num + 1):
                 positive_feature_values, negative_feature_values = preprocess.generate_train_batch()
@@ -289,10 +290,19 @@ def train(args: Namespace) -> None:
                     mode=NFMMode.TRAIN,
                 )
                 batch_loss.backward()
+
+                for name, param in model.named_parameters():
+                    if param.grad is not None:
+                        grad_norms[name] += param.grad.norm().item()
+
                 model.update_weights()
                 train_loss += batch_loss.item()
 
                 bar.update(1)
+
+        # Gradient norms
+        for name, norm in grad_norms.items():
+            logger.info("Param: %s, Avg Grad Norm: %.6f", name, norm / batch_num)
 
         train_losses.append(train_loss / batch_num)
         logger.info("[training] Epoch: %d, Loss: %.4f\n", epoch_idx, train_loss / batch_num)

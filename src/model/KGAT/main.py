@@ -562,25 +562,23 @@ def recommend(args: Namespace) -> None:
     model = load_model(model=KGAT(args=model_args), load_dir="./result/model")
     model.to(device)
 
-    user_ids = torch.arange(preprocess.user_num, dtype=torch.long).to(device)
+    user_ids = torch.arange(preprocess.user_num, dtype=torch.long)
     item_ids = torch.arange(preprocess.item_num, dtype=torch.long).to(device)
 
     user_ids_batch_list = [
         torch.LongTensor(user_ids[i : i + TEST_BATCH_SIZE]) for i in range(0, len(user_ids), TEST_BATCH_SIZE)
     ]
     cf_scores = []
-    for user_ids_batch in user_ids_batch_list:
-        user_ids = user_ids_batch.to(device)
 
+    for batch_user_ids in user_ids_batch_list:
         with torch.no_grad():
             batch_scores: torch.Tensor = model(
-                user_ids_batch,
+                batch_user_ids.to(device),
                 item_ids,
                 mode=KGATMode.PREDICT,
             )
-
-        batch_scores = batch_scores.cpu()
         cf_scores.append(batch_scores.cpu())
+
     scores = torch.cat(cf_scores)
 
     # Recommend top-k problems for each user
@@ -604,7 +602,6 @@ def recommend(args: Namespace) -> None:
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
-
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
     problem_with_count_visualizer.visualize(
@@ -614,7 +611,7 @@ def recommend(args: Namespace) -> None:
         x_label="Problem ID",
         y_label="Recommended Count",
         x_interval=1000,
-        y_interval=10,
+        y_interval=50,
     )
 
 

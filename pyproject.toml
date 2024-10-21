@@ -54,7 +54,7 @@ exclude = [
 select = ["ALL"]
 ignore = [
     "ANN101",
-    "COM812", "COM819",
+    "COM812", "COM819", "C901",
     "D",
     "E111", "E114", "E117",
     "ERA001",
