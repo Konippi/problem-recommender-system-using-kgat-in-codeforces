@@ -7,7 +7,7 @@ from src.constants import SEED
 from src.type import Entity, Triplet
 
 
-def visualize_kg(triplets: list[Triplet], entities: list[Entity]) -> None:
+def visualize(triplets: list[Triplet], entities: list[Entity]) -> None:
     triplets = random.sample(triplets, min(len(triplets), 300))
 
     g = nx.Graph()

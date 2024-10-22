@@ -19,7 +19,7 @@ import torch
 from tqdm import tqdm
 
 from src.constants import SEED
-from src.model.KGAT.kg_visualizer import visualize_kg
+from src.model.KGAT import kg_visualizer
 from src.model.KGAT.model import (
     KGAT,
     KGATArgs,
@@ -32,7 +32,7 @@ from src.utils.figure_drawer import plot_loss, plot_metrics
 from src.utils.metrics_calculator import Metrics, metrics_at_k
 
 if TYPE_CHECKING:
-    from src.type import Problem
+    from src.type import Entity, Problem, User
 
 # from src.model.KGAT.weights_visualizer import visualize_attention_scores
 
@@ -615,7 +615,7 @@ def recommend(args: Namespace) -> None:
     )
 
 
-def dataset_visualize(args: Namespace) -> None:
+def visualize_dataset(args: Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info("Device: %s", device)
 
@@ -657,7 +657,7 @@ def dataset_visualize(args: Namespace) -> None:
     )
 
 
-def kg_visualize(args: Namespace) -> None:
+def visualize_kg(args: Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info("Device: %s", device)
 
@@ -683,10 +683,10 @@ def kg_visualize(args: Namespace) -> None:
     entities = preprocess.entities
 
     # Visualize knowledge graph
-    visualize_kg(triplets=triplets, entities=entities)
+    kg_visualizer.visualize(triplets=triplets, entities=entities)
 
 
-def testing(args: Namespace) -> None:
+def visualize_attention(args: Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info("Device: %s", device)
 
@@ -730,12 +730,25 @@ def testing(args: Namespace) -> None:
     tails: list[int] = attentive_matrix_indices[1].tolist()  # len: user_num + entity_num
     attentions: list[float] = model.attentive_matrix.values().tolist()
 
-    for head, tail, attention in zip(heads, tails, attentions, strict=False):
-        if head < preprocess.user_num or tail < preprocess.user_num:
-            continue
-        head_entity = idx_to_entity[head - preprocess.user_num]
-        tail_entity = idx_to_entity[tail - preprocess.user_num]
-        with Path("./result/attention_scores.txt").open("a") as f:
+    result_file = Path("./result/attention_scores.txt")
+    if result_file.exists():
+        result_file.unlink()
+
+    with result_file.open("a") as f:
+        for head, tail, attention in zip(heads, tails, attentions, strict=False):
+            head_entity: User | Entity
+            tail_entity: User | Entity
+
+            if head < preprocess.user_num:
+                head_entity = preprocess.user_id_map[head]
+            else:
+                head_entity = idx_to_entity[head - preprocess.user_num]
+
+            if tail < preprocess.user_num:
+                tail_entity = preprocess.user_id_map[tail]
+            else:
+                tail_entity = idx_to_entity[tail - preprocess.user_num]
+
             f.write(f"{head_entity} -> {tail_entity}: {attention:.6f}\n")
 
 
@@ -745,20 +758,20 @@ if __name__ == "__main__":
     parser.add_argument("--predict", help="for prediction", action="store_true")
     parser.add_argument("--recommend", help="for recommendation", action="store_true")
     parser.add_argument(
-        "--dataset_visualize", help="for dataset visualization", type=str, choices=["training", "test", "validation"]
+        "--visualize_dataset", help="for dataset visualization", type=str, choices=["training", "test", "validation"]
     )
-    parser.add_argument("--kg_visualize", help="for knowledge graph visualization", action="store_true")
-    parser.add_argument("--testing", help="for testing", action="store_true")
+    parser.add_argument("--visualize_kg", help="for knowledge graph visualization", action="store_true")
+    parser.add_argument("--visualize_attention", help="for attention visualization", action="store_true")
     args = parser.parse_args()
     if args.predict:
         predict(args=args)
     elif args.recommend:
         recommend(args=args)
-    elif args.dataset_visualize:
-        dataset_visualize(args=args)
-    elif args.kg_visualize:
-        kg_visualize(args=args)
-    elif args.testing:
-        testing(args=args)
+    elif args.visualize_dataset:
+        visualize_dataset(args=args)
+    elif args.visualize_kg:
+        visualize_kg(args=args)
+    elif args.visualize_attention:
+        visualize_attention(args=args)
     else:
         train(args=args)

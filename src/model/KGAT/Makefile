@@ -19,15 +19,15 @@ predict:
 .PHONY: visualize
 # Need argument: dataset=training or dataset=test or dataset=validation
 visualize-dataset-sm:
-	@rye run python main.py --sm --dataset_visualize=$(dataset)
+	@rye run python main.py --sm --visualize_dataset=$(dataset)
 
 visualize-kg-sm:
-	@rye run python main.py --sm --kg_visualize
+	@rye run python main.py --sm --visualize_kg
+
+visualize-attention-sm:
+	@rye run python main.py --sm --visualize_attention
 
 .PHONY: recommend
 recommend-sm:
 	@rye run python main.py --sm --recommend
 
-.PHONY: testing
-testing-sm:
-	@rye run python main.py --sm --testing
