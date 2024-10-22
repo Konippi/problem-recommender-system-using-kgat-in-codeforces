@@ -343,7 +343,7 @@ class Preprocess:
         # Split submission history into train, test, and validation.
         all_submission_history = self._split_submission_history()
 
-        # Generate triplets for train.
+        # Train dataset.
         self._train_dataset = Dataset(
             users=self._dataset.users,
             all_submission_history=[submission_history.train for submission_history in all_submission_history],
@@ -352,7 +352,7 @@ class Preprocess:
             relations=self._dataset.relations,
         )
 
-        # Generate triplets for test.
+        # Test dataset.
         self._test_dataset = Dataset(
             users=self._dataset.users,
             all_submission_history=[submission_history.test for submission_history in all_submission_history],
@@ -361,7 +361,7 @@ class Preprocess:
             relations=self._dataset.relations,
         )
 
-        # Generate triplets for validation.
+        # Validation dataset.
         self._validation_dataset = Dataset(
             users=self._dataset.users,
             all_submission_history=[submission_history.validation for submission_history in all_submission_history],

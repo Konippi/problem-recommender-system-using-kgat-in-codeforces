@@ -723,17 +723,20 @@ def testing(args: Namespace) -> None:
     # difficulty_map = {
     #     problem.id: problem.rating.value for problem in preprocess.problems if problem.rating is not None
     # }
-    # idx_to_entity = dict(enumerate(preprocess.entities))
+    idx_to_entity = dict(enumerate(preprocess.entities))
+    attentive_matrix_indices = model.attentive_matrix.indices()  # [head_attentions[], tail_attentions[]]
 
-    # heads: list[int] = model.attentive_matrix.indices()[0].tolist()
-    # tails: list[int] = model.attentive_matrix.indices()[1].tolist()
-    # attentions: list[float] = model.attentive_matrix.values().tolist()
+    heads: list[int] = attentive_matrix_indices[0].tolist()  # len: user_num + entity_num
+    tails: list[int] = attentive_matrix_indices[1].tolist()  # len: user_num + entity_num
+    attentions: list[float] = model.attentive_matrix.values().tolist()
 
-    # for i in range(len(heads)):
-    #     head = idx_to_entity[heads[i]]
-    #     tail = idx_to_entity[tails[i]]
-    #     attention = attentions[i]
-    #     print(head, tail, attention)
+    for head, tail, attention in zip(heads, tails, attentions, strict=False):
+        if head < preprocess.user_num or tail < preprocess.user_num:
+            continue
+        head_entity = idx_to_entity[head - preprocess.user_num]
+        tail_entity = idx_to_entity[tail - preprocess.user_num]
+        with Path("./result/attention_scores.txt").open("a") as f:
+            f.write(f"{head_entity} -> {tail_entity}: {attention:.6f}\n")
 
 
 if __name__ == "__main__":
