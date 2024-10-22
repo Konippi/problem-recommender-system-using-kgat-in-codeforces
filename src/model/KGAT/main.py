@@ -708,6 +708,36 @@ def visualize_attention(args: Namespace) -> None:
     preprocess.run(dataset_name="training")
     logger.info("Preprocessed!\n====================================")
 
+    # idx_to_entity = dict(enumerate(preprocess.entities))
+    # attentive_matrix_indices = (
+    #     preprocess.attentive_matrix.coalesce().indices()
+    # )  # [head_attentions[], tail_attentions[]]
+
+    # heads: list[int] = attentive_matrix_indices[0].tolist()  # len: user_num + entity_num
+    # tails: list[int] = attentive_matrix_indices[1].tolist()  # len: user_num + entity_num
+    # attentions: list[float] = preprocess.attentive_matrix.coalesce().values().tolist()
+
+    # result_file = Path("./result/attention_scores.txt")
+    # if result_file.exists():
+    #     result_file.unlink()
+
+    # with result_file.open("a") as f:
+    #     for head, tail, attention in zip(heads, tails, attentions, strict=False):
+    #         head_entity: User | Entity
+    #         tail_entity: User | Entity
+
+    #         if head < preprocess.user_num:
+    #             head_entity = preprocess.user_id_map[head]
+    #         else:
+    #             head_entity = idx_to_entity[head - preprocess.user_num]
+
+    #         if tail < preprocess.user_num:
+    #             tail_entity = preprocess.user_id_map[tail]
+    #         else:
+    #             tail_entity = idx_to_entity[tail - preprocess.user_num]
+
+    #         f.write(f"{head_entity} -> {tail_entity}: {attention:.6f}\n")
+
     # Build model
     logger.info("Building model...")
     model_args = KGATArgs(
@@ -718,11 +748,6 @@ def visualize_attention(args: Namespace) -> None:
     model = load_model(model=KGAT(args=model_args), load_dir="./result/model")
     model.to(device)
 
-    # problem_map = {problem.id: problem for problem in preprocess.problems}
-    # tag_map = {tag.id: tag for problem in preprocess.problems for tag in problem.tags}
-    # difficulty_map = {
-    #     problem.id: problem.rating.value for problem in preprocess.problems if problem.rating is not None
-    # }
     idx_to_entity = dict(enumerate(preprocess.entities))
     attentive_matrix_indices = model.attentive_matrix.indices()  # [head_attentions[], tail_attentions[]]
 
