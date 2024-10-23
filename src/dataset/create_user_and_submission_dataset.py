@@ -19,7 +19,7 @@ from src.constants import HTTP_USER_AGENT
 from src.type import Problem, Submission, SubmissionHistory, User
 from src.utils import json_loader, json_writer, retry_settings
 
-SM_USER_NUM = 1000
+SM_USER_NUM = 500
 RATE_LIMIT_INTERVAL = 1.0
 MINIMUM_SUBMISSION_NUM = 10
 
