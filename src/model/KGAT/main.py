@@ -646,6 +646,7 @@ def visualize_dataset(args: Namespace) -> None:
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_with_submission_cnt:
             problem_with_submission_cnt[problem_id] = 0
+
     problem_with_count_visualizer.visualize(
         problem_ids=list(range(preprocess.item_num)),
         cnts=list(problem_with_submission_cnt.values()),
@@ -683,7 +684,12 @@ def visualize_kg(args: Namespace) -> None:
     entities = preprocess.entities
 
     # Visualize knowledge graph
-    kg_visualizer.visualize(triplets=triplets, entities=entities)
+    kg_visualizer.visualize(
+        triplets=triplets,
+        entities=entities,
+        triplet_num=5000,
+        highlight_nodes=["T10", "T14", "T18"],
+    )
 
 
 def visualize_attention(args: Namespace) -> None:
@@ -707,36 +713,6 @@ def visualize_attention(args: Namespace) -> None:
     )
     preprocess.run(dataset_name="training")
     logger.info("Preprocessed!\n====================================")
-
-    # idx_to_entity = dict(enumerate(preprocess.entities))
-    # attentive_matrix_indices = (
-    #     preprocess.attentive_matrix.coalesce().indices()
-    # )  # [head_attentions[], tail_attentions[]]
-
-    # heads: list[int] = attentive_matrix_indices[0].tolist()  # len: user_num + entity_num
-    # tails: list[int] = attentive_matrix_indices[1].tolist()  # len: user_num + entity_num
-    # attentions: list[float] = preprocess.attentive_matrix.coalesce().values().tolist()
-
-    # result_file = Path("./result/attention_scores.txt")
-    # if result_file.exists():
-    #     result_file.unlink()
-
-    # with result_file.open("a") as f:
-    #     for head, tail, attention in zip(heads, tails, attentions, strict=False):
-    #         head_entity: User | Entity
-    #         tail_entity: User | Entity
-
-    #         if head < preprocess.user_num:
-    #             head_entity = preprocess.user_id_map[head]
-    #         else:
-    #             head_entity = idx_to_entity[head - preprocess.user_num]
-
-    #         if tail < preprocess.user_num:
-    #             tail_entity = preprocess.user_id_map[tail]
-    #         else:
-    #             tail_entity = idx_to_entity[tail - preprocess.user_num]
-
-    #         f.write(f"{head_entity} -> {tail_entity}: {attention:.6f}\n")
 
     # Build model
     logger.info("Building model...")
