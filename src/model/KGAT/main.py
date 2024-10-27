@@ -687,8 +687,28 @@ def visualize_kg(args: Namespace) -> None:
     kg_visualizer.visualize(
         triplets=triplets,
         entities=entities,
-        triplet_num=5000,
-        highlight_nodes=["T10", "T14", "T18"],
+        highlight_nodes=[
+            "P11645",
+            "P11644",
+            "P11643",
+            "P11642",
+            "P11463",
+            "P11569",
+            "P11538",
+            "P11541",
+            "P11571",
+            "P11542",
+            "P11141",
+            "P11537",
+            "P11462",
+            "P235",
+            "P11539",
+            "P11540",
+            "P260",
+            "P11459",
+            "P11407",
+            "P11460",
+        ],
     )
 
 
@@ -755,14 +775,37 @@ def visualize_attention(args: Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sm", help="for using small dataset", action="store_true")
-    parser.add_argument("--predict", help="for prediction", action="store_true")
-    parser.add_argument("--recommend", help="for recommendation", action="store_true")
     parser.add_argument(
-        "--visualize_dataset", help="for dataset visualization", type=str, choices=["training", "test", "validation"]
+        "--sm",
+        help="for using small dataset",
+        action="store_true",
     )
-    parser.add_argument("--visualize_kg", help="for knowledge graph visualization", action="store_true")
-    parser.add_argument("--visualize_attention", help="for attention visualization", action="store_true")
+    parser.add_argument(
+        "--predict",
+        help="for prediction",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--recommend",
+        help="for recommendation",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--visualize_dataset",
+        help="for dataset visualization",
+        type=str,
+        choices=["training", "test", "validation"],
+    )
+    parser.add_argument(
+        "--visualize_kg",
+        help="for knowledge graph visualization",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--visualize_attention",
+        help="for attention visualization",
+        action="store_true",
+    )
     args = parser.parse_args()
     if args.predict:
         predict(args=args)

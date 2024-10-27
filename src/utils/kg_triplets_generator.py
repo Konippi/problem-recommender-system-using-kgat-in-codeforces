@@ -83,7 +83,7 @@ def create_triplets_problem_with_tag(
     return entities, list(triplets)
 
 
-def create_triplets_problem_with_difficulty(
+def create_triplets_problem_with_rating(
     dataset: Dataset,
     entity_dict: EntityDict,
     start_entity_id: int,
@@ -146,7 +146,7 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     all_triplets.extend(tagged_triplets)
 
     # Create triplets for problem with difficulty
-    has_difficulty_entities, has_difficulty_triplets = create_triplets_problem_with_difficulty(
+    has_difficulty_entities, has_difficulty_triplets = create_triplets_problem_with_rating(
         dataset=dataset,
         entity_dict=entity_dict,
         start_entity_id=len(entities),
