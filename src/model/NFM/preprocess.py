@@ -8,7 +8,7 @@ from scipy import sparse as sp
 from sklearn.model_selection import train_test_split
 
 from src.constants import SEED
-from src.type import Dataset, SplitSubmissionHistoryByUser, SubmissionHistory
+from src.type import Dataset, SplitSubmissionHistoryByUser, Submission, SubmissionHistory
 from src.utils import kg_triplets_generator
 
 logger = getLogger(__name__)
@@ -27,6 +27,22 @@ class Preprocess:
         self._dataset = dataset
         self._train_batch_size = train_batch_size
         self._test_batch_size = test_batch_size
+
+    def _filter_submission_for_same_problem(self) -> None:
+        """
+        Filter submission for the same problem.
+        """
+        for submission_history in self._dataset.all_submission_history:
+            submissions_by_user = submission_history.submissions
+            unique_submissions: dict[int, Submission] = {}
+            for submission in submissions_by_user:
+                problem_id = submission.problem.id
+                if (
+                    problem_id not in unique_submissions
+                    or submission.created_at < unique_submissions[problem_id].created_at
+                ):
+                    unique_submissions[problem_id] = submission
+            submission_history.submissions = list(unique_submissions.values())
 
     def _split_submission_history(self) -> list[SplitSubmissionHistoryByUser]:
         """
@@ -340,6 +356,9 @@ class Preprocess:
         return self._convert_to_tensor(coo_matrix=sp.hstack([batch_user_matrix, batch_feature_matrix]).tocoo())
 
     def run(self, dataset_name: Literal["training", "test", "validation"]) -> None:
+        # Filter submission for the same problem.
+        self._filter_submission_for_same_problem()
+
         # Split submission history into train, test, and validation.
         all_submission_history = self._split_submission_history()
 

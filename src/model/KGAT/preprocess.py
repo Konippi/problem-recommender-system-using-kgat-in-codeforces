@@ -10,7 +10,7 @@ import torch
 from sklearn.model_selection import train_test_split
 
 from src.constants import SEED
-from src.type import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, SubmissionHistory
+from src.type import Dataset, EntityID, RelationID, SplitSubmissionHistoryByUser, Submission, SubmissionHistory
 from src.utils import kg_triplets_generator
 
 logger = getLogger(__name__)
@@ -35,6 +35,22 @@ class Preprocess:
         self.problem_id_map = {entity.id: entity for entity in self._dataset.problems}
         self.relation_id_map = {relation.id: relation for relation in self._dataset.relations}
         self.device = device
+
+    def _filter_submission_for_same_problem(self) -> None:
+        """
+        Filter submission for the same problem.
+        """
+        for submission_history in self._dataset.all_submission_history:
+            submissions_by_user = submission_history.submissions
+            unique_submissions: dict[int, Submission] = {}
+            for submission in submissions_by_user:
+                problem_id = submission.problem.id
+                if (
+                    problem_id not in unique_submissions
+                    or submission.created_at < unique_submissions[problem_id].created_at
+                ):
+                    unique_submissions[problem_id] = submission
+            submission_history.submissions = list(unique_submissions.values())
 
     def _split_submission_history(self) -> list[SplitSubmissionHistoryByUser]:
         """
@@ -93,6 +109,34 @@ class Preprocess:
         logger.info("validation submissions num (with duplicate submissions): %s", validation_num)
 
         return all_split_submission_history_by_user
+
+    def _get_interaction_matrix(
+        self, all_submission_history: list[SubmissionHistory]
+    ) -> tuple[np.ndarray, dict[int, list[int]]]:
+        """
+        Get interaction matrix.
+
+        Parameters
+        ----------
+        all_submission_history: list[SubmissionHistory]
+            List of submission history.
+
+        Returns
+        -------
+        interaction_matrix: np.ndarray
+            Interaction matrix.
+        interaction_map: dict[int, list[int]]
+            Interaction map.
+        """
+        interaction_map = {
+            submission_history.user.id: list({submission.problem.id for submission in submission_history.submissions})
+            for submission_history in all_submission_history
+        }
+        interaction_matrix = [
+            [user_id, problem_id] for user_id, problem_ids in interaction_map.items() for problem_id in problem_ids
+        ]
+
+        return np.array(interaction_matrix), interaction_map
 
     def _get_statistics(self) -> None:
         """
@@ -485,36 +529,10 @@ class Preprocess:
 
         return heads, positive_relation_batch, positive_tail_batch, negative_tail_batch
 
-    def _get_interaction_matrix(
-        self, all_submission_history: list[SubmissionHistory]
-    ) -> tuple[np.ndarray, dict[int, list[int]]]:
-        """
-        Get interaction matrix.
-
-        Parameters
-        ----------
-        all_submission_history: list[SubmissionHistory]
-            List of submission history.
-
-        Returns
-        -------
-        interaction_matrix: np.ndarray
-            Interaction matrix.
-        interaction_map: dict[int, list[int]]
-            Interaction map.
-        """
-        interaction_map = {
-            submission_history.user.id: list({submission.problem.id for submission in submission_history.submissions})
-            for submission_history in all_submission_history
-        }
-
-        interaction_matrix = [
-            [user_id, problem_id] for user_id, problem_ids in interaction_map.items() for problem_id in problem_ids
-        ]
-
-        return np.array(interaction_matrix), interaction_map
-
     def run(self, dataset_name: Literal["training", "test", "validation"]) -> None:
+        # Filter submission for the same problem.
+        self._filter_submission_for_same_problem()
+
         # Split submission history into train, test, and validation.
         all_submission_history = self._split_submission_history()
 

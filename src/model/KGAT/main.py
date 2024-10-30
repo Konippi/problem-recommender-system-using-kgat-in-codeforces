@@ -602,6 +602,7 @@ def recommend(args: Namespace) -> None:
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
+
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
     problem_with_count_visualizer.visualize(
@@ -634,7 +635,7 @@ def visualize_dataset(args: Namespace) -> None:
         kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
-    dataset_name = args.dataset_visualize
+    dataset_name = args.visualize_dataset
     if dataset_name is None:
         msg = "dataset_name must be provided."
         raise ValueError(msg)
