@@ -5,17 +5,11 @@ from typing import Literal
 
 from src.type import Dataset, Entity, EntityID, Relation, RelationType, Triplet
 from src.utils import json_writer
-from src.utils.data_loader import DataLoader
 
 EntityDict = dict[tuple[Literal["problem", "contest_division", "tag", "rating"], int], EntityID]
 
 
-def load_dataset(args: Namespace) -> Dataset:
-    data_loader = DataLoader(dataset_dir=Path("dataset"))
-    return data_loader.load_dataset(args=args)
-
-
-def add_problems_to_entities(dataset: Dataset, entity_dict: EntityDict, start_entity_id: int) -> list[Entity]:
+def _add_problems_to_entities(dataset: Dataset, entity_dict: EntityDict, start_entity_id: int) -> list[Entity]:
     entity_id = start_entity_id
     entities = []
 
@@ -28,7 +22,7 @@ def add_problems_to_entities(dataset: Dataset, entity_dict: EntityDict, start_en
     return entities
 
 
-def create_triplets_problem_with_contest_division(
+def _create_triplets_problem_with_contest_division(
     dataset: Dataset,
     entity_dict: EntityDict,
     start_entity_id: int,
@@ -57,7 +51,7 @@ def create_triplets_problem_with_contest_division(
     return entities, list(triplets)
 
 
-def create_triplets_problem_with_tag(
+def _create_triplets_problem_with_tag(
     dataset: Dataset,
     entity_dict: EntityDict,
     start_entity_id: int,
@@ -83,7 +77,7 @@ def create_triplets_problem_with_tag(
     return entities, list(triplets)
 
 
-def create_triplets_problem_with_rating(
+def _create_triplets_problem_with_rating(
     dataset: Dataset,
     entity_dict: EntityDict,
     start_entity_id: int,
@@ -120,7 +114,7 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     entity_dict: EntityDict = {}
 
     # Add all problems to entities
-    problem_entities = add_problems_to_entities(
+    problem_entities = _add_problems_to_entities(
         dataset=dataset,
         entity_dict=entity_dict,
         start_entity_id=0,
@@ -128,7 +122,7 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     entities.extend(problem_entities)
 
     # Create triplets for problem with contest division
-    contest_division_entities, contest_division_triplets = create_triplets_problem_with_contest_division(
+    contest_division_entities, contest_division_triplets = _create_triplets_problem_with_contest_division(
         dataset=dataset,
         entity_dict=entity_dict,
         start_entity_id=len(entities),
@@ -137,7 +131,7 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     all_triplets.extend(contest_division_triplets)
 
     # Create triplets for problem with tag
-    tagged_entities, tagged_triplets = create_triplets_problem_with_tag(
+    tagged_entities, tagged_triplets = _create_triplets_problem_with_tag(
         dataset=dataset,
         entity_dict=entity_dict,
         start_entity_id=len(entities),
@@ -146,7 +140,7 @@ def generate(args: Namespace, dataset: Dataset) -> tuple[list[Entity], list[Rela
     all_triplets.extend(tagged_triplets)
 
     # Create triplets for problem with difficulty
-    has_difficulty_entities, has_difficulty_triplets = create_triplets_problem_with_rating(
+    has_difficulty_entities, has_difficulty_triplets = _create_triplets_problem_with_rating(
         dataset=dataset,
         entity_dict=entity_dict,
         start_entity_id=len(entities),
