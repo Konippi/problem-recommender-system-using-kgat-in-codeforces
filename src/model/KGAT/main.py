@@ -605,6 +605,7 @@ def recommend(args: Namespace) -> None:
 
     problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
+
     problem_with_count_visualizer.visualize(
         problem_ids=list(problem_ids),
         cnts=list(recommended_cnts),
@@ -635,10 +636,12 @@ def visualize_dataset(args: Namespace) -> None:
         kg_batch_size=TRAIN_KG_BATCH_SIZE,
         device=device,
     )
+
     dataset_name = args.visualize_dataset
     if dataset_name is None:
         msg = "dataset_name must be provided."
         raise ValueError(msg)
+
     preprocess.run(dataset_name=dataset_name)
     logger.info("Preprocessed!\n====================================")
 
@@ -648,9 +651,12 @@ def visualize_dataset(args: Namespace) -> None:
         if problem_id not in problem_with_submission_cnt:
             problem_with_submission_cnt[problem_id] = 0
 
+    sorted_problem_with_submission_cnt = sorted(problem_with_submission_cnt.items())
+    problem_ids, submission_cnts = zip(*sorted_problem_with_submission_cnt, strict=False)
+
     problem_with_count_visualizer.visualize(
-        problem_ids=list(range(preprocess.item_num)),
-        cnts=list(problem_with_submission_cnt.values()),
+        problem_ids=list(problem_ids),
+        cnts=list(submission_cnts),
         title="Submission Count for Each Problem",
         x_label="Problem ID",
         y_label="Submission Count",

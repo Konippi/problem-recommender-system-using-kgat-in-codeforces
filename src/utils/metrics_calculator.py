@@ -14,7 +14,7 @@ class Metrics(StrEnum):
 MetricsDict = dict[int, dict[Metrics, NDArray[np.float32]]]
 
 
-def precision_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
+def _precision_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate precision@k for a batch of hits.
 
@@ -34,7 +34,7 @@ def precision_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float3
     return result
 
 
-def recall_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
+def _recall_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate recall@k for a batch of hits.
 
@@ -55,7 +55,7 @@ def recall_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     return tp / tp_with_fn
 
 
-def ndcg_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
+def _ndcg_at_k_batch(hits: NDArray[np.float32], k: int) -> NDArray[np.float32]:
     """
     Calculate NDCG@k for a batch of hits.
 
@@ -124,8 +124,8 @@ def metrics_at_k(
     metrics_dict: MetricsDict = {}
     for k in k_list:
         metrics_dict[k] = {}
-        metrics_dict[k][Metrics.PRECISION] = precision_at_k_batch(hits, k)
-        metrics_dict[k][Metrics.RECALL] = recall_at_k_batch(hits, k)
-        metrics_dict[k][Metrics.NDCG] = ndcg_at_k_batch(hits, k)
+        metrics_dict[k][Metrics.PRECISION] = _precision_at_k_batch(hits, k)
+        metrics_dict[k][Metrics.RECALL] = _recall_at_k_batch(hits, k)
+        metrics_dict[k][Metrics.NDCG] = _ndcg_at_k_batch(hits, k)
 
     return metrics_dict
