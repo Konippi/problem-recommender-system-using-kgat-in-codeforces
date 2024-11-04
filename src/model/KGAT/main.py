@@ -603,7 +603,7 @@ def recommend(args: Namespace) -> None:
         if problem_id not in problem_cnt_dict:
             problem_cnt_dict[problem_id] = 0
 
-    problem_with_recommended_cnt = sorted(dict(problem_cnt_dict).items())
+    problem_with_recommended_cnt = sorted(problem_cnt_dict.items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
 
     problem_with_count_visualizer.visualize(
