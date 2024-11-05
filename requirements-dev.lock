@@ -19,7 +19,7 @@ contourpy==1.3.0
 cycler==0.12.1
     # via matplotlib
 dataclasses-json==0.6.7
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 filelock==3.16.1
     # via torch
 fonttools==4.54.1
@@ -39,7 +39,7 @@ markupsafe==3.0.0
 marshmallow==3.22.0
     # via dataclasses-json
 matplotlib==3.9.2
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 mpmath==1.3.0
     # via sympy
 mypy==1.11.2
@@ -47,12 +47,12 @@ mypy-extensions==1.0.0
     # via mypy
     # via typing-inspect
 networkx==3.3
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
     # via torch
 numpy==1.26.4
     # via contourpy
     # via matplotlib
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
     # via scikit-learn
     # via scipy
 packaging==24.1
@@ -65,27 +65,27 @@ pyparsing==3.1.4
 python-dateutil==2.9.0.post0
     # via matplotlib
 python-dotenv==1.0.1
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 requests==2.32.3
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 ruff==0.6.9
 scikit-learn==1.5.2
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 scipy==1.14.1
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
     # via scikit-learn
 six==1.16.0
     # via python-dateutil
 sympy==1.13.3
     # via torch
 tenacity==9.0.0
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 threadpoolctl==3.5.0
     # via scikit-learn
 torch==2.2.2
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 tqdm==4.66.5
-    # via problem-recommender-method-using-lstm-in-codeforces
+    # via problem-recommender-method-using-kgat-in-codeforces
 typing-extensions==4.12.2
     # via mypy
     # via torch

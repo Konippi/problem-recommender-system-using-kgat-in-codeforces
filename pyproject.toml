@@ -1,7 +1,7 @@
 [project]
-name = "problem-recommender-method-using-lstm-in-codeforces"
+name = "problem-recommender-method-using-kgat-in-codeforces"
 version = "0.1.0"
-description = "Problem Recommender Method Using LSTM in Codeforces"
+description = "Problem Recommender Method Using KGAT in Codeforces"
 readme = "README.md"
 requires-python = ">= 3.11"
 authors = [
