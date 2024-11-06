@@ -26,7 +26,7 @@ from src.model.KGAT.model import (
     KGATMode,
 )
 from src.model.KGAT.preprocess import Preprocess
-from src.utils import problem_with_count_visualizer
+from src.utils import popularity_visualizer
 from src.utils.data_loader import DataLoader
 from src.utils.figure_drawer import plot_loss, plot_metrics
 from src.utils.metrics_calculator import Metrics, metrics_at_k
@@ -606,7 +606,7 @@ def recommend(args: Namespace) -> None:
     problem_with_recommended_cnt = sorted(problem_cnt_dict.items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
 
-    problem_with_count_visualizer.visualize(
+    popularity_visualizer.visualize(
         problem_ids=list(problem_ids),
         cnts=list(recommended_cnts),
         title="Recommended Count for Each Problem",
@@ -617,7 +617,7 @@ def recommend(args: Namespace) -> None:
     )
 
 
-def visualize_dataset(args: Namespace) -> None:
+def visualize_popularity(args: Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info("Device: %s", device)
 
@@ -637,7 +637,7 @@ def visualize_dataset(args: Namespace) -> None:
         device=device,
     )
 
-    dataset_name = args.visualize_dataset
+    dataset_name = args.visualize_popularity
     if dataset_name is None:
         msg = "dataset_name must be provided."
         raise ValueError(msg)
@@ -654,13 +654,12 @@ def visualize_dataset(args: Namespace) -> None:
     sorted_problem_with_submission_cnt = sorted(problem_with_submission_cnt.items())
     problem_ids, submission_cnts = zip(*sorted_problem_with_submission_cnt, strict=False)
 
-    problem_with_count_visualizer.visualize(
+    popularity_visualizer.visualize(
         problem_ids=list(problem_ids),
         cnts=list(submission_cnts),
         title="Submission Count for Each Problem",
         x_label="Problem ID",
         y_label="Submission Count",
-        x_interval=1000,
         y_interval=25,
     )
 
@@ -798,8 +797,8 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
-        "--visualize_dataset",
-        help="for dataset visualization",
+        "--visualize_popularity",
+        help="for popularity visualization",
         type=str,
         choices=["training", "test", "validation"],
     )
@@ -818,8 +817,8 @@ if __name__ == "__main__":
         predict(args=args)
     elif args.recommend:
         recommend(args=args)
-    elif args.visualize_dataset:
-        visualize_dataset(args=args)
+    elif args.visualize_popularity:
+        visualize_popularity(args=args)
     elif args.visualize_kg:
         visualize_kg(args=args)
     elif args.visualize_attention:

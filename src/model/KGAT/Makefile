@@ -18,9 +18,9 @@ predict:
 
 .PHONY: visualize
 # Need argument: dataset=training or dataset=test or dataset=validation
-visualize-dataset-sm:
-	@echo "Visualizing the dataset..."
-	@rye run python main.py --sm --visualize_dataset=$(dataset)
+visualize-popularity-sm:
+	@echo "Visualizing the popularity..."
+	@rye run python main.py --sm --visualize_popularity=$(dataset)
 
 visualize-kg-sm:
 	@echo "Visualizing the KG..."

@@ -605,6 +605,14 @@ class Preprocess:
         # Get statistics of dataset.
         self._get_statistics()
 
+        # Check duplicate problems in train, test, and validation.
+        for user_id in range(self.user_num):
+            train_problems = set(self.train_interaction_dict[user_id])
+            test_problems = set(self.test_interaction_dict[user_id])
+            validation_problems = set(self.validation_interaction_dict[user_id])
+            intersection_problems = train_problems & test_problems & validation_problems
+            assert len(intersection_problems) == 0  # noqa: S101
+
         # Get adjacency matrix.
         self._adjacency_matrices, self.adjacency_relations = self._get_adjacency_matrices()
 
