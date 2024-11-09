@@ -285,6 +285,12 @@ def train(args: Namespace) -> None:
 
     # Training
     logger.info("Start training...")
+
+    problem_with_submission_cnt = dict(Counter([row[1] for row in preprocess.interaction_matrix]))
+    for problem_id in range(preprocess.item_num):
+        if problem_id not in problem_with_submission_cnt:
+            problem_with_submission_cnt[problem_id] = 0
+
     for epoch_idx in range(1, EPOCH_NUM + 1):
         logger.info("--------------- Epoch: %d ---------------", epoch_idx)
         model.train()
@@ -350,7 +356,7 @@ def train(args: Namespace) -> None:
         relations = torch.tensor(preprocess.all_relation_indices).to(device)
         tails = torch.tensor(preprocess.all_tails).to(device)
         relation_indices = torch.tensor(preprocess.adjacency_relations).to(device)
-        model(heads, relations, tails, relation_indices, mode=KGATMode.UPDATE_ATTENTION)
+        model(heads, relations, tails, relation_indices, problem_with_submission_cnt, mode=KGATMode.UPDATE_ATTENTION)
 
         # Evaluate on test dataset
         train_precision, train_recall, train_ndcg = evaluate_on_dataset(

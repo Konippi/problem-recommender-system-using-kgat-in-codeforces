@@ -277,6 +277,7 @@ class KGAT(nn.Module):
         heads: torch.Tensor,
         tails: torch.Tensor,
         relation_idx: torch.Tensor,
+        problem_with_submission_cnt: dict[int, int],
     ) -> torch.Tensor:
         """
         Update the attention matrix.
@@ -289,6 +290,8 @@ class KGAT(nn.Module):
             The tail entities.
         relation: torch.Tensor
             The relation.
+        problem_with_submission_cnt: dict[int, int]
+            The problem with submission count.
 
         Returns
         -------
@@ -308,10 +311,30 @@ class KGAT(nn.Module):
             input=tail_embedding,
             other=trans_matrix_by_relation,
         )
-        return torch.sum(
+
+        attention = torch.sum(
             input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + _relation_embedding),
             dim=1,
         )
+
+        # Apply the popularity weights to the user-problem interactions
+        popularity_weights = torch.ones_like(attention)
+
+        # user -> problem
+        user_problem_relation_idx = 0
+        if relation_idx.item() == user_problem_relation_idx:
+            weights = torch.tensor([1 / (problem_with_submission_cnt[t.item()] + 1) for t in tails])
+            popularity_weights = weights / weights.sum()
+
+        # problem -> user
+        probelm_user_relation_idx = self._relation_num / 2
+        if relation_idx.item() == probelm_user_relation_idx:
+            weights = torch.tensor([1 / (problem_with_submission_cnt[h.item()] + 1) for h in heads])
+            popularity_weights = weights / weights.sum()
+
+        attention *= popularity_weights
+
+        return attention
 
     def _update_attention(
         self,
@@ -319,6 +342,7 @@ class KGAT(nn.Module):
         relations: torch.Tensor,
         tails: torch.Tensor,
         relation_indices: torch.Tensor,
+        problem_with_submission_cnt: dict[int, int],
     ) -> None:
         """
         Update the attention matrix.
@@ -333,6 +357,8 @@ class KGAT(nn.Module):
             The tail entities.
         relation_indices: torch.Tensor
             The relation indices.
+        problem_with_submission_cnt: dict[int, int]
+            The problem with submission count.
         """
         device = self.attentive_matrix.device
         rows, cols, attentions = [], [], []
@@ -345,6 +371,7 @@ class KGAT(nn.Module):
                 heads=batch_heads,
                 tails=batch_tails,
                 relation_idx=relation_idx,
+                problem_with_submission_cnt=problem_with_submission_cnt,
             )
             rows.append(batch_heads)
             cols.append(batch_tails)
