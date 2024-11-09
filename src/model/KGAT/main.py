@@ -311,6 +311,7 @@ def train(args: Namespace) -> None:
                     cf_batch_user_ids,
                     cf_batch_positive_problems,
                     cf_batch_negative_problems,
+                    problem_with_submission_cnt,
                     mode=KGATMode.TRAIN_CF,
                 )
                 cf_batch_loss.backward()
@@ -356,7 +357,7 @@ def train(args: Namespace) -> None:
         relations = torch.tensor(preprocess.all_relation_indices).to(device)
         tails = torch.tensor(preprocess.all_tails).to(device)
         relation_indices = torch.tensor(preprocess.adjacency_relations).to(device)
-        model(heads, relations, tails, relation_indices, problem_with_submission_cnt, mode=KGATMode.UPDATE_ATTENTION)
+        model(heads, relations, tails, relation_indices, mode=KGATMode.UPDATE_ATTENTION)
 
         # Evaluate on test dataset
         train_precision, train_recall, train_ndcg = evaluate_on_dataset(
