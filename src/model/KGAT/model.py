@@ -323,13 +323,17 @@ class KGAT(nn.Module):
         # user -> problem
         user_problem_relation_idx = 0
         if relation_idx.item() == user_problem_relation_idx:
-            weights = torch.tensor([1 / (problem_with_submission_cnt[t.item()] + 1) for t in tails])
+            weights = torch.tensor(
+                [1 / (problem_with_submission_cnt[t.item()] + 1) for t in tails], device=attention.device
+            )
             popularity_weights = weights / weights.sum()
 
         # problem -> user
-        probelm_user_relation_idx = self._relation_num / 2
+        probelm_user_relation_idx = self._relation_num // 2
         if relation_idx.item() == probelm_user_relation_idx:
-            weights = torch.tensor([1 / (problem_with_submission_cnt[h.item()] + 1) for h in heads])
+            weights = torch.tensor(
+                [1 / (problem_with_submission_cnt[h.item()] + 1) for h in heads], device=attention.device
+            )
             popularity_weights = weights / weights.sum()
 
         attention *= popularity_weights
