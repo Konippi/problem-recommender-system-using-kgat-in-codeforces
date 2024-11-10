@@ -311,7 +311,6 @@ def train(args: Namespace) -> None:
                     cf_batch_user_ids,
                     cf_batch_positive_problems,
                     cf_batch_negative_problems,
-                    problem_with_submission_cnt,
                     mode=KGATMode.TRAIN_CF,
                 )
                 cf_batch_loss.backward()

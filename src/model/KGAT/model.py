@@ -161,7 +161,6 @@ class KGAT(nn.Module):
         user_ids: torch.Tensor,
         positive_item_ids: torch.Tensor,
         negative_item_ids: torch.Tensor,
-        problem_with_submission_cnt: dict[int, int],
     ) -> torch.Tensor:
         """
         Calculate the loss for collaborative filtering.
@@ -174,8 +173,6 @@ class KGAT(nn.Module):
             The positive item IDs.
         negative_item_ids: torch.Tensor
             The negative item IDs.
-        problem_with_submission_cnt: dict[int, int]
-            The problem with submission count.
 
         Returns
         -------
@@ -189,28 +186,14 @@ class KGAT(nn.Module):
         positive_scores = torch.sum(user_embedding * positive_item_embedding, dim=1)  # (cf_batch_size,)
         negative_scores = torch.sum(user_embedding * negative_item_embedding, dim=1)  # (cf_batch_size,)
 
-        max_problem_id = max(problem_with_submission_cnt.keys()) + 1
-        problem_with_submission_cnt_tensor = torch.zeros(max_problem_id, device=user_ids.device)
-        for item_id, count in problem_with_submission_cnt.items():
-            problem_with_submission_cnt_tensor[item_id] = count
-
-        positive_cnts = problem_with_submission_cnt_tensor[positive_item_ids.long()]
-        negative_cnts = problem_with_submission_cnt_tensor[negative_item_ids.long()]
-
-        positive_weights = 1 / (torch.log1p(positive_cnts) + 1)
-        negative_weights = 1 / (torch.log1p(negative_cnts) + 1)
-
-        cf_loss = -(
-            positive_weights * F.logsigmoid(positive_scores) + negative_weights * F.logsigmoid(-negative_scores)
-        ).mean()
+        cf_loss = -F.logsigmoid(positive_scores - negative_scores).mean()
         l2_loss = (
             self._l2_mean_loss(user_embedding)
             + self._l2_mean_loss(positive_item_embedding)
             + self._l2_mean_loss(negative_item_embedding)
         )
-        loss: torch.Tensor = cf_loss + self._regularization_params[0] * l2_loss
 
-        return loss
+        return cf_loss + self._regularization_params[0] * l2_loss
 
     def _calc_kg_loss(
         self,
