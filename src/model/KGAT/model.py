@@ -277,6 +277,7 @@ class KGAT(nn.Module):
         self,
         tails: torch.Tensor,
         problem_with_submission_cnt: dict[int, int],
+        device: torch.device,
     ) -> torch.Tensor:
         """
         Calculate the popularity weights.
@@ -296,6 +297,7 @@ class KGAT(nn.Module):
         return torch.tensor(
             [1.0 / (np.log1p(problem_with_submission_cnt[tail.item()]) ** 2 + 1) for tail in tails],
             dtype=torch.float32,
+            device=device,
         )
 
     def _update_attention_by_batch(
@@ -345,7 +347,7 @@ class KGAT(nn.Module):
 
         user_to_problem_relation_idx = 0
         if relation_idx == user_to_problem_relation_idx:
-            attention *= self._calc_popularity_weights(tails, problem_with_submission_cnt)
+            attention *= self._calc_popularity_weights(tails, problem_with_submission_cnt, device=attention.device)
 
         return attention
 
