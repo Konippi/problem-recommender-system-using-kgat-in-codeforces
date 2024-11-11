@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import Any
 
+import numpy as np
 import torch
 from torch import nn
 from torch.nn import functional as F  # noqa: N812
@@ -272,11 +273,37 @@ class KGAT(nn.Module):
 
         return kg_loss + self._regularization_params[1] * l2_loss
 
+    def _calc_popularity_weights(
+        self,
+        tails: torch.Tensor,
+        problem_with_submission_cnt: dict[int, int],
+    ) -> torch.Tensor:
+        """
+        Calculate the popularity weights.
+
+        Parameters
+        ----------
+        tails: torch.Tensor
+            The tail entities.
+        problem_with_submission_cnt: dict[int, int]
+            The problem with submission count.
+
+        Returns
+        -------
+        weights: torch.Tensor
+            The weights.
+        """
+        return torch.tensor(
+            [1.0 / (np.log1p(problem_with_submission_cnt[tail.item()]) ** 2 + 1) for tail in tails],
+            dtype=torch.float32,
+        )
+
     def _update_attention_by_batch(
         self,
         heads: torch.Tensor,
         tails: torch.Tensor,
         relation_idx: torch.Tensor,
+        problem_with_submission_cnt: dict[int, int],
     ) -> torch.Tensor:
         """
         Update the attention matrix.
@@ -289,6 +316,8 @@ class KGAT(nn.Module):
             The tail entities.
         relation: torch.Tensor
             The relation.
+        problem_with_submission_cnt: dict[int, int]
+            The problem with submission count.
 
         Returns
         -------
@@ -309,10 +338,16 @@ class KGAT(nn.Module):
             other=trans_matrix_by_relation,
         )
 
-        return torch.sum(
+        attention = torch.sum(
             input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + _relation_embedding),
             dim=1,
         )
+
+        user_to_problem_relation_idx = 0
+        if relation_idx == user_to_problem_relation_idx:
+            attention *= self._calc_popularity_weights(tails, problem_with_submission_cnt)
+
+        return attention
 
     def _update_attention(
         self,
@@ -320,6 +355,7 @@ class KGAT(nn.Module):
         relations: torch.Tensor,
         tails: torch.Tensor,
         relation_indices: torch.Tensor,
+        problem_with_submission_cnt: dict[int, int],
     ) -> None:
         """
         Update the attention matrix.
@@ -334,6 +370,8 @@ class KGAT(nn.Module):
             The tail entities.
         relation_indices: torch.Tensor
             The relation indices.
+        problem_with_submission_cnt: dict[int, int]
+            The problem with submission count.
         """
         device = self.attentive_matrix.device
         rows, cols, attentions = [], [], []
@@ -346,6 +384,7 @@ class KGAT(nn.Module):
                 heads=batch_heads,
                 tails=batch_tails,
                 relation_idx=relation_idx,
+                problem_with_submission_cnt=problem_with_submission_cnt,
             )
             rows.append(batch_heads)
             cols.append(batch_tails)
@@ -361,6 +400,7 @@ class KGAT(nn.Module):
             size=torch.Size(self.attentive_matrix.shape),
         )
         attentive_matrix = torch.sparse.softmax(input=attentive_matrix.cpu(), dim=1)
+
         self.attentive_matrix.data = attentive_matrix.to(device)
 
     def _calc_score(

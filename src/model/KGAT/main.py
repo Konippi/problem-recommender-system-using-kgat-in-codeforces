@@ -26,7 +26,7 @@ from src.model.KGAT.model import (
     KGATMode,
 )
 from src.model.KGAT.preprocess import Preprocess
-from src.utils import popularity_visualizer
+from src.utils import bar_graph_visualizer
 from src.utils.data_loader import DataLoader
 from src.utils.figure_drawer import plot_loss, plot_metrics
 from src.utils.metrics_calculator import Metrics, metrics_at_k
@@ -356,7 +356,14 @@ def train(args: Namespace) -> None:
         relations = torch.tensor(preprocess.all_relation_indices).to(device)
         tails = torch.tensor(preprocess.all_tails).to(device)
         relation_indices = torch.tensor(preprocess.adjacency_relations).to(device)
-        model(heads, relations, tails, relation_indices, mode=KGATMode.UPDATE_ATTENTION)
+        model(
+            heads,
+            relations,
+            tails,
+            relation_indices,
+            problem_with_submission_cnt,
+            mode=KGATMode.UPDATE_ATTENTION,
+        )
 
         # Evaluate on test dataset
         train_precision, train_recall, train_ndcg = evaluate_on_dataset(
@@ -588,7 +595,7 @@ def recommend(args: Namespace) -> None:
     scores = torch.cat(cf_scores)
 
     # Recommend top-k problems for each user
-    k = 20
+    k = 100
     _, all_top_k_problem_indices = torch.topk(scores, k=k, dim=1)
 
     user_idx_with_recommended_problems: dict[int, list[Problem]] = defaultdict(list)
@@ -612,14 +619,15 @@ def recommend(args: Namespace) -> None:
     problem_with_recommended_cnt = sorted(problem_cnt_dict.items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
 
-    popularity_visualizer.visualize(
-        problem_ids=list(problem_ids),
-        cnts=list(recommended_cnts),
+    bar_graph_visualizer.visualize(
+        x=list(problem_ids),
+        y=list(recommended_cnts),
         title="Recommended Count for Each Problem",
         x_label="Problem ID",
         y_label="Recommended Count",
         x_interval=1000,
         y_interval=50,
+        ticks="both",
     )
 
 
@@ -660,13 +668,16 @@ def visualize_popularity(args: Namespace) -> None:
     sorted_problem_with_submission_cnt = sorted(problem_with_submission_cnt.items())
     problem_ids, submission_cnts = zip(*sorted_problem_with_submission_cnt, strict=False)
 
-    popularity_visualizer.visualize(
-        problem_ids=list(problem_ids),
-        cnts=list(submission_cnts),
+    popularities = sorted(submission_cnts, reverse=True)
+
+    bar_graph_visualizer.visualize(
+        x=list(problem_ids),
+        y=list(popularities),
         title="Submission Count for Each Problem",
         x_label="Problem ID",
         y_label="Submission Count",
         y_interval=25,
+        ticks="y",
     )
 
 
