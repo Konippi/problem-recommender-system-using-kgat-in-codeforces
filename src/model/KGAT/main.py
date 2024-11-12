@@ -719,28 +719,7 @@ def visualize_kg(args: Namespace) -> None:
     kg_visualizer.visualize(
         triplets=triplets,
         entities=entities,
-        highlight_nodes=[
-            "P11645",
-            "P11644",
-            "P11643",
-            "P11642",
-            "P11463",
-            "P11569",
-            "P11538",
-            "P11541",
-            "P11571",
-            "P11542",
-            "P11141",
-            "P11537",
-            "P11462",
-            "P235",
-            "P11539",
-            "P11540",
-            "P260",
-            "P11459",
-            "P11407",
-            "P11460",
-        ],
+        highlight_nodes=[],
     )
 
 

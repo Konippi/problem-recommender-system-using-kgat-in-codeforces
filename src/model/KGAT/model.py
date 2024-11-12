@@ -273,33 +273,6 @@ class KGAT(nn.Module):
 
         return kg_loss + self._regularization_params[1] * l2_loss
 
-    def _calc_popularity_weights(
-        self,
-        tails: torch.Tensor,
-        problem_with_submission_cnt: dict[int, int],
-        device: torch.device,
-    ) -> torch.Tensor:
-        """
-        Calculate the popularity weights.
-
-        Parameters
-        ----------
-        tails: torch.Tensor
-            The tail entities.
-        problem_with_submission_cnt: dict[int, int]
-            The problem with submission count.
-
-        Returns
-        -------
-        weights: torch.Tensor
-            The weights.
-        """
-        return torch.tensor(
-            [1.0 / (np.log1p(problem_with_submission_cnt[tail.item()]) ** 2 + 1) for tail in tails],
-            dtype=torch.float32,
-            device=device,
-        )
-
     def _update_attention_by_batch(
         self,
         heads: torch.Tensor,
