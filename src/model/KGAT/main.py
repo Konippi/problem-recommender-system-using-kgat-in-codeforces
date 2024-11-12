@@ -361,7 +361,6 @@ def train(args: Namespace) -> None:
             relations,
             tails,
             relation_indices,
-            problem_with_submission_cnt,
             mode=KGATMode.UPDATE_ATTENTION,
         )
 
@@ -594,9 +593,19 @@ def recommend(args: Namespace) -> None:
 
     scores = torch.cat(cf_scores)
 
+    train_problem_mask = torch.zeros_like(scores)
+    for user_idx in range(preprocess.user_num):
+        solved_problems = preprocess.interaction_dict[user_idx]
+        train_problems = preprocess.train_interaction_dict[user_idx]
+        mask = list(set(solved_problems + train_problems))
+        if mask:
+            train_problem_mask[user_idx, mask] = float("-inf")
+
+    masked_scores = scores + train_problem_mask
+
     # Recommend top-k problems for each user
-    k = 100
-    _, all_top_k_problem_indices = torch.topk(scores, k=k, dim=1)
+    k = 20
+    _, all_top_k_problem_indices = torch.topk(masked_scores, k=k, dim=1)
 
     user_idx_with_recommended_problems: dict[int, list[Problem]] = defaultdict(list)
     problem_cnt_dict: dict[int, int] = defaultdict(int)

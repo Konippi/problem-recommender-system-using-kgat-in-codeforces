@@ -305,7 +305,6 @@ class KGAT(nn.Module):
         heads: torch.Tensor,
         tails: torch.Tensor,
         relation_idx: torch.Tensor,
-        problem_with_submission_cnt: dict[int, int],
     ) -> torch.Tensor:
         """
         Update the attention matrix.
@@ -318,8 +317,6 @@ class KGAT(nn.Module):
             The tail entities.
         relation: torch.Tensor
             The relation.
-        problem_with_submission_cnt: dict[int, int]
-            The problem with submission count.
 
         Returns
         -------
@@ -340,16 +337,10 @@ class KGAT(nn.Module):
             other=trans_matrix_by_relation,
         )
 
-        attention = torch.sum(
+        return torch.sum(
             input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + _relation_embedding),
             dim=1,
         )
-
-        user_to_problem_relation_idx = 0
-        if relation_idx == user_to_problem_relation_idx:
-            attention *= self._calc_popularity_weights(tails, problem_with_submission_cnt, device=attention.device)
-
-        return attention
 
     def _update_attention(
         self,
@@ -357,7 +348,6 @@ class KGAT(nn.Module):
         relations: torch.Tensor,
         tails: torch.Tensor,
         relation_indices: torch.Tensor,
-        problem_with_submission_cnt: dict[int, int],
     ) -> None:
         """
         Update the attention matrix.
@@ -372,8 +362,6 @@ class KGAT(nn.Module):
             The tail entities.
         relation_indices: torch.Tensor
             The relation indices.
-        problem_with_submission_cnt: dict[int, int]
-            The problem with submission count.
         """
         device = self.attentive_matrix.device
         rows, cols, attentions = [], [], []
@@ -386,7 +374,6 @@ class KGAT(nn.Module):
                 heads=batch_heads,
                 tails=batch_tails,
                 relation_idx=relation_idx,
-                problem_with_submission_cnt=problem_with_submission_cnt,
             )
             rows.append(batch_heads)
             cols.append(batch_tails)
