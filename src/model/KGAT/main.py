@@ -705,9 +705,10 @@ def visualize_popularity(args: Namespace) -> None:
         y=list(submission_cnts),
         title="Submission Count for Each Tag",
         x_label="Tag ID",
+        x_interval=1,
         y_label="Submission Count",
-        y_interval=100,
-        ticks="y",
+        y_interval=500,
+        ticks="both",
     )
 
 
