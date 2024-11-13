@@ -677,15 +677,36 @@ def visualize_popularity(args: Namespace) -> None:
     sorted_problem_with_submission_cnt = sorted(problem_with_submission_cnt.items())
     problem_ids, submission_cnts = zip(*sorted_problem_with_submission_cnt, strict=False)
 
-    popularities = sorted(submission_cnts, reverse=True)
+    submission_popularities = sorted(submission_cnts, reverse=True)
 
     bar_graph_visualizer.visualize(
         x=list(problem_ids),
-        y=list(popularities),
+        y=list(submission_popularities),
         title="Submission Count for Each Problem",
         x_label="Problem ID",
         y_label="Submission Count",
         y_interval=25,
+        ticks="y",
+    )
+
+    # Visualize tag with submission count
+    problems = preprocess.problem_id_map.values()
+    tag_ids = {tag.id for problem in problems for tag in problem.tags}
+    tag_with_submission_cnt = dict(Counter([tag.id for problem in problems for tag in problem.tags]))
+    for tag_id in range(len(tag_ids)):
+        if tag_id not in tag_with_submission_cnt:
+            tag_with_submission_cnt[tag_id] = 0
+
+    sorted_tag_with_submission_cnt = sorted(tag_with_submission_cnt.items())
+    tag_ids, submission_cnts = zip(*sorted_tag_with_submission_cnt, strict=False)
+
+    bar_graph_visualizer.visualize(
+        x=list(tag_ids),
+        y=list(submission_cnts),
+        title="Submission Count for Each Tag",
+        x_label="Tag ID",
+        y_label="Submission Count",
+        y_interval=100,
         ticks="y",
     )
 
