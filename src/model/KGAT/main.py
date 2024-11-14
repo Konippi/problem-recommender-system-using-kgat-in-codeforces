@@ -614,12 +614,12 @@ def recommend(args: Namespace) -> None:
         recommended_problems = [
             preprocess.problem_id_map[int(problem_id)] for problem_id in all_top_k_problem_indices[user_idx]
         ]
-        # logger.info("Recommendations for user: %s", user.handle)
+        logger.info("Recommendations for user: %s", user.handle)
         for i, problem in enumerate(recommended_problems):
             user_idx_with_recommended_problems[user_idx].append(problem)
             problem_cnt_dict[problem.id] += 1
-            # logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
-        # logger.info("--------------------")
+            logger.info("%d. (%d, %s)", i + 1, problem.contest_id, problem.index)
+        logger.info("--------------------")
 
     for problem_id in range(preprocess.item_num):
         if problem_id not in problem_cnt_dict:
@@ -691,9 +691,9 @@ def visualize_popularity(args: Namespace) -> None:
 
     # Visualize tag with submission count
     problems = preprocess.problem_id_map.values()
-    tag_ids = {tag.id for problem in problems for tag in problem.tags}
+    tags = {tag.id for problem in problems for tag in problem.tags}
     tag_with_submission_cnt = dict(Counter([tag.id for problem in problems for tag in problem.tags]))
-    for tag_id in range(len(tag_ids)):
+    for tag_id in range(len(tags)):
         if tag_id not in tag_with_submission_cnt:
             tag_with_submission_cnt[tag_id] = 0
 

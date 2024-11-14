@@ -182,7 +182,7 @@ class Preprocess:
         -------
         adjacency_matrices: list[sp.coo_matrix]
             List of adjacency matrices.
-        adjacency_relations: list[int]]
+        adjacency_relations: list[int]
             List of adjacency relations.
         """
         adjacency_matrices = []
