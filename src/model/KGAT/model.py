@@ -309,10 +309,19 @@ class KGAT(nn.Module):
             other=trans_matrix_by_relation,
         )
 
-        return torch.sum(
+        attention = torch.sum(
             input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + _relation_embedding),
             dim=1,
         )
+
+        with torch.no_grad():
+            head_degrees = torch.bincount(heads, minlength=self._user_num + self._entity_num)
+            tail_degrees = torch.bincount(tails, minlength=self._user_num + self._entity_num)
+            edge_weights = 1.0 / (torch.log1p(head_degrees[heads]) + torch.log1p(tail_degrees[tails]))
+
+        attention *= edge_weights
+
+        return attention
 
     def _update_attention(
         self,

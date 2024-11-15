@@ -628,6 +628,8 @@ def recommend(args: Namespace) -> None:
     problem_with_recommended_cnt = sorted(problem_cnt_dict.items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
 
+    print(sorted(problem_cnt_dict.items(), key=lambda x: x[1], reverse=True)[:10])
+
     bar_graph_visualizer.visualize(
         x=list(problem_ids),
         y=list(recommended_cnts),
@@ -635,7 +637,7 @@ def recommend(args: Namespace) -> None:
         x_label="Problem ID",
         y_label="Recommended Count",
         x_interval=1000,
-        y_interval=50,
+        y_interval=10,
         ticks="both",
     )
 
@@ -741,7 +743,7 @@ def visualize_kg(args: Namespace) -> None:
     kg_visualizer.visualize(
         triplets=triplets,
         entities=entities,
-        highlight_nodes=[],
+        highlight_nodes=["T2", "T5", "T10", "T14"],
     )
 
 
