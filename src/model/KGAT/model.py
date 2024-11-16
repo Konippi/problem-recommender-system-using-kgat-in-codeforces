@@ -17,8 +17,10 @@ class KGATArgs:
     cf_embedding_dim: int = 64
     kg_embedding_dim: int = 64
     attentive_matrix: torch.Tensor | None = None
+    adversarial_temperature: float = 1.0
+    adversarial_epsilon: float = 0.1
     message_dropout: list[float] = field(default_factory=lambda: [0.1, 0.1, 0.1])
-    layer_size: list[int] = field(default_factory=lambda: [32, 16])
+    layer_size: list[int] = field(default_factory=lambda: [64, 32, 16])
     regularization_params: list[float] = field(default_factory=lambda: [1e-5, 1e-5])
 
 
@@ -48,6 +50,8 @@ class KGAT(nn.Module):
         self._layer_dims = args.layer_size
         self._layer_num = len(self._layer_dims)
         self._regularization_params = args.regularization_params
+        self._adversarial_temperature = args.adversarial_temperature
+        self._adversarial_epsilon = args.adversarial_epsilon
 
         # Part of Bipartite Graph
         self._cf_embedding_dim = args.cf_embedding_dim
@@ -202,75 +206,105 @@ class KGAT(nn.Module):
         positive_tails: torch.Tensor,
         negative_tails: torch.Tensor,
     ) -> torch.Tensor:
-        """
-        Calculate the loss for knowledge graph.
+        head_embedding: torch.Tensor = self._user_entity_embedding(heads)
+        relation_embedding: torch.Tensor = self._relation_embedding(relations)
+        trans_matrix_by_relation: torch.Tensor = self._trans_matrix[relations]
+        positive_tails_embedding: torch.Tensor = self._user_entity_embedding(positive_tails)
+        negative_tails_embedding: torch.Tensor = self._user_entity_embedding(negative_tails)
 
-        Parameters
-        ----------
-        heads: torch.Tensor
-            The head entities.
-        relations: torch.Tensor
-            The relations.
-        positive_tails: torch.Tensor
-            The positive tail entities.
-        negative_tails: torch.Tensor
-            The negative tail entities.
+        def calc_base_loss(
+            head_embedding: torch.Tensor,
+            relation_embedding: torch.Tensor,
+            trans_matrix: torch.Tensor,
+            positive_embedding: torch.Tensor,
+            negative_embedding: torch.Tensor,
+        ) -> torch.Tensor:
+            transformed_h = torch.matmul(head_embedding.unsqueeze(1), trans_matrix).squeeze(1)
+            transformed_p = torch.matmul(positive_embedding.unsqueeze(1), trans_matrix).squeeze(1)
+            transformed_n = torch.matmul(negative_embedding.unsqueeze(1), trans_matrix).squeeze(1)
 
-        Returns
-        -------
-        kg_loss: torch.Tensor
-            The loss for knowledge graph.
-        """
-        _relation_embedding: torch.Tensor = self._relation_embedding(relations)  # (kg_batch_size, relation_dim)
-        trans_matrix_by_relation: torch.Tensor = self._trans_matrix[
-            relations
-        ]  # (kg_batch_size, cf_embedding_dim, relation_dim)
-        head_embedding: torch.Tensor = self._user_entity_embedding(heads)  # (kg_batch_size, cf_embedding_dim)
-        positive_tails_embedding: torch.Tensor = self._user_entity_embedding(
-            positive_tails
-        )  # (kg_batch_size, cf_embedding_dim)
-        negative_tails_embedding: torch.Tensor = self._user_entity_embedding(
-            negative_tails
-        )  # (kg_batch_size, cf_embedding_dim)
+            pos_scores = torch.sum(
+                torch.pow(
+                    transformed_h + relation_embedding - transformed_p,
+                    2,
+                ),
+                dim=1,
+            )
+            neg_scores = torch.sum(
+                torch.pow(
+                    transformed_h + relation_embedding - transformed_n,
+                    2,
+                ),
+                dim=1,
+            )
 
-        # Transform to the relation space (Remove extra dimensions)
-        transformed_head_embedding = torch.matmul(head_embedding.unsqueeze(1), trans_matrix_by_relation).squeeze(
-            1
-        )  # (kg_batch_size, relation_dim)
-        transformed_positive_tail_embedding = torch.matmul(
-            positive_tails_embedding.unsqueeze(1),
+            return -F.logsigmoid(neg_scores - pos_scores).mean()
+
+        self.zero_grad()
+
+        base_loss = calc_base_loss(
+            head_embedding,
+            relation_embedding,
             trans_matrix_by_relation,
-        ).squeeze(1)  # (kg_batch_size, relation_dim)
-        transformed_negative_tail_embedding = torch.matmul(
-            negative_tails_embedding.unsqueeze(1),
-            trans_matrix_by_relation,
-        ).squeeze(1)  # (kg_batch_size, relation_dim)
-
-        # Calculate the score
-        positive_scores = torch.sum(
-            input=torch.pow(
-                input=transformed_head_embedding + _relation_embedding - transformed_positive_tail_embedding,
-                exponent=2,
-            ),
-            dim=1,
-        )  # (kg_batch_size,)
-        negative_scores = torch.sum(
-            input=torch.pow(
-                input=transformed_head_embedding + _relation_embedding - transformed_negative_tail_embedding,
-                exponent=2,
-            ),
-            dim=1,
-        )  # (kg_batch_size,)
-
-        kg_loss = -F.logsigmoid(negative_scores - positive_scores).mean()
-        l2_loss = (
-            self._l2_mean_loss(transformed_head_embedding)
-            + self._l2_mean_loss(_relation_embedding)
-            + self._l2_mean_loss(transformed_positive_tail_embedding)
-            + self._l2_mean_loss(transformed_negative_tail_embedding)
+            positive_tails_embedding,
+            negative_tails_embedding,
         )
 
-        return kg_loss + self._regularization_params[1] * l2_loss
+        base_loss.backward(retain_graph=True)
+
+        head_embedding.retain_grad()
+        relation_embedding.retain_grad()
+        trans_matrix_by_relation.retain_grad()
+
+        head_delta = (
+            F.normalize(
+                head_embedding.grad if head_embedding.grad is not None else torch.zeros_like(head_embedding),
+                p=2,
+                dim=1,
+            )
+            * self._adversarial_epsilon
+        )
+        relation_delta = (
+            F.normalize(
+                relation_embedding.grad
+                if relation_embedding.grad is not None
+                else torch.zeros_like(relation_embedding),
+                p=2,
+                dim=1,
+            )
+            * self._adversarial_epsilon
+        )
+        trans_delta = (
+            F.normalize(
+                trans_matrix_by_relation.grad
+                if trans_matrix_by_relation.grad is not None
+                else torch.zeros_like(trans_matrix_by_relation),
+                p=2,
+                dim=1,
+            )
+            * self._adversarial_epsilon
+        )
+
+        adv_loss = calc_base_loss(
+            head_embedding + head_delta,
+            relation_embedding + relation_delta,
+            trans_matrix_by_relation + trans_delta,
+            positive_tails_embedding,
+            negative_tails_embedding,
+        )
+
+        l2_loss = (
+            self._l2_mean_loss(head_embedding)
+            + self._l2_mean_loss(relation_embedding)
+            + self._l2_mean_loss(positive_tails_embedding)
+            + self._l2_mean_loss(negative_tails_embedding)
+        )
+
+        final_loss: torch.Tensor = (
+            base_loss + self._adversarial_temperature * adv_loss + self._regularization_params[1] * l2_loss
+        )
+
+        return final_loss
 
     def _update_attention_by_batch(
         self,
