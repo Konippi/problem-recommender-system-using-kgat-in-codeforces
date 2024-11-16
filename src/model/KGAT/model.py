@@ -18,7 +18,7 @@ class KGATArgs:
     kg_embedding_dim: int = 64
     attentive_matrix: torch.Tensor | None = None
     message_dropout: list[float] = field(default_factory=lambda: [0.1, 0.1, 0.1])
-    layer_size: list[int] = field(default_factory=lambda: [64, 32, 16])
+    layer_size: list[int] = field(default_factory=lambda: [32, 16])
     regularization_params: list[float] = field(default_factory=lambda: [1e-5, 1e-5])
 
 
