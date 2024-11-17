@@ -252,45 +252,20 @@ class KGAT(nn.Module):
 
         base_loss.backward(retain_graph=True)
 
-        head_embedding.retain_grad()
-        relation_embedding.retain_grad()
-        trans_matrix_by_relation.retain_grad()
-
-        head_delta = (
-            F.normalize(
-                head_embedding.grad if head_embedding.grad is not None else torch.zeros_like(head_embedding),
-                p=2,
-                dim=1,
-            )
-            * self._adversarial_epsilon
-        )
-        relation_delta = (
-            F.normalize(
-                relation_embedding.grad
-                if relation_embedding.grad is not None
-                else torch.zeros_like(relation_embedding),
-                p=2,
-                dim=1,
-            )
-            * self._adversarial_epsilon
-        )
-        trans_delta = (
-            F.normalize(
-                trans_matrix_by_relation.grad
-                if trans_matrix_by_relation.grad is not None
-                else torch.zeros_like(trans_matrix_by_relation),
-                p=2,
-                dim=1,
-            )
-            * self._adversarial_epsilon
+        negative_tails_embedding.retain_grad()
+        negative_tails_grad = negative_tails_embedding.grad
+        negative_tails_adv = negative_tails_embedding + self._adversarial_epsilon * F.normalize(
+            negative_tails_grad if negative_tails_grad is not None else torch.zeros_like(negative_tails_embedding),
+            p=2,
+            dim=1,
         )
 
         adv_loss = calc_base_loss(
-            head_embedding + head_delta,
-            relation_embedding + relation_delta,
-            trans_matrix_by_relation + trans_delta,
+            head_embedding,
+            relation_embedding,
+            trans_matrix_by_relation,
             positive_tails_embedding,
-            negative_tails_embedding,
+            negative_tails_adv,
         )
 
         l2_loss = (
