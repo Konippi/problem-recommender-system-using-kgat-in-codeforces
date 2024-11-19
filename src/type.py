@@ -90,7 +90,8 @@ class SplitSubmissionHistoryByUser:
 class RelationType(Enum):
     TAGGED = 0
     HAS_DIFFICULTY = 1
-    IN_CONTEST_DIVISION = 2
+    IN_CONTEST = 2
+    HAS_CONTEST_DIVISION = 3
 
 
 EntityID = int
@@ -101,7 +102,7 @@ Weight = float
 @dataclass
 class Entity:
     id: EntityID
-    target_type: Literal["problem", "contest_division", "tag", "rating"]
+    target_type: Literal["problem", "contest", "contest_division", "tag", "rating"]
     target_id: int
 
 

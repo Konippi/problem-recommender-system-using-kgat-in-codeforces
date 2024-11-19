@@ -1,5 +1,5 @@
 {
-  "date": "2024-10-08",
+  "date": "2024-11-19",
   "contents": [
     {
       "id": 0,
@@ -11,7 +11,11 @@
     },
     {
       "id": 2,
-      "name": "in_contest_division"
+      "name": "in_contest"
+    },
+    {
+      "id": 3,
+      "name": "has_contest_division"
     }
   ]
 }
