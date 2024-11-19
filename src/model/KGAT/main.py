@@ -628,8 +628,6 @@ def recommend(args: Namespace) -> None:
     problem_with_recommended_cnt = sorted(problem_cnt_dict.items())
     problem_ids, recommended_cnts = zip(*problem_with_recommended_cnt, strict=False)
 
-    print(sorted(problem_cnt_dict.items(), key=lambda x: x[1], reverse=True)[:10])
-
     bar_graph_visualizer.visualize(
         x=list(problem_ids),
         y=list(recommended_cnts),
