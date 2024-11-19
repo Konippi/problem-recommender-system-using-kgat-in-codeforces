@@ -15,7 +15,7 @@ class KGATArgs:
     entity_num: int
     relation_num: int
     cf_embedding_dim: int = 64
-    kg_embedding_dim: int = 32
+    kg_embedding_dim: int = 64
     attentive_matrix: torch.Tensor | None = None
     adversarial_temperature: float = 1.0
     adversarial_epsilon: float = 0.1
