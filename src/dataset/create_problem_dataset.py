@@ -84,12 +84,11 @@ def get_all_problems(session: Session, contest_ids: list[int]) -> list[dict[str,
 def get_all_contests(session: Session) -> list[dict[str, Any]]:
     """
     Get All Contest Ids in Codeforces
-    -----------
-    Parameters:
-        None
+
+    Returns
     --------
-    Returns:
-        contests: list[dict]
+    contests: list[dict]
+        contests
     """
     url = "https://codeforces.com/api/contest.list"
     headers = {"Content-Type": "application/json", "User-Agent": HTTP_USER_AGENT}
@@ -108,12 +107,16 @@ def get_all_contests(session: Session) -> list[dict[str, Any]]:
 def get_tag_with_ids(problems: list[dict[str, Any]]) -> list[Tag]:
     """
     Assign index to each tag
-    -----------
-    Parameters:
-        problems: list[dict[str, Any]]
-    --------
-    Returns:
-        tag_with_ids: list[Tag]
+
+    Parameters
+    ----------
+    problems: list[dict[str, Any]]
+        problems
+
+    Returns
+    -------
+    tag_with_ids: list[Tag]
+        Tag with ids
     --------
     """
     tags = {tag for problem in problems for tag in problem["tags"]}
@@ -121,18 +124,36 @@ def get_tag_with_ids(problems: list[dict[str, Any]]) -> list[Tag]:
 
 
 def get_tag_by_name(name: str, tags: list[Tag]) -> Tag:
+    """
+    Get Tag by Name.
+
+    Parameters
+    ----------
+    name: str
+        tag name
+    tags: list[Tag]
+        tags
+
+    Returns
+    -------
+    tag: Tag
+    """
     return next(filter(lambda tag: tag.name == name, tags))
 
 
 def get_rating_with_ids(problems: list[dict[str, Any]]) -> list[Rating]:
     """
     Assign index to each rating
-    -----------
-    Parameters:
-        problems: list[dict[str, Any]]
-    --------
-    Returns:
-        rating_with_ids: list[Rating]
+
+    Parameters
+    ----------
+    problems: list[dict[str, Any]]
+        problems
+
+    Returns
+    -------
+    rating_with_ids: list[Rating]
+        Rating with ids
     --------
     """
     ratings = sorted({problem["rating"] for problem in problems if problem["rating"] is not None})
@@ -140,6 +161,21 @@ def get_rating_with_ids(problems: list[dict[str, Any]]) -> list[Rating]:
 
 
 def get_rating_by_value(value: int | None, ratings: list[Rating]) -> Rating:
+    """
+    Get Rating by Value.
+
+    Parameters
+    ----------
+    value: int | None
+        rating value
+    ratings: list[Rating]
+        ratings
+
+    Returns
+    -------
+    rating: Rating
+        rating
+    """
     return next(filter(lambda rating: rating.value == value, ratings))
 
 
