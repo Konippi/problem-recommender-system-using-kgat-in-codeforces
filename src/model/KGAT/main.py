@@ -286,11 +286,6 @@ def train(args: Namespace) -> None:
     # Training
     logger.info("Start training...")
 
-    problem_with_submission_cnt = dict(Counter([row[1] for row in preprocess.interaction_matrix]))
-    for problem_id in range(preprocess.item_num):
-        if problem_id not in problem_with_submission_cnt:
-            problem_with_submission_cnt[problem_id] = 0
-
     for epoch_idx in range(1, EPOCH_NUM + 1):
         logger.info("--------------- Epoch: %d ---------------", epoch_idx)
         model.train()
