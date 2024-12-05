@@ -7,6 +7,7 @@ from torch import nn
 from torch.nn import functional as F  # noqa: N812
 
 from src.model.KGAT.aggregator import Aggregator, AggregatorArgs
+from src.model.KGAT.multi_head_attention import MultiHeadAttention
 
 
 @dataclass
@@ -17,8 +18,6 @@ class KGATArgs:
     cf_embedding_dim: int = 64
     kg_embedding_dim: int = 64
     attentive_matrix: torch.Tensor | None = None
-    adversarial_temperature: float = 1.0
-    adversarial_epsilon: float = 0.1
     message_dropout: list[float] = field(default_factory=lambda: [0.1, 0.1, 0.1])
     layer_size: list[int] = field(default_factory=lambda: [64, 32, 16])
     regularization_params: list[float] = field(default_factory=lambda: [1e-5, 1e-5])
@@ -50,8 +49,6 @@ class KGAT(nn.Module):
         self._layer_dims = args.layer_size
         self._layer_num = len(self._layer_dims)
         self._regularization_params = args.regularization_params
-        self._adversarial_temperature = args.adversarial_temperature
-        self._adversarial_epsilon = args.adversarial_epsilon
 
         # Part of Bipartite Graph
         self._cf_embedding_dim = args.cf_embedding_dim
@@ -93,6 +90,11 @@ class KGAT(nn.Module):
         if args.attentive_matrix is not None:
             self.attentive_matrix.data = args.attentive_matrix
         self.attentive_matrix.requires_grad = False
+
+        self._multi_head_attention = MultiHeadAttention(
+            cf_embedding_dim=self._cf_embedding_dim,
+            kg_embedding_dim=self._kg_embedding_dim,
+        )
 
     def _initialize_weights(self) -> None:
         """
@@ -265,7 +267,7 @@ class KGAT(nn.Module):
         relation_idx: torch.Tensor,
     ) -> torch.Tensor:
         """
-        Update the attention matrix.
+        Update the attention matrix by batch.
 
         Parameters
         ----------
@@ -273,15 +275,15 @@ class KGAT(nn.Module):
             The head entities.
         tails: torch.Tensor
             The tail entities.
-        relation: torch.Tensor
-            The relation.
+        relation_idx: torch.Tensor
+            The relation index.
 
         Returns
         -------
-        updated_attention: torch.Tensor
-            The updated attention.
+        attention: torch.Tensor
+            The attention.
         """
-        _relation_embedding = self._relation_embedding.weight[relation_idx]
+        relation_embedding = self._relation_embedding.weight[relation_idx]
         trans_matrix_by_relation = self._trans_matrix[relation_idx]
         head_embedding = self._user_entity_embedding.weight[heads]
         tail_embedding = self._user_entity_embedding.weight[tails]
@@ -294,9 +296,13 @@ class KGAT(nn.Module):
             input=tail_embedding,
             other=trans_matrix_by_relation,
         )
-
+        multi_head_attention: torch.Tensor = self._multi_head_attention(
+            transformed_head_embedding,
+            relation_embedding,
+            transformed_tail_embedding,
+        )
         attention = torch.sum(
-            input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + _relation_embedding),
+            input=torch.tanh(input=multi_head_attention.squeeze(1)),
             dim=1,
         )
 
