@@ -9,7 +9,7 @@ class MultiHeadAttention(nn.Module):
         self._head_num = head_num
         self._cf_embedding_dim = cf_embedding_dim
         self._kg_embedding_dim = kg_embedding_dim
-        self._depth = self._cf_embedding_dim // self._head_num
+        self._depth = self._kg_embedding_dim // self._head_num
         self._query_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
         self._key_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
         self._value_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
