@@ -3,7 +3,7 @@ from torch import nn
 
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, cf_embedding_dim: int, kg_embedding_dim: int, head_num: int = 4) -> None:
+    def __init__(self, cf_embedding_dim: int, kg_embedding_dim: int, head_num: int = 8) -> None:
         super().__init__()
 
         self._head_num = head_num
@@ -14,6 +14,7 @@ class MultiHeadAttention(nn.Module):
         self._key_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
         self._value_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
         self._output = nn.Linear(self._kg_embedding_dim, self._kg_embedding_dim)
+        self._layer_norm = nn.LayerNorm(self._kg_embedding_dim)
 
         self._initialize_weights()
 
@@ -47,5 +48,6 @@ class MultiHeadAttention(nn.Module):
         attention = torch.softmax(attention, dim=-1)
         attention = torch.matmul(attention, value)
         attention = attention.transpose(1, 2).contiguous().view(batch_size, -1, self._kg_embedding_dim)
-        output: torch.Tensor = self._output(attention)
+        attention = self._output(attention)
+        output: torch.Tensor = self._layer_norm(attention)
         return output
