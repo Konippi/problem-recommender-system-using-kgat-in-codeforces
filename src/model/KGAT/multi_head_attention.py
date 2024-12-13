@@ -3,7 +3,7 @@ from torch import nn
 
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, cf_embedding_dim: int, kg_embedding_dim: int, head_num: int = 8) -> None:
+    def __init__(self, cf_embedding_dim: int, kg_embedding_dim: int, head_num: int = 8, dropout: float = 0.1) -> None:
         super().__init__()
 
         self._head_num = head_num
@@ -15,6 +15,7 @@ class MultiHeadAttention(nn.Module):
         self._value_weight = nn.Linear(self._cf_embedding_dim, self._kg_embedding_dim)
         self._output = nn.Linear(self._kg_embedding_dim, self._kg_embedding_dim)
         self._layer_norm = nn.LayerNorm(self._kg_embedding_dim)
+        self._dropout = nn.Dropout(dropout)
 
         self._initialize_weights()
 
@@ -40,12 +41,16 @@ class MultiHeadAttention(nn.Module):
         batch_size = head_embedding.size(0)
 
         query = self._split_heads(self._query_weight(head_embedding), batch_size)
-        key = self._split_heads(self._key_weight(tail_embedding + relation_embedding), batch_size)
-        value = self._split_heads(self._value_weight(tail_embedding + relation_embedding), batch_size)
+        key = self._split_heads(
+            self._key_weight(relation_embedding.unsqueeze(0).expand(batch_size, -1)),
+            batch_size,
+        )
+        value = self._split_heads(self._value_weight(tail_embedding), batch_size)
 
         # Scaled Dot-Product Attention
         attention = torch.matmul(query, key.transpose(-2, -1)) / (self._depth**0.5)
         attention = torch.softmax(attention, dim=-1)
+        attention = self._dropout(attention)
         attention = torch.matmul(attention, value)
         attention = attention.transpose(1, 2).contiguous().view(batch_size, -1, self._kg_embedding_dim)
         attention = self._output(attention)
