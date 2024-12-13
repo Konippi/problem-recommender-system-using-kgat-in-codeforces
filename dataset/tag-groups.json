@@ -1,0 +1,164 @@
+{
+    "search": [
+        {
+            "id": 28,
+            "name": "binary search"
+        },
+        {
+            "id": 19,
+            "name": "ternary search"
+        },
+        {
+            "id": 2,
+            "name": "meet-in-the-middle"
+        },
+        {
+            "id": 34,
+            "name": "brute force"
+        },
+        {
+            "id": 11,
+            "name": "two pointers"
+        },
+        {
+            "id": 3,
+            "name": "dfs and similar"
+        }
+    ],
+    "math": [
+        {
+            "id": 14,
+            "name": "math"
+        },
+        {
+            "id": 15,
+            "name": "number theory"
+        },
+        {
+            "id": 24,
+            "name": "combinatorics"
+        },
+        {
+            "id": 8,
+            "name": "probabilities"
+        },
+        {
+            "id": 22,
+            "name": "matrices"
+        },
+        {
+            "id": 26,
+            "name": "chinese remainder theorem"
+        },
+        {
+            "id": 12,
+            "name": "fft"
+        },
+        {
+            "id": 31,
+            "name": "geometry"
+        }
+    ],
+    "graph": [
+        {
+            "id": 16,
+            "name": "graphs"
+        },
+        {
+            "id": 17,
+            "name": "trees"
+        },
+        {
+            "id": 29,
+            "name": "shortest paths"
+        },
+        {
+            "id": 23,
+            "name": "flows"
+        },
+        {
+            "id": 13,
+            "name": "graph matchings"
+        },
+        {
+            "id": 25,
+            "name": "2-sat"
+        },
+        {
+            "id": 6,
+            "name": "dsu"
+        }
+    ],
+    "string": [
+        {
+            "id": 30,
+            "name": "strings"
+        },
+        {
+            "id": 9,
+            "name": "string suffix structures"
+        },
+        {
+            "id": 35,
+            "name": "hashing"
+        },
+        {
+            "id": 20,
+            "name": "expression parsing"
+        }
+    ],
+    "algorithm": [
+        {
+            "id": 5,
+            "name": "dp"
+        },
+        {
+            "id": 26,
+            "name": "greedy"
+        },
+        {
+            "id": 21,
+            "name": "divide and conquer"
+        },
+        {
+            "id": 18,
+            "name": "constructive algorithms"
+        }
+    ],
+    "data_structure": [
+        {
+            "id": 33,
+            "name": "data structures"
+        },
+        {
+            "id": 32,
+            "name": "bitmasks"
+        },
+        {
+            "id": 36,
+            "name": "sortings"
+        }
+    ],
+    "other": [
+        {
+            "id": 10,
+            "name": "implementation"
+        },
+        {
+            "id": 33,
+            "name": "schedules"
+        },
+        {
+            "id": 27,
+            "name": "interactive"
+        },
+        {
+            "id": 4,
+            "name": "games"
+        },
+        {
+            "id": 7,
+            "name": "*special"
+        }
+    ]
+}

@@ -48,7 +48,8 @@ TRAIN_KG_BATCH_SIZE = 512
 TEST_BATCH_SIZE = 256
 EDGE_DROPOUT = [0.1, 0.1, 0.1]
 NODE_DROPOUT = [0.1]
-LEARNING_RATE = 0.0001
+CF_LEARNING_RATE = 0.0001
+KG_LEARNING_RATE = 0.00001
 METRICS_K_LIST = [20, 40, 60, 80, 100]
 
 
@@ -269,7 +270,7 @@ def train(args: Namespace) -> None:
     logger.info("Built model!\n%s\n====================================", model)
 
     # Build optimizer
-    model.build_optimizer(lr=LEARNING_RATE)
+    model.build_optimizer(cf_lr=CF_LEARNING_RATE, kg_lr=KG_LEARNING_RATE)
 
     # Initialize metrics
     best_epoch = 0

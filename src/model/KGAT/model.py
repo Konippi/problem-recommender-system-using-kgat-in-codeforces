@@ -390,17 +390,19 @@ class KGAT(nn.Module):
         item_embeddings = all_embeddings[item_ids]  # (item_num, concatentated_dim)
         return torch.matmul(input=user_embeddings, other=item_embeddings.transpose(0, 1))
 
-    def build_optimizer(self, lr: float) -> None:
+    def build_optimizer(self, cf_lr: float, kg_lr: float) -> None:
         """
         Build the optimizer.
 
         Parameters
         ----------
-        lr: float
-            The learning rate.
+        cf_lr: float
+            The learning rate for collaborative filtering.
+        kg_lr: float
+            The learning rate for knowledge graph.
         """
-        self._cf_optimizer = torch.optim.Adam(params=self.parameters(), lr=lr)
-        self._kg_optimizer = torch.optim.Adam(params=self.parameters(), lr=lr)
+        self._cf_optimizer = torch.optim.Adam(params=self.parameters(), lr=cf_lr)
+        self._kg_optimizer = torch.optim.Adam(params=self.parameters(), lr=kg_lr)
 
     def update_cf_weights(self) -> None:
         """
