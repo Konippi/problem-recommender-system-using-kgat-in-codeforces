@@ -7,7 +7,6 @@ from torch import nn
 from torch.nn import functional as F  # noqa: N812
 
 from src.model.KGAT.aggregator import Aggregator, AggregatorArgs
-from src.model.KGAT.multi_head_attention import MultiHeadAttention
 
 
 @dataclass
@@ -90,11 +89,6 @@ class KGAT(nn.Module):
         if args.attentive_matrix is not None:
             self.attentive_matrix.data = args.attentive_matrix
         self.attentive_matrix.requires_grad = False
-
-        self._multi_head_attention = MultiHeadAttention(
-            cf_embedding_dim=self._cf_embedding_dim,
-            kg_embedding_dim=self._kg_embedding_dim,
-        )
 
     def _initialize_weights(self) -> None:
         """
@@ -296,24 +290,10 @@ class KGAT(nn.Module):
             input=tail_embedding,
             other=trans_matrix_by_relation,
         )
-        multi_head_attention: torch.Tensor = self._multi_head_attention(
-            transformed_head_embedding,
-            relation_embedding,
-            transformed_tail_embedding,
-        )
-        attention = torch.sum(
-            input=torch.tanh(input=multi_head_attention.squeeze(1)),
+        return torch.sum(
+            input=transformed_tail_embedding * torch.tanh(input=transformed_head_embedding + relation_embedding),
             dim=1,
         )
-
-        with torch.no_grad():
-            head_degrees = torch.bincount(heads, minlength=self._user_num + self._entity_num)
-            tail_degrees = torch.bincount(tails, minlength=self._user_num + self._entity_num)
-            edge_weights = 1.0 / (torch.log1p(head_degrees[heads]) + torch.log1p(tail_degrees[tails]))
-
-        attention *= edge_weights
-
-        return attention
 
     def _update_attention(
         self,
