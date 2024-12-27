@@ -21,6 +21,7 @@ def visualize(
     entity_map = {entity.id: entity for entity in entities}
     entity_type_label = {
         "problem": "P",
+        "contest": "C",
         "contest_division": "D",
         "tag": "T",
         "rating": "R",

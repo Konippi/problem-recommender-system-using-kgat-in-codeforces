@@ -737,7 +737,8 @@ def visualize_kg(args: Namespace) -> None:
     kg_visualizer.visualize(
         triplets=triplets,
         entities=entities,
-        highlight_nodes=["T2", "T5", "T10", "T14"],
+        triplet_num=500,
+        highlight_nodes=[],
     )
 
 
